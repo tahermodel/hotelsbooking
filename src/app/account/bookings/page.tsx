@@ -1,0 +1,71 @@
+import { Header } from "@/components/layout/header"
+import { auth } from "@/lib/auth"
+import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
+import { formatCurrency } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { cancelBooking } from "@/actions/bookings"
+
+export default async function MyBookingsPage() {
+    const session = await auth()
+    if (!session) redirect("/login")
+
+    const supabase = await createClient()
+    const { data: bookings } = await supabase
+        .from('bookings')
+        .select('*, hotels(name, city, country)')
+        .eq('user_id', session.user?.id)
+        .order('created_at', { ascending: false })
+
+    return (
+        <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1 container py-12">
+                <h1 className="text-3xl font-bold mb-8">My Bookings</h1>
+
+                <div className="space-y-6">
+                    {bookings?.map((booking: any) => (
+                        <div key={booking.id} className="p-6 rounded-2xl glass-surface border-white/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-2xl transition-all">
+                            <div>
+                                <div className="flex items-center gap-4 mb-1">
+                                    <h3 className="font-bold text-lg">{booking.hotels.name}</h3>
+                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${booking.status === 'confirmed' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                                        booking.status === 'cancelled' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                                            'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+                                        }`}>
+                                        {booking.status}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{booking.hotels.city}, {booking.hotels.country}</p>
+                                <p className="text-sm mt-3 flex gap-4">
+                                    <span className="glass px-2 py-0.5 rounded text-[10px] font-bold">IN: {booking.check_in_date}</span>
+                                    <span className="glass px-2 py-0.5 rounded text-[10px] font-bold">OUT: {booking.check_out_date}</span>
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+                                <p className="font-black text-2xl bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">{formatCurrency(booking.total_amount)}</p>
+                                {booking.status === 'confirmed' && (
+                                    <form action={async () => {
+                                        "use server"
+                                        await cancelBooking(booking.id, "Customer request")
+                                    }}>
+                                        <Button variant="outline" size="sm" className="glass border-red-500/20 text-red-400 hover:bg-red-500/10 liquid-flicker">Cancel Reservation</Button>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+
+                    {(!bookings || bookings.length === 0) && (
+                        <div className="py-20 text-center border-dashed border-2 border-white/10 rounded-2xl glass-surface">
+                            <p className="text-muted-foreground">You haven't made any bookings yet.</p>
+                            <Link href="/search" className="text-primary font-bold hover:underline mt-4 inline-block liquid-flicker">Start exploring</Link>
+                        </div>
+                    )}
+                </div>
+            </main>
+        </div>
+    )
+}
+import Link from "next/link"
