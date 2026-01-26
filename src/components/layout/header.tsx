@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { auth, signOut } from "@/lib/auth"
+import { auth } from "@/lib/auth"
+import { handleSignOut } from "@/actions/auth"
 import { Button } from "@/components/ui/button"
 
 export async function Header() {
@@ -24,10 +25,7 @@ export async function Header() {
                             <Link href="/account" className="text-sm font-medium hover:text-primary transition-colors">
                                 My Account
                             </Link>
-                            <form action={async () => {
-                                "use server"
-                                await signOut()
-                            }}>
+                            <form action={handleSignOut}>
                                 <Button variant="ghost" size="sm" className="glass hover:bg-white/20">Sign Out</Button>
                             </form>
                         </div>

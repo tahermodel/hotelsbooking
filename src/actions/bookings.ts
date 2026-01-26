@@ -1,7 +1,10 @@
+"use server"
+
 import { createClient } from "@/lib/supabase/server"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { z } from "zod"
+import { sendEmail } from "@/lib/mail"
 
 const bookingSchema = z.object({
     hotelId: z.string().uuid(),
@@ -68,6 +71,14 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
         .match({ room_id: validated.roomId })
         .in('date', dates)
 
+    // Send confirmation email
+    await sendEmail({
+        to: validated.guestEmail,
+        subject: "Booking Confirmed - StayEase",
+        text: `Your booking at StayEase is confirmed. Reference: ${booking.booking_reference}. Check-in: ${validated.checkInDate}.`,
+        html: `<h1>Booking Confirmation</h1><p>Your booking is confirmed.</p><p>Ref: <b>${booking.booking_reference}</b></p><p>Check-in: ${validated.checkInDate}</p>`
+    })
+
     redirect(`/booking/confirmation?id=${booking.id}`)
 }
 
@@ -118,6 +129,14 @@ export async function cancelBooking(bookingId: string, reason: string) {
         .update({ is_available: true })
         .match({ room_id: booking.room_id })
         .in('date', dates)
+
+    // Send cancellation email
+    await sendEmail({
+        to: booking.guest_email,
+        subject: "Booking Cancelled - StayEase",
+        text: `Your booking (Ref: ${booking.booking_reference}) has been cancelled. Refund amount: $${refundAmount}.`,
+        html: `<h1>Booking Cancelled</h1><p>Ref: <b>${booking.booking_reference}</b> has been cancelled.</p><p>Refund Amount: $${refundAmount}</p>`
+    })
 
     return { success: true, refundAmount }
 }
