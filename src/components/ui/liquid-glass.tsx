@@ -22,15 +22,24 @@ export function LiquidGlass({
                     "liquid-glass rounded-2xl overflow-hidden transition-all duration-500",
                     className
                 )}
-                whileHover={animate ? { scale: 1.01 } : {}}
+                whileHover={animate ? { scale: 1.015, y: -2 } : {}}
+                whileTap={{ scale: 0.99 }}
             >
-                {/* Refraction Overlay */}
-                <div className="absolute inset-0 pointer-events-none opacity-50 liquid-refract" />
+                {/* 1. Underlying Refraction (Outer distortion) */}
+                <div className="absolute inset-0 pointer-events-none opacity-70 liquid-refract scale-[1.05]" />
 
-                {/* Glossy Reflection */}
-                <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-30" />
+                {/* 2. Frosted Blur Layer (Implicit in liquid-glass class) */}
 
-                <div className="relative z-10">
+                {/* 3. Deep Inner Shadow for volume */}
+                <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(255,255,255,0.05)]" />
+
+                {/* 4. Glossy Specular Highlight (Top-left) */}
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/20 via-transparent to-white/5 opacity-40" />
+
+                {/* 5. Edge Highlight (Bezel effect) */}
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+
+                <div className="relative z-10 h-full w-full">
                     {children}
                 </div>
             </motion.div>
