@@ -6,24 +6,26 @@ import { Button } from "@/components/ui/button"
 
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage() {
+export default async function Home() {
   const supabase = await createClient()
-  const { data: hotels } = await supabase
+  const { data: featuredHotels } = await supabase
     .from('hotels')
     .select('*')
     .eq('is_active', true)
     .limit(6)
 
   return (
-    <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background">
+    <div className="flex min-h-screen flex-col relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-blue-400/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
+      </div>
+
       <Header />
       <main className="flex-1">
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-full opacity-30 pointer-events-none">
-            <div className="absolute top-20 left-0 w-72 h-72 bg-primary/40 rounded-full blur-[120px] animate-pulse" />
-            <div className="absolute bottom-20 right-0 w-96 h-96 bg-purple-500/30 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '2s' }} />
-          </div>
-
           <div className="container relative px-4 md:px-6">
             <div className="flex flex-col items-center space-y-10 text-center">
               <div className="space-y-4">
@@ -51,7 +53,7 @@ export default async function HomePage() {
             <Button variant="ghost" className="hidden md:flex glass px-6 rounded-full hover:bg-white/20 liquid-flicker">View All</Button>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {hotels?.map((hotel) => (
+            {featuredHotels?.map((hotel) => (
               <HotelCard key={hotel.id} hotel={hotel} />
             ))}
           </div>
