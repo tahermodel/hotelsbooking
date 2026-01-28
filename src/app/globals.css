@@ -1,59 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  /* Light mode - Nature: Sand & Sky */
-  --background: oklch(0.97 0.02 90);
-  /* Very light warm sand */
-  --foreground: oklch(0.25 0.05 250);
-  /* Deep blue-grey for text */
-
-  /* Primary: Light Sky Blue */
-  --primary: oklch(0.75 0.12 230);
-  --primary-foreground: oklch(0.98 0.01 90);
-
-  /* Secondary: Sandy Beige */
-  --secondary: oklch(0.88 0.05 85);
-  --secondary-foreground: oklch(0.25 0.05 250);
-
-  /* Muted: Soft Coastal Mist */
-  --muted: oklch(0.93 0.03 240);
-  --muted-foreground: oklch(0.50 0.05 250);
-
-  /* Accent: Warm Sun/Sand */
-  --accent: oklch(0.85 0.08 85);
-  --accent-foreground: oklch(0.25 0.05 250);
-
-  --border: oklch(0.90 0.03 90);
-  --input: oklch(0.95 0.02 90);
-  --ring: oklch(0.75 0.12 230);
+  /* Light mode - Nature inspired: Sand, Sea, and Coastal colors */
+  --background: oklch(0.98 0.01 70);
+  --foreground: oklch(0.18 0.02 210);
+  /* Primary: Teal/Ocean blue (sea) */
+  --primary: oklch(0.52 0.19 210);
+  --primary-foreground: oklch(0.98 0 0);
+  /* Secondary: Sandy beige (sand) */
+  --secondary: oklch(0.85 0.10 70);
+  --secondary-foreground: oklch(0.18 0.02 210);
+  /* Muted: Soft shell colors */
+  --muted: oklch(0.92 0.03 80);
+  --muted-foreground: oklch(0.50 0.05 210);
+  /* Accent: Coral/Warm sea tones */
+  --accent: oklch(0.62 0.18 25);
+  --accent-foreground: oklch(0.98 0 0);
+  --border: oklch(0.90 0.03 210);
+  --input: oklch(0.95 0.02 70);
+  --ring: oklch(0.52 0.19 210);
   --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode - Midnight Sky & Dark Sand */
-    --background: oklch(0.15 0.04 250);
-    --foreground: oklch(0.95 0.02 90);
-
-    /* Primary: Deep saturated Sky Blue */
-    --primary: oklch(0.65 0.15 230);
-    --primary-foreground: oklch(0.15 0.04 250);
-
-    /* Secondary: Darker Dune */
-    --secondary: oklch(0.35 0.06 80);
-    --secondary-foreground: oklch(0.95 0.02 90);
-
-    /* Muted: Deep Night Mist */
-    --muted: oklch(0.25 0.04 250);
-    --muted-foreground: oklch(0.70 0.05 240);
-
-    /* Accent: Dark Sand/Gold */
-    --accent: oklch(0.40 0.08 80);
-    --accent-foreground: oklch(0.95 0.02 90);
-
-    --border: oklch(0.30 0.04 250);
-    --input: oklch(0.25 0.04 250);
-    --ring: oklch(0.65 0.15 230);
+    /* Dark mode - Deep ocean and moonlit sand */
+    --background: oklch(0.12 0.02 210);
+    --foreground: oklch(0.95 0.01 70);
+    /* Primary: Brighter teal for dark mode */
+    --primary: oklch(0.62 0.20 210);
+    --primary-foreground: oklch(0.12 0.02 210);
+    /* Secondary: Warmer sand in dark mode */
+    --secondary: oklch(0.55 0.12 70);
+    --secondary-foreground: oklch(0.95 0.01 70);
+    /* Muted: Dark stone/shell colors */
+    --muted: oklch(0.30 0.03 210);
+    --muted-foreground: oklch(0.70 0.05 210);
+    /* Accent: Brighter coral for dark mode */
+    --accent: oklch(0.70 0.20 25);
+    --accent-foreground: oklch(0.12 0.02 210);
+    --border: oklch(0.25 0.03 210);
+    --input: oklch(0.20 0.02 210);
+    --ring: oklch(0.62 0.20 210);
   }
 }
 
@@ -92,15 +80,15 @@
   }
 
   .liquid-glass {
-    /* Milky, strong blur to block text readability underneath */
-    background: linear-gradient(165deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
-    backdrop-filter: blur(50px) saturate(180%);
-    -webkit-backdrop-filter: blur(50px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    /* Enhanced iOS-like frosted glass with strong Ocean & Sand tints */
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+    backdrop-filter: blur(120px) saturate(320%) brightness(1.08);
+    -webkit-backdrop-filter: blur(120px) saturate(320%) brightness(1.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow:
-      0 10px 40px -2px rgba(0, 0, 0, 0.1),
-      0 20px 60px -5px rgba(0, 0, 0, 0.1),
-      inset 0 0 30px 0 rgba(255, 255, 255, 0.2);
+      0 10px 40px -4px rgba(0, 0, 0, 0.20),
+      0 20px 60px -8px rgba(0, 0, 0, 0.30),
+      inset 0 0 30px 0 rgba(255, 255, 255, 0.08);
     position: relative;
     overflow: hidden;
   }
@@ -109,10 +97,12 @@
     content: "";
     position: absolute;
     inset: 0;
+    /* specular gradient with ocean tint */
     background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.4) 0%,
-        rgba(255, 255, 255, 0) 40%,
-        rgba(255, 255, 255, 0.1) 100%);
+        rgba(255, 255, 255, 0.20) 0%,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0) 55%,
+        rgba(255, 255, 255, 0.10) 100%);
     pointer-events: none;
     z-index: 1;
   }

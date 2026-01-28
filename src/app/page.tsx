@@ -20,7 +20,7 @@ export default async function Home() {
       <div className="absolute inset-0 -z-10 bg-[#fafafa]">
 
         {/* Color Blobs */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/30 rounded-full blur-[80px] animate-pulse" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sky-500/30 rounded-full blur-[80px] animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-400/20 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-orange-300/20 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '4s' }} />
       </div>
@@ -65,13 +65,13 @@ export default async function Home() {
       <footer className="border-t border-white/5 bg-black/5 backdrop-blur-sm">
         <div className="container flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
           <div className="flex items-center space-x-2">
-            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">StayEase</span>
+            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent">StayEase</span>
             <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved. This is a demonstration project not a real commercial one</span>
           </div>
           <nav className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-            <a className="hover:text-teal-600 transition-colors" href="/terms">Terms</a>
-            <a className="hover:text-teal-600 transition-colors" href="/privacy">Privacy</a>
-            <a className="hover:text-teal-600 transition-colors" href="/partner">Partner</a>
+            <a className="hover:text-primary transition-colors" href="/terms">Terms</a>
+            <a className="hover:text-primary transition-colors" href="/privacy">Privacy</a>
+            <a className="hover:text-primary transition-colors" href="/partner">Partner</a>
           </nav>
         </div>
       </footer>

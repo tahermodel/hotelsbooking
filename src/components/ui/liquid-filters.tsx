@@ -8,19 +8,20 @@ export function LiquidFilters() {
             <filter id="liquid-distortion">
                 <feTurbulence
                     type="fractalNoise"
-                    baseFrequency="0.01 0.01"
-                    numOctaves="3"
-                    seed="1"
+                    baseFrequency="0.008 0.006"
+                    numOctaves="2"
+                    seed="2"
                 >
                     <animate
                         attributeName="baseFrequency"
-                        dur="60s"
-                        values="0.01 0.01; 0.015 0.02; 0.01 0.01"
+                        dur="45s"
+                        values="0.008 0.006; 0.012 0.01; 0.008 0.006"
                         repeatCount="indefinite"
                     />
                 </feTurbulence>
-                <feDisplacementMap in="SourceGraphic" scale="60" />
-                <feOffset dx="15" dy="15" />
+                <feDisplacementMap in="SourceGraphic" scale="28" />
+                <feOffset dx="8" dy="8" />
+                <feGaussianBlur stdDeviation="1.2" />
             </filter>
         </svg>
     )

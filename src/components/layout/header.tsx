@@ -9,9 +9,9 @@ export async function Header() {
 
     return (
         <header className="sticky top-0 z-50 w-full p-2">
-            <LiquidGlass className="container flex h-16 items-center rounded-full border-white/20 px-8">
+            <LiquidGlass className="container grid grid-cols-[1fr_auto_1fr] h-16 items-center rounded-full border-white/20 px-6">
                 {/* Left Navigation */}
-                <nav className="flex-1 flex items-center space-x-6">
+                <nav className="col-start-1 flex items-center space-x-6">
                     <Link href="/search" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
                         Find Hotels
                     </Link>
@@ -20,15 +20,15 @@ export async function Header() {
                     </Link>
                 </nav>
 
-                {/* Centered Logo */}
-                <div className="flex-initial px-4">
+                {/* Centered Logo - kept truly centered regardless of side widths */}
+                <div className="col-start-2 justify-self-center px-4">
                     <Link href="/" className="flex items-center space-x-2 liquid-flicker">
                         <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-primary to-sky-400 bg-clip-text text-transparent">StayEase</span>
                     </Link>
                 </div>
 
                 {/* Right Navigation (Auth) */}
-                <div className="flex-1 flex items-center justify-end space-x-4">
+                <div className="col-start-3 flex items-center justify-end space-x-4">
                     {session ? (
                         <>
                             <Link href="/account" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">

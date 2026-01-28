@@ -27,7 +27,7 @@ export default async function SearchPage({
     const { data: hotels } = await query
 
     return (
-        <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-500/5 via-background to-background">
+        <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500/5 via-background to-background">
             <Header />
             <main className="flex-1 container py-12">
                 <div className="mb-12">
@@ -43,8 +43,8 @@ export default async function SearchPage({
                                 <div className="space-y-4">
                                     {[5, 4, 3, 2].map(star => (
                                         <label key={star} className="flex items-center space-x-4 cursor-pointer group">
-                                            <input type="checkbox" className="w-5 h-5 rounded glass bg-white/5 border-white/20 text-teal-600 transition-all" />
-                                            <span className="text-sm font-bold group-hover:text-teal-600 transition-colors">{star} Stars</span>
+                                            <input type="checkbox" className="w-5 h-5 rounded glass bg-white/5 border-white/20 text-primary transition-all" />
+                                            <span className="text-sm font-bold group-hover:text-primary transition-colors">{star} Stars</span>
                                         </label>
                                     ))}
                                 </div>

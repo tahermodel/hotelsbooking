@@ -22,7 +22,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
                     </div>
                 </div>
                 <div className="p-6 relative">
-                    <h3 className="text-xl font-bold tracking-tight group-hover:text-teal-600 transition-colors mb-1">{hotel.name}</h3>
+                    <h3 className="text-xl font-bold tracking-tight group-hover:text-sky-600 transition-colors mb-1">{hotel.name}</h3>
                     <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5 opacity-60" />
                         <span className="font-medium">{hotel.city}, {hotel.country}</span>
@@ -33,7 +33,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
                             <span className="text-2xl font-black bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{formatCurrency(199)}</span>
                             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">per night</span>
                         </div>
-                        <div className="h-10 w-10 rounded-full glass bg-teal-500/20 flex items-center justify-center group-hover:bg-teal-500 transition-colors">
+                        <div className="h-10 w-10 rounded-full glass bg-sky-500/20 flex items-center justify-center group-hover:bg-sky-500 transition-colors">
                             <span className="text-lg font-bold">→</span>
                         </div>
                     </div>

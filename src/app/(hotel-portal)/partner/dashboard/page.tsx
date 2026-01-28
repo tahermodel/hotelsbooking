@@ -41,10 +41,10 @@ export default async function PartnerDashboardPage() {
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                         {hotels.map((hotel: any) => (
                             <div key={hotel.id} className="p-8 rounded-2xl glass-surface border-white/20 hover:shadow-2xl transition-all group">
-                                <div className="w-12 h-12 rounded-xl glass bg-teal-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                    <Hotel className="w-6 h-6 text-teal-600" />
+                                <div className="w-12 h-12 rounded-xl glass bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <Hotel className="w-6 h-6 text-primary" />
                                 </div>
-                                <h3 className="font-black text-xl mb-2 group-hover:text-teal-600 transition-colors">{hotel.name}</h3>
+                                <h3 className="font-black text-xl mb-2 group-hover:text-primary transition-colors">{hotel.name}</h3>
                                 <p className="text-sm text-muted-foreground mb-6">{hotel.city}, {hotel.country}</p>
                                 <div className="flex gap-3 border-t border-white/10 pt-6">
                                     <Link href="/partner/dashboard/rooms" className="flex-1">

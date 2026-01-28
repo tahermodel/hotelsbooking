@@ -38,7 +38,7 @@ export default async function BookingPage({
             <Header />
             <main className="flex-1 container py-12">
                 <h1 className="text-3xl font-bold mb-8">Confirm Your Booking</h1>
-                <div className="mb-8 p-4 bg-teal-500/5 rounded-xl border border-teal-500/20 text-sm text-teal-600 flex items-center gap-2">
+                <div className="mb-8 p-4 bg-primary/5 rounded-xl border border-primary/20 text-sm text-primary flex items-center gap-2">
                     <span>We've locked this room for you. Complete your reservation in the next 10 minutes.</span>
                 </div>
                 <BookingForm hotel={hotel} roomType={roomTypeData} searchParams={{ roomType, checkIn, checkOut }} />
