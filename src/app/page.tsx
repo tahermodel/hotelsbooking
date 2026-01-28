@@ -17,10 +17,14 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen flex-col relative overflow-hidden">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-400/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-orange-300/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
+      <div className="absolute inset-0 -z-10 overflow-hidden bg-[#fafafa] dark:bg-[#0a0a0a]">
+        {/* Crisp Pattern Layer for Refraction/Blur Visibility */}
+        <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: 'radial-gradient(#a1a1aa 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+
+        {/* Color Blobs */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/30 rounded-full blur-[80px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-400/20 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-orange-300/20 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '4s' }} />
       </div>
 
       <Header />

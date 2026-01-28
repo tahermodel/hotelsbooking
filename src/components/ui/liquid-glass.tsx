@@ -31,7 +31,7 @@ export function LiquidGlass({
                 whileTap={{ scale: 0.98 }}
             >
                 {/* 1. Underlying Refraction (Outer distortion & Magnification) */}
-                <div className="absolute inset-[-10%] pointer-events-none opacity-90 liquid-refract scale-[1.12]" />
+                <div className="absolute inset-[-20%] pointer-events-none opacity-100 liquid-refract scale-[1.3]" />
 
                 {/* 2. Frosted Blur Layer (Implicit in liquid-glass class) */}
 
