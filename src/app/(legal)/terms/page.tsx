@@ -1,6 +1,8 @@
 import { Header } from "@/components/layout/header"
 
-export default function TermsPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function TermsPage() {
     return (
         <div className="flex min-h-screen flex-col">
             <Header />

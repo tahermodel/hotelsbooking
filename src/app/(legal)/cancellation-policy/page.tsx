@@ -1,6 +1,8 @@
 import { Header } from "@/components/layout/header"
 
-export default function CancellationPolicyPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function CancellationPolicyPage() {
     return (
         <div className="flex min-h-screen flex-col">
             <Header />

@@ -50,6 +50,7 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 @layer utilities {
@@ -62,7 +63,7 @@
   }
 
   .glass-surface {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(31, 38, 135, 0.37)];
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-glass;
   }
 
   .liquid-flicker {

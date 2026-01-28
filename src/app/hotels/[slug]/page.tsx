@@ -5,12 +5,15 @@ import { Star, MapPin, Wifi, Car, Coffee, Tv } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-export default async function HotelPage({ params }: { params: { slug: string } }) {
+export const dynamic = 'force-dynamic'
+
+export default async function HotelPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params
     const supabase = await createClient()
     const { data: hotel } = await supabase
         .from('hotels')
         .select('*, room_types(*)')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single()
 
     if (!hotel) return <div>Hotel not found</div>

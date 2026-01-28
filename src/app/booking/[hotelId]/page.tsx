@@ -4,30 +4,34 @@ import { BookingForm } from "@/components/booking/booking-form"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
+export const dynamic = 'force-dynamic'
+
 export default async function BookingPage({
     params,
     searchParams
 }: {
-    params: { hotelId: string },
-    searchParams: { roomType: string, checkIn?: string, checkOut?: string }
+    params: Promise<{ hotelId: string }>,
+    searchParams: Promise<{ roomType: string, checkIn?: string, checkOut?: string }>
 }) {
+    const { hotelId } = await params
+    const { roomType, checkIn, checkOut } = await searchParams
     const session = await auth()
-    if (!session) redirect(`/login?callbackUrl=/booking/${params.hotelId}?roomType=${searchParams.roomType}`)
+    if (!session) redirect(`/login?callbackUrl=/booking/${hotelId}?roomType=${roomType}`)
 
     const supabase = await createClient()
     const { data: hotel } = await supabase
         .from('hotels')
         .select('*')
-        .eq('id', params.hotelId)
+        .eq('id', hotelId)
         .single()
 
-    const { data: roomType } = await supabase
+    const { data: roomTypeData } = await supabase
         .from('room_types')
         .select('*')
-        .eq('id', searchParams.roomType)
+        .eq('id', roomType)
         .single()
 
-    if (!hotel || !roomType) return <div>Invalid booking details</div>
+    if (!hotel || !roomTypeData) return <div>Invalid booking details</div>
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -37,7 +41,7 @@ export default async function BookingPage({
                 <div className="mb-8 p-4 bg-primary/5 rounded-xl border border-primary/20 text-sm text-primary flex items-center gap-2">
                     <span>We've locked this room for you. Complete your reservation in the next 10 minutes.</span>
                 </div>
-                <BookingForm hotel={hotel} roomType={roomType} searchParams={searchParams} />
+                <BookingForm hotel={hotel} roomType={roomTypeData} searchParams={{ roomType, checkIn, checkOut }} />
             </main>
         </div>
     )

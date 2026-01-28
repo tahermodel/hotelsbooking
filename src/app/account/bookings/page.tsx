@@ -6,6 +6,8 @@ import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { cancelBooking } from "@/actions/bookings"
 
+export const dynamic = 'force-dynamic'
+
 export default async function MyBookingsPage() {
     const session = await auth()
     if (!session) redirect("/login")

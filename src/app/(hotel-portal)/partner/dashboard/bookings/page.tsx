@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { formatCurrency } from "@/lib/utils"
 
+export const dynamic = 'force-dynamic'
+
 export default async function PartnerBookingsPage() {
     const session = await auth()
     if (!session) redirect("/login")

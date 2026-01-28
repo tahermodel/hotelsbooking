@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
+export const dynamic = 'force-dynamic'
+
 export default async function PartnerRoomsPage() {
     const session = await auth()
     if (!session) redirect("/login")

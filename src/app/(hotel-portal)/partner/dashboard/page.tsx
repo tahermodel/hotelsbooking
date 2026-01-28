@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Plus, Hotel } from "lucide-react"
 import Link from "next/link"
 
+export const dynamic = 'force-dynamic'
+
 export default async function PartnerDashboardPage() {
     const session = await auth()
     if (!session?.user) redirect("/login")

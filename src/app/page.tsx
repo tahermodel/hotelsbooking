@@ -4,6 +4,8 @@ import { HotelCard } from "@/components/hotels/hotel-card"
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
   const supabase = await createClient()
   const { data: hotels } = await supabase

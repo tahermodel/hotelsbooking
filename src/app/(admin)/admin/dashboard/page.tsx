@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Users, Building2, FileText, BarChart3 } from "lucide-react"
 import Link from "next/link"
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboardPage() {
     const session = await auth()
     // In a real app, check for 'platform_admin' role

@@ -2,6 +2,8 @@ import { Header } from "@/components/layout/header"
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminApplicationsPage() {
     const supabase = await createClient()
     const { data: applications } = await supabase
@@ -24,8 +26,8 @@ export default async function AdminApplicationsPage() {
                                     <p className="text-muted-foreground">{app.hotel_address}</p>
                                 </div>
                                 <span className={`px-2 py-1 rounded-full text-xs font-bold ${app.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                        app.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                            'bg-red-100 text-red-700'
+                                    app.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                        'bg-red-100 text-red-700'
                                     }`}>
                                     {app.status.toUpperCase()}
                                 </span>

@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Building2, Rocket, ShieldCheck, TrendingUp } from "lucide-react"
 
-export default function PartnerPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function PartnerPage() {
     return (
         <div className="flex min-h-screen flex-col">
             <Header />

@@ -3,21 +3,24 @@ import { SearchFilters } from "@/components/search/search-filters"
 import { HotelCard } from "@/components/hotels/hotel-card"
 import { createClient } from "@/lib/supabase/server"
 
+export const dynamic = 'force-dynamic'
+
 export default async function SearchPage({
     searchParams
 }: {
-    searchParams: { q?: string, guests?: string, stars?: string, minPrice?: string, maxPrice?: string }
+    searchParams: Promise<{ q?: string, guests?: string, stars?: string, minPrice?: string, maxPrice?: string }>
 }) {
+    const searchParamsObj = await searchParams
     const supabase = await createClient()
 
     let query = supabase.from('hotels').select('*').eq('is_active', true)
 
-    if (searchParams.q) {
-        query = query.or(`city.ilike.%${searchParams.q}%,name.ilike.%${searchParams.q}%`)
+    if (searchParamsObj.q) {
+        query = query.or(`city.ilike.%${searchParamsObj.q}%,name.ilike.%${searchParamsObj.q}%`)
     }
 
-    if (searchParams.stars) {
-        const starList = searchParams.stars.split(',').map(Number)
+    if (searchParamsObj.stars) {
+        const starList = searchParamsObj.stars.split(',').map(Number)
         query = query.in('star_rating', starList)
     }
 
