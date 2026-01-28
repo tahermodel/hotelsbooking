@@ -23,15 +23,15 @@ export function LiquidGlass({
                     className
                 )}
                 whileHover={animate ? {
-                    scale: 1.1,
-                    y: -24,
-                    boxShadow: "0 40px 80px -15px rgba(0, 0, 0, 0.6), 0 0 40px 5px rgba(255, 255, 255, 0.1)",
-                    transition: { type: "spring", stiffness: 350, damping: 12 }
+                    scale: 1.05,
+                    y: -10,
+                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px 2px rgba(255, 255, 255, 0.05)",
+                    transition: { type: "spring", stiffness: 300, damping: 15 }
                 } : {}}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.98 }}
             >
-                {/* 1. Underlying Refraction (Outer distortion) */}
-                <div className="absolute inset-0 pointer-events-none opacity-70 liquid-refract scale-[1.05]" />
+                {/* 1. Underlying Refraction (Outer distortion & Magnification) */}
+                <div className="absolute inset-[-10%] pointer-events-none opacity-90 liquid-refract scale-[1.12]" />
 
                 {/* 2. Frosted Blur Layer (Implicit in liquid-glass class) */}
 
