@@ -154,6 +154,15 @@ CREATE TABLE public.hotel_applications (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE public.verification_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    email TEXT NOT NULL,
+    token TEXT UNIQUE NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE INDEX idx_hotels_city ON public.hotels(city);
 CREATE INDEX idx_hotels_country ON public.hotels(country);
 CREATE INDEX idx_hotels_star_rating ON public.hotels(star_rating);
