@@ -15,11 +15,9 @@ export default async function Home() {
     .limit(6)
 
   return (
-    <div className="flex min-h-screen flex-col relative overflow-hidden">
+    <div className="flex min-h-screen flex-col relative">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 -z-10 overflow-hidden bg-[#fafafa] dark:bg-[#0a0a0a]">
-        {/* Crisp Pattern Layer for Refraction/Blur Visibility */}
-        <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: 'radial-gradient(#a1a1aa 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+      <div className="absolute inset-0 -z-10 bg-[#fafafa]">
 
         {/* Color Blobs */}
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/30 rounded-full blur-[80px] animate-pulse" />
