@@ -28,8 +28,8 @@ export default async function AdminDashboardPage() {
                 <div className="grid gap-6 md:grid-cols-3 mb-12">
                     <div className="p-8 rounded-2xl glass-surface border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
                         <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 rounded-2xl glass bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <Building2 className="w-7 h-7 text-primary" />
+                            <div className="w-14 h-14 rounded-2xl glass bg-teal-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Building2 className="w-7 h-7 text-teal-600" />
                             </div>
                             <div>
                                 <p className="text-xs text-muted-foreground font-black uppercase tracking-widest mb-1">Total Hotels</p>
@@ -64,7 +64,7 @@ export default async function AdminDashboardPage() {
                 <div className="grid gap-8 md:grid-cols-2">
                     <section className="p-8 rounded-2xl glass-surface border-white/20 shadow-xl">
                         <h2 className="text-xl font-black mb-6 flex items-center gap-3">
-                            <div className="w-1.5 h-6 bg-primary rounded-full" />
+                            <div className="w-1.5 h-6 bg-teal-600 rounded-full" />
                             Quick Actions
                         </h2>
                         <div className="grid gap-3">

@@ -31,7 +31,7 @@ export function SearchFilters() {
                     <input
                         type="text"
                         placeholder="Where are you going?"
-                        className="h-16 w-full rounded-2xl border-none bg-white/5 pl-14 pr-6 text-lg placeholder:text-muted-foreground/30 focus:bg-white/10 transition-all font-medium"
+                        className="h-16 w-full rounded-2xl border-none bg-white/5 pl-14 pr-6 text-lg placeholder:text-muted-foreground/30 focus:bg-white/10 focus:ring-2 focus:ring-teal-500/50 transition-all font-medium"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -65,7 +65,7 @@ export function SearchFilters() {
                     </select>
                 </div>
 
-                <Button type="submit" size="lg" className="h-16 px-10 rounded-2xl shadow-xl liquid-flicker font-black uppercase tracking-widest bg-primary hover:bg-primary/90 text-white">
+                <Button type="submit" size="lg" className="h-16 px-10 rounded-2xl shadow-xl liquid-flicker font-black uppercase tracking-widest bg-teal-600 hover:bg-teal-700 text-white">
                     Explore
                 </Button>
             </LiquidGlass>

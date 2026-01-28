@@ -11,19 +11,19 @@ export async function Header() {
         <header className="sticky top-0 z-50 w-full p-2">
             <LiquidGlass className="container flex h-16 items-center justify-between rounded-full border-white/20 px-8">
                 <Link href="/" className="flex items-center space-x-2 liquid-flicker">
-                    <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">StayEase</span>
+                    <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">StayEase</span>
                 </Link>
 
                 <nav className="flex items-center space-x-6">
-                    <Link href="/search" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="/search" className="text-sm font-medium hover:text-teal-600 transition-colors">
                         Find Hotels
                     </Link>
-                    <Link href="/partner" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="/partner" className="text-sm font-medium hover:text-teal-600 transition-colors">
                         Partner with Us
                     </Link>
                     {session ? (
                         <div className="flex items-center space-x-4">
-                            <Link href="/account" className="text-sm font-medium hover:text-primary transition-colors">
+                            <Link href="/account" className="text-sm font-medium hover:text-teal-600 transition-colors">
                                 My Account
                             </Link>
                             <form action={handleSignOut}>

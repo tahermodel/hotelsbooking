@@ -91,7 +91,7 @@ export function BookingForm({
 
                     <div className="pt-6 border-t">
                         <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-                        <div className="p-4 border-2 border-primary rounded-lg bg-primary/5">
+                        <div className="p-4 border-2 border-teal-500 rounded-lg bg-teal-500/5">
                             <p className="font-semibold">Pay Later</p>
                             <p className="text-sm text-muted-foreground">Your card will be authorized now, but you won't be charged until you arrive at the hotel.</p>
                         </div>

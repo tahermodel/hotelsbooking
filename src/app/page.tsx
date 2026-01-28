@@ -18,9 +18,9 @@ export default async function Home() {
     <div className="flex min-h-screen flex-col relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-blue-400/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-400/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-orange-300/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }} />
       </div>
 
       <Header />
@@ -63,13 +63,13 @@ export default async function Home() {
       <footer className="border-t border-white/5 bg-black/5 backdrop-blur-sm">
         <div className="container flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
           <div className="flex items-center space-x-2">
-            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">StayEase</span>
+            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">StayEase</span>
             <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved.</span>
           </div>
           <nav className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-            <a className="hover:text-primary transition-colors" href="/terms">Terms</a>
-            <a className="hover:text-primary transition-colors" href="/privacy">Privacy</a>
-            <a className="hover:text-primary transition-colors" href="/partner">Partner</a>
+            <a className="hover:text-teal-600 transition-colors" href="/terms">Terms</a>
+            <a className="hover:text-teal-600 transition-colors" href="/privacy">Privacy</a>
+            <a className="hover:text-teal-600 transition-colors" href="/partner">Partner</a>
           </nav>
         </div>
       </footer>
