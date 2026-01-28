@@ -19,7 +19,7 @@ export function LiquidFilters() {
                         repeatCount="indefinite"
                     />
                 </feTurbulence>
-                <feDisplacementMap in="SourceGraphic" scale="18" />
+                <feDisplacementMap in="SourceGraphic" scale="25" />
             </filter>
         </svg>
     )

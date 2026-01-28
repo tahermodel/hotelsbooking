@@ -4,6 +4,7 @@ import { useState } from "react"
 import { register } from "@/actions/auth"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export function RegisterForm() {
     const router = useRouter()
@@ -67,6 +68,16 @@ export function RegisterForm() {
                     {loading ? "Creating account..." : "Sign Up"}
                 </Button>
             </form>
+
+            <p className="px-8 text-center text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Link
+                    href="/login"
+                    className="underline underline-offset-4 hover:text-primary"
+                >
+                    Sign In
+                </Link>
+            </p>
         </div>
     )
 }

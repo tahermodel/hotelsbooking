@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Chrome } from "lucide-react"
 
@@ -77,6 +78,16 @@ export function LoginForm() {
                     <Chrome className="mr-2 h-4 w-4" />
                     Google
                 </Button>
+
+                <p className="px-8 text-center text-sm text-muted-foreground">
+                    Don't have an account?{" "}
+                    <Link
+                        href="/register"
+                        className="underline underline-offset-4 hover:text-primary"
+                    >
+                        Sign Up
+                    </Link>
+                </p>
             </div>
         </div>
     )
