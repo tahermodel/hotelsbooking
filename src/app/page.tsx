@@ -64,7 +64,7 @@ export default async function Home() {
         <div className="container flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-teal-600 to-cyan-500 bg-clip-text text-transparent">StayEase</span>
-            <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved.</span>
+            <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved. This is a demonstration project not a real commercial one</span>
           </div>
           <nav className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
             <a className="hover:text-teal-600 transition-colors" href="/terms">Terms</a>

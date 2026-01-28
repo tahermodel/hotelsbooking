@@ -1,6 +1,7 @@
 import { LoginForm } from "@/components/auth/login-form"
+import { Suspense } from "react"
 
-export default function LoginPage() {
+function LoginPageContent({ searchParams }: { searchParams: { message?: string } }) {
     return (
         <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
             <div className="relative hidden h-full flex-col bg-gradient-to-br from-teal-600 to-cyan-500 p-10 text-white lg:flex dark:border-r">
@@ -18,8 +19,16 @@ export default function LoginPage() {
                 </div>
             </div>
             <div className="lg:p-8">
-                <LoginForm />
+                <LoginForm message={searchParams?.message} />
             </div>
         </div>
+    )
+}
+
+export default function LoginPage({ searchParams }: { searchParams: { message?: string } }) {
+    return (
+        <Suspense fallback={<div className="container relative h-screen flex-col items-center justify-center grid" />}>
+            <LoginPageContent searchParams={searchParams} />
+        </Suspense>
     )
 }

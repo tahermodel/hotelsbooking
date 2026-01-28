@@ -7,22 +7,33 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Chrome } from "lucide-react"
 
-export function LoginForm() {
+interface LoginFormProps {
+    message?: string
+}
+
+export function LoginForm({ message }: LoginFormProps) {
     const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
+        setError("")
+
         const result = await signIn("credentials", {
             email,
             password,
             redirect: false,
         })
+
         setLoading(false)
-        if (result?.ok) {
+
+        if (result?.error) {
+            setError(result.error || "Invalid email or password")
+        } else if (result?.ok) {
             router.push("/")
             router.refresh()
         }
@@ -36,6 +47,12 @@ export function LoginForm() {
             </div>
 
             <div className="grid gap-6">
+                {message && (
+                    <div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md text-sm">
+                        {message}
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-2">
                         <input
@@ -54,6 +71,7 @@ export function LoginForm() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
+                        {error && <p className="text-sm font-medium text-destructive">{error}</p>}
                         <Button disabled={loading}>
                             {loading ? "Signing in..." : "Sign In with Email"}
                         </Button>
