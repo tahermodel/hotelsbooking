@@ -22,8 +22,8 @@ export function LiquidGlass({
                     "liquid-glass rounded-2xl overflow-hidden transition-all duration-500",
                     className
                 )}
-                whileHover={animate ? { scale: 1.015, y: -2 } : {}}
-                whileTap={{ scale: 0.99 }}
+                whileHover={animate ? { scale: 1.04, y: -8, transition: { type: "spring", stiffness: 400, damping: 10 } } : {}}
+                whileTap={{ scale: 0.98 }}
             >
                 {/* 1. Underlying Refraction (Outer distortion) */}
                 <div className="absolute inset-0 pointer-events-none opacity-70 liquid-refract scale-[1.05]" />
