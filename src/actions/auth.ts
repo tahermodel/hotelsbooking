@@ -61,9 +61,10 @@ export async function register(formData: FormData) {
     }
 
     const supabase = await createClient()
+    const adminClient = await createAdminClient()
 
-    // Check if email already exists
-    const { data: existingProfile } = await supabase
+    // Check if email already exists (use admin to bypass RLS)
+    const { data: existingProfile } = await adminClient
         .from("profiles")
         .select("id, is_verified")
         .eq("email", email)
@@ -103,8 +104,6 @@ export async function register(formData: FormData) {
     const userId = authData.user.id
 
     try {
-        const adminClient = await createAdminClient()
-
         // 2. Create profile record (using admin client to bypass RLS)
         const { error: profileError } = await adminClient
             .from("profiles")
