@@ -27,34 +27,34 @@ export default async function Home() {
 
       <Header />
       <main className="flex-1">
-        <section className="relative py-20 overflow-hidden">
+        <section className="relative py-12 md:py-20 overflow-hidden">
           <div className="container relative px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-10 text-center">
-              <div className="space-y-4">
-                <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl lg:text-8xl bg-gradient-to-b from-foreground to-foreground/50 bg-clip-text text-transparent">
+            <div className="flex flex-col items-center space-y-6 md:space-y-10 text-center">
+              <div className="space-y-3 md:space-y-4">
+                <h1 className="text-3xl font-black tracking-tight sm:text-4xl md:text-5xl lg:text-7xl bg-gradient-to-b from-foreground to-foreground/50 bg-clip-text text-transparent">
                   Your Next Escape,<br />Perfectly Refracted.
                 </h1>
-                <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl font-medium">
+                <p className="mx-auto max-w-[600px] text-sm md:text-base text-muted-foreground md:text-xl font-medium">
                   Experience boutique luxury with our seamless pay-later booking system.
                 </p>
               </div>
 
-              <div className="w-full max-w-5xl">
+              <div className="w-full max-w-5xl px-2 md:px-0">
                 <SearchFilters />
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-20 container px-4 md:px-6">
-          <div className="flex items-end justify-between mb-12">
+        <section className="py-12 md:py-20 container px-4 md:px-6">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-0 mb-8 md:mb-12">
             <div>
-              <h2 className="text-3xl font-black tracking-tight">Featured Destinations</h2>
-              <p className="text-muted-foreground">Handpicked properties for your next adventure.</p>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight">Featured Destinations</h2>
+              <p className="text-xs md:text-sm text-muted-foreground">Handpicked properties for your next adventure.</p>
             </div>
             <Button variant="ghost" className="hidden md:flex glass px-6 rounded-full hover:bg-white/20 liquid-flicker">View All</Button>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {featuredHotels?.map((hotel) => (
               <HotelCard key={hotel.id} hotel={hotel} />
             ))}
@@ -62,10 +62,10 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-white/5 bg-black/5 backdrop-blur-sm">
+      <footer className="border-t border-primary/10 bg-white backdrop-blur-sm">
         <div className="container flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
           <div className="flex items-center space-x-2">
-            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent">StayEase</span>
+            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-primary to-sky-500 bg-clip-text text-transparent">StayEase</span>
             <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved. This is a demonstration project not a real commercial one</span>
           </div>
           <nav className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">

@@ -13,6 +13,11 @@ function generateVerificationToken(): string {
     return crypto.randomBytes(32).toString("hex")
 }
 
+function generateVerificationCode(): string {
+    // Generate a 6-digit code
+    return Math.floor(100000 + Math.random() * 900000).toString()
+}
+
 // Simple in-memory rate limiting (for production, use Redis)
 const emailSendAttempts = new Map<string, number[]>()
 
@@ -100,47 +105,45 @@ export async function register(formData: FormData) {
         return { error: "Failed to create user profile. Please try again." }
     }
 
-    // Generate verification token
-    const token = generateVerificationToken()
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+    // Generate verification code (6 digits)
+    const code = generateVerificationCode()
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
 
-    // Store verification token
+    // Store verification code
     const { error: tokenError } = await supabase
         .from("verification_tokens")
         .insert({
             user_id: authData.user.id,
             email,
-            token,
+            token: code,
             expires_at: expiresAt.toISOString(),
         })
 
     if (tokenError) {
-        console.error("Failed to store verification token:", tokenError)
-        return { error: "Failed to create verification token. Please try again." }
+        console.error("Failed to store verification code:", tokenError)
+        return { error: "Failed to create verification code. Please try again." }
     }
 
-    // Send verification email via Nodemailer with retry logic
-    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`
-
+    // Send verification email via Nodemailer with code
     try {
         const emailResult = await sendEmail({
             to: email,
-            subject: "Verify your StayEase account",
-            text: `Welcome to StayEase! Please verify your email by clicking the link below:\n\n${verificationLink}\n\nThis link will expire in 24 hours.`,
+            subject: "Your StayEase verification code",
+            text: `Welcome to StayEase! Your verification code is: ${code}\n\nThis code will expire in 10 minutes.`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                     <h2 style="color: #0d9488;">Welcome to StayEase!</h2>
                     <p>Hi ${fullName},</p>
-                    <p>Thank you for signing up. Please verify your email address to complete your account setup.</p>
-                    <p style="margin: 30px 0;">
-                        <a href="${verificationLink}" style="background-color: #0d9488; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                            Verify Email
-                        </a>
+                    <p>Thank you for signing up. Please verify your email address using the code below.</p>
+                    <div style="margin: 30px 0; padding: 20px; background-color: #f0f0f0; border-radius: 5px; text-align: center;">
+                        <p style="font-size: 12px; margin: 0; color: #666;">Your verification code</p>
+                        <p style="font-size: 36px; font-weight: bold; margin: 10px 0; letter-spacing: 2px; color: #0d9488;">${code}</p>
+                    </div>
+                    <p style="color: #666; font-size: 14px; margin: 20px 0;">
+                        This code will expire in 10 minutes.
                     </p>
-                    <p>Or copy and paste this link in your browser:</p>
-                    <p style="word-break: break-all; color: #666; font-size: 12px;">${verificationLink}</p>
                     <p style="margin-top: 30px; color: #999; font-size: 12px;">
-                        This link will expire in 24 hours. If you didn't sign up for this account, you can ignore this email.
+                        If you didn't sign up for this account, you can ignore this email.
                     </p>
                 </div>
             `,
@@ -175,7 +178,7 @@ export async function resendVerificationEmail(email: string) {
 
     const supabase = await createClient()
 
-    // Find user and unexpired token
+    // Find user and unexpired code
     const { data: tokens } = await supabase
         .from("verification_tokens")
         .select("*")
@@ -183,11 +186,11 @@ export async function resendVerificationEmail(email: string) {
         .gt("expires_at", new Date().toISOString())
 
     if (!tokens || tokens.length === 0) {
-        return { error: "No valid verification token found. Please register again." }
+        return { error: "No valid verification code found. Please register again." }
     }
 
     const tokenData = tokens[0]
-    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${tokenData.token}`
+    const code = tokenData.token
 
     // Get user info for email
     const { data: profile } = await supabase
@@ -201,22 +204,19 @@ export async function resendVerificationEmail(email: string) {
     try {
         const emailResult = await sendEmail({
             to: email,
-            subject: "Verify your StayEase account",
-            text: `Hi ${fullName},\n\nPlease verify your email by clicking the link below:\n\n${verificationLink}\n\nThis link will expire in 24 hours.`,
+            subject: "Your StayEase verification code",
+            text: `Hi ${fullName},\n\nYour verification code is: ${code}\n\nThis code will expire in 10 minutes.`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                     <h2 style="color: #0d9488;">Verify your email</h2>
                     <p>Hi ${fullName},</p>
-                    <p>Please verify your email address to complete your account setup.</p>
-                    <p style="margin: 30px 0;">
-                        <a href="${verificationLink}" style="background-color: #0d9488; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                            Verify Email
-                        </a>
-                    </p>
-                    <p>Or copy and paste this link in your browser:</p>
-                    <p style="word-break: break-all; color: #666; font-size: 12px;">${verificationLink}</p>
-                    <p style="margin-top: 30px; color: #999; font-size: 12px;">
-                        This link will expire in 24 hours.
+                    <p>Please verify your email address using the code below.</p>
+                    <div style="margin: 30px 0; padding: 20px; background-color: #f0f0f0; border-radius: 5px; text-align: center;">
+                        <p style="font-size: 12px; margin: 0; color: #666;">Your verification code</p>
+                        <p style="font-size: 36px; font-weight: bold; margin: 10px 0; letter-spacing: 2px; color: #0d9488;">${code}</p>
+                    </div>
+                    <p style="color: #666; font-size: 14px; margin: 20px 0;">
+                        This code will expire in 10 minutes.
                     </p>
                 </div>
             `,
@@ -233,5 +233,44 @@ export async function resendVerificationEmail(email: string) {
     }
 }
 
+export async function verifyCode(email: string, code: string) {
+    const supabase = await createClient()
 
+    // Find and validate the verification code
+    const { data: tokens, error: queryError } = await supabase
+        .from("verification_tokens")
+        .select("*")
+        .eq("email", email)
+        .eq("token", code)
+        .gt("expires_at", new Date().toISOString())
+        .single()
+
+    if (queryError || !tokens) {
+        return { error: "Invalid or expired verification code" }
+    }
+
+    // Mark user as verified
+    const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ is_verified: true })
+        .eq("id", tokens.user_id)
+
+    if (updateError) {
+        console.error("Failed to mark user as verified:", updateError)
+        return { error: "Failed to verify email. Please try again." }
+    }
+
+    // Delete the used verification code
+    const { error: deleteError } = await supabase
+        .from("verification_tokens")
+        .delete()
+        .eq("id", tokens.id)
+
+    if (deleteError) {
+        console.error("Failed to delete verification code:", deleteError)
+        // Continue anyway - the code is expired after use
+    }
+
+    return { success: true }
+}
 

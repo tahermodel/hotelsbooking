@@ -5,7 +5,7 @@ async function LoginPageContent({ searchParams }: { searchParams: Promise<{ mess
     const params = await searchParams
     return (
         <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-gradient-to-br from-primary to-primary/70 p-10 text-white lg:flex dark:border-r">
+            <div className="relative hidden h-full flex-col bg-gradient-to-br from-primary to-primary/70 p-10 text-white lg:flex">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/70" />
                 <div className="relative z-20 flex items-center text-lg font-medium">
                     <span className="text-2xl font-bold">StayEase</span>
