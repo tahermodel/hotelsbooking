@@ -62,6 +62,22 @@ export async function register(formData: FormData) {
 
     const supabase = await createClient()
 
+    // Check if email already exists
+    const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id, is_verified")
+        .eq("email", email)
+        .single()
+
+    if (existingProfile) {
+        if (!existingProfile.is_verified) {
+            return {
+                error: "This email is already registered but not verified. Please check your inbox or sign in to resend the code."
+            }
+        }
+        return { error: "This email is already registered. Please sign in instead." }
+    }
+
     // 1. Sign up user in Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
