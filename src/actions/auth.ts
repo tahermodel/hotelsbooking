@@ -178,28 +178,47 @@ export async function resendVerificationEmail(email: string) {
 
     const supabase = await createClient()
 
-    // Find user and unexpired code
-    const { data: tokens } = await supabase
-        .from("verification_tokens")
-        .select("*")
-        .eq("email", email)
-        .gt("expires_at", new Date().toISOString())
-
-    if (!tokens || tokens.length === 0) {
-        return { error: "No valid verification code found. Please register again." }
-    }
-
-    const tokenData = tokens[0]
-    const code = tokenData.token
-
-    // Get user info for email
+    // 1. Check if user exists and is not verified
     const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name")
-        .eq("id", tokenData.user_id)
+        .select("id, full_name, is_verified")
+        .eq("email", email)
         .single()
 
-    const fullName = profile?.full_name || "User"
+    if (!profile) {
+        return { error: "Account not found. Please register." }
+    }
+
+    if (profile.is_verified) {
+        return { error: "Email is already verified. Please sign in." }
+    }
+
+    // 2. Generate new verification code
+    const code = generateVerificationCode()
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+
+    // 3. Cleanup any existing/expired tokens for this user
+    await supabase
+        .from("verification_tokens")
+        .delete()
+        .eq("user_id", profile.id)
+
+    // 4. Store new verification code
+    const { error: tokenError } = await supabase
+        .from("verification_tokens")
+        .insert({
+            user_id: profile.id,
+            email,
+            token: code,
+            expires_at: expiresAt.toISOString(),
+        })
+
+    if (tokenError) {
+        console.error("Failed to store verification code:", tokenError)
+        return { error: "Failed to generate verification code. Please try again." }
+    }
+
+    const fullName = profile.full_name || "User"
 
     try {
         const emailResult = await sendEmail({
