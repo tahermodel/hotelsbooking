@@ -10,7 +10,7 @@ export async function Header() {
     return (
         <header className="sticky top-0 z-50 w-full p-2">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <LiquidGlass className="grid grid-cols-[1fr_auto_1fr] h-16 items-center rounded-full border-white/20 px-6">
+                <LiquidGlass animate={false} className="grid grid-cols-[1fr_auto_1fr] h-16 items-center rounded-full border-white/20 px-6">
                     {/* Left Navigation */}
                     <nav className="col-start-1 flex items-center space-x-4 md:space-x-6">
                         <Link href="/search" className="text-xs md:text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
@@ -21,7 +21,7 @@ export async function Header() {
                         </Link>
                     </nav>
 
-                    {/* Centered Logo - kept truly centered regardless of side widths */}
+                    {/* Centered Logo */}
                     <div className="col-start-2 justify-self-center px-4">
                         <Link href="/" className="flex items-center space-x-2 liquid-flicker">
                             <span className="text-xl md:text-2xl font-black tracking-tight text-primary">StayEase</span>
@@ -41,8 +41,8 @@ export async function Header() {
                             </>
                         ) : (
                             <Link href="/login">
-                                <Button size="sm" className="liquid-flicker shadow-lg rounded-full px-6 md:px-8 bg-primary hover:bg-primary/90 text-white font-bold border-none text-xs md:text-sm">
-                                    Sign In
+                                <Button size="sm" className="liquid-flicker shadow-xl rounded-full px-5 md:px-7 bg-primary hover:bg-primary/90 text-white font-extrabold border-none text-[10px] md:text-xs">
+                                    SIGN IN
                                 </Button>
                             </Link>
                         )}

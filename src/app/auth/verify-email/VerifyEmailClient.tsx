@@ -125,31 +125,46 @@ export default function VerifyEmailClient() {
                     </p>
                 </div>
 
-                <form onSubmit={handleVerify} className="space-y-6">
-                    <div className="space-y-2">
-                        <div className="relative">
-                            <input
-                                id="code"
-                                type="text"
-                                inputMode="numeric"
-                                maxLength={6}
-                                value={code}
-                                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                placeholder="000000"
-                                className="flex h-16 w-full rounded-xl border-2 border-white/40 bg-white/40 px-3 py-2 text-center text-4xl font-bold tracking-[1rem] shadow-sm transition-all text-[var(--foreground)] placeholder:text-gray-300/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:border-transparent"
-                            />
-                        </div>
+                <form onSubmit={handleVerify} className="space-y-8">
+                    <div className="flex justify-between gap-2 md:gap-3">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="relative w-full aspect-square max-w-[56px]">
+                                <input
+                                    id={`code-${i}`}
+                                    type="text"
+                                    inputMode="numeric"
+                                    maxLength={1}
+                                    value={code[i] || ""}
+                                    onChange={(e) => {
+                                        const val = e.target.value.replace(/\D/g, "");
+                                        if (val) {
+                                            const newCode = code.split("");
+                                            newCode[i] = val;
+                                            const finalCode = newCode.join("").slice(0, 6);
+                                            setCode(finalCode);
+                                            if (i < 5) document.getElementById(`code-${i + 1}`)?.focus();
+                                        }
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Backspace" && !code[i] && i > 0) {
+                                            document.getElementById(`code-${i - 1}`)?.focus();
+                                        }
+                                    }}
+                                    className="w-full h-full rounded-xl border-2 border-white/10 bg-white/5 backdrop-blur-md text-center text-2xl font-bold text-[var(--foreground)] shadow-inner transition-all focus:border-[var(--primary)] focus:bg-white/10 focus:outline-none"
+                                />
+                            </div>
+                        ))}
                     </div>
 
                     <div className="min-h-[20px]">
                         {error && (
-                            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
-                                <p className="text-sm font-medium text-red-600 font-mono center">{error}</p>
+                            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
+                                <p className="text-sm font-bold text-red-600 tracking-tight">{error}</p>
                             </div>
                         )}
                         {resendMessage && (
-                            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-center animate-in fade-in slide-in-from-top-2">
-                                <p className="text-sm font-medium text-green-600 font-mono center">{resendMessage}</p>
+                            <div className="p-3 rounded-xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-center animate-in fade-in slide-in-from-top-2">
+                                <p className="text-sm font-bold text-[var(--primary)] tracking-tight">{resendMessage}</p>
                             </div>
                         )}
                     </div>

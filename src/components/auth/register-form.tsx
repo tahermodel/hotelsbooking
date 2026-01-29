@@ -66,9 +66,9 @@ export function RegisterForm() {
                     />
                 </div>
                 {error && (
-                    <p className="text-sm font-medium text-destructive text-center font-mono py-2">
-                        {error}
-                    </p>
+                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
+                        <p className="text-sm font-bold text-red-600 tracking-tight">{error}</p>
+                    </div>
                 )}
                 <Button disabled={loading}>
                     {loading ? "Creating account..." : "Sign Up"}
