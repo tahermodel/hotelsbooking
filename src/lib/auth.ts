@@ -11,6 +11,10 @@ class InvalidPassword extends CredentialsSignin {
     code = "invalid_password"
 }
 
+class EmailNotVerified extends CredentialsSignin {
+    code = "email_not_verified"
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers: [
         Google({
@@ -24,50 +28,71 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null
+                console.log("[AUTH] Authorize started for:", credentials?.email)
+                if (!credentials?.email || !credentials?.password) {
+                    console.log("[AUTH] Missing credentials")
+                    return null
+                }
 
+                const normalizedEmail = (credentials.email as string).toLowerCase().trim()
                 const supabase = await createClient()
 
-                const { data: profile } = await supabase
+                const { data: profile, error: profileError } = await supabase
                     .from("profiles")
                     .select("id, is_verified, full_name")
-                    .eq("email", credentials.email)
+                    .ilike("email", normalizedEmail)
                     .single()
 
-                if (!profile) {
+                if (profileError || !profile) {
+                    console.log("[AUTH] Profile not found or error:", profileError)
                     throw new UserNotFound()
                 }
 
+                console.log("[AUTH] Profile found:", { id: profile.id, is_verified: profile.is_verified })
+
                 let { data: { user }, error } = await supabase.auth.signInWithPassword({
-                    email: credentials.email as string,
+                    email: normalizedEmail,
                     password: credentials.password as string,
                 })
 
-                if (error && error.message.toLowerCase().includes("email not confirmed")) {
-                    if (profile.is_verified) {
-                        // User is verified in our DB but not in Supabase Auth
-                        // This can happen if the verification process didn't sync with Supabase Auth
-                        const { createAdminClient } = await import("@/lib/supabase/admin")
-                        const adminClient = await createAdminClient()
-                        await adminClient.auth.admin.updateUserById(profile.id, { email_confirm: true })
+                if (error) {
+                    console.log("[AUTH] Initial signIn failed:", error.message)
+                    if (error.message.toLowerCase().includes("email not confirmed")) {
+                        if (profile.is_verified) {
+                            console.log("[AUTH] Profile is verified but Auth is not. Force confirming...")
+                            try {
+                                const { createAdminClient } = await import("@/lib/supabase/admin")
+                                const adminClient = await createAdminClient()
+                                const { error: confirmError } = await adminClient.auth.admin.updateUserById(profile.id, { email_confirm: true })
 
-                        // Retry sign in
-                        const retry = await supabase.auth.signInWithPassword({
-                            email: credentials.email as string,
-                            password: credentials.password as string,
-                        })
-                        user = retry.data.user
-                        error = retry.error
-                    } else {
-                        throw new CredentialsSignin("Please verify your email address before signing in.")
+                                if (confirmError) {
+                                    console.error("[AUTH] Force confirm failed:", confirmError)
+                                } else {
+                                    console.log("[AUTH] Force confirm success. Retrying signIn...")
+                                    const retry = await supabase.auth.signInWithPassword({
+                                        email: normalizedEmail,
+                                        password: credentials.password as string,
+                                    })
+                                    user = retry.data.user
+                                    error = retry.error
+                                    if (error) console.log("[AUTH] Retry signIn failed:", error.message)
+                                }
+                            } catch (confirmEx) {
+                                console.error("[AUTH] Exception during force confirm:", confirmEx)
+                            }
+                        } else {
+                            console.log("[AUTH] Email not confirmed and profile not verified.")
+                            throw new EmailNotVerified()
+                        }
                     }
                 }
 
                 if (error || !user) {
-                    if (error) console.error("Login failed for", credentials.email, ":", error.message)
+                    console.error("[AUTH] Final login failure for", credentials.email, ":", error?.message || "No user returned")
                     throw new InvalidPassword()
                 }
 
+                console.log("[AUTH] Login successful for:", user.email)
                 return {
                     id: user.id,
                     email: user.email,

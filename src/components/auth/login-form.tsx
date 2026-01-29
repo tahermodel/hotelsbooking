@@ -36,6 +36,8 @@ export function LoginForm({ message }: LoginFormProps) {
                 setError("email not found")
             } else if (result.error === "invalid_password") {
                 setError("invalid password")
+            } else if (result.error === "email_not_verified") {
+                setError("Email not verified. Please check your inbox.")
             } else {
                 setError("Invalid email or password")
             }

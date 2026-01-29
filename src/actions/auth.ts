@@ -44,7 +44,7 @@ function checkEmailRateLimit(email: string): boolean {
 }
 
 export async function register(formData: FormData) {
-    const email = formData.get("email") as string
+    const email = (formData.get("email") as string).toLowerCase().trim()
     const password = formData.get("password") as string
     const fullName = formData.get("fullName") as string
 
@@ -213,7 +213,7 @@ export async function resendVerificationEmail(email: string) {
     const { data: profile } = await supabase
         .from("profiles")
         .select("id, full_name, is_verified")
-        .eq("email", email)
+        .eq("email", email.toLowerCase())
         .single()
 
     if (!profile) {
@@ -299,7 +299,7 @@ export async function verifyCode(email: string, code: string) {
     const { data: tokens, error: queryError } = await supabase
         .from("verification_tokens")
         .select("*")
-        .eq("email", email)
+        .eq("email", email.toLowerCase())
         .eq("token", code)
         .gt("expires_at", new Date().toISOString())
         .single()
