@@ -87,8 +87,10 @@ export async function register(formData: FormData) {
     const userId = authData.user.id
 
     try {
-        // 2. Create profile record
-        const { error: profileError } = await supabase
+        const adminClient = await createAdminClient()
+
+        // 2. Create profile record (using admin client to bypass RLS)
+        const { error: profileError } = await adminClient
             .from("profiles")
             .insert({
                 id: userId,
@@ -107,7 +109,7 @@ export async function register(formData: FormData) {
         const code = generateVerificationCode()
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
-        const { error: tokenError } = await supabase
+        const { error: tokenError } = await adminClient
             .from("verification_tokens")
             .insert({
                 user_id: userId,
