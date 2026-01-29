@@ -2,6 +2,7 @@
 
 import { signOut as nextAuthSignOut } from "@/lib/auth"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { sendEmail } from "@/lib/mail"
 import crypto from "crypto"
 
@@ -61,6 +62,7 @@ export async function register(formData: FormData) {
 
     const supabase = await createClient()
 
+    // 1. Sign up user in Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -73,104 +75,113 @@ export async function register(formData: FormData) {
 
     if (authError) {
         if (authError.message.toLowerCase().includes("rate limit")) {
-            return { error: "Email provider rate limit exceeded. This is a security feature from Supabase. Please try again in an hour or disable 'Confirm email' in Supabase dashboard." }
+            return { error: "Security limit reached. Please try again in an hour." }
         }
         return { error: authError.message }
     }
 
     if (!authData.user?.id) {
-        return { error: "Failed to create user account" }
+        return { error: "Failed to initialize user account" }
     }
 
-    // Create profile record
-    const { error: profileError } = await supabase
-        .from("profiles")
-        .insert({
-            id: authData.user.id,
-            email,
-            full_name: fullName,
-            role: "customer",
-            is_verified: false,
-        })
+    const userId = authData.user.id
 
-    if (profileError) {
-        // Clean up: delete the auth user if profile creation fails
-        try {
-            await supabase.auth.admin.deleteUser(authData.user.id)
-        } catch (err) {
-            console.error("Failed to clean up user:", err)
-        }
-        return { error: "Failed to create user profile. Please try again." }
-    }
-
-    // Generate verification code (6 digits)
-    const code = generateVerificationCode()
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
-
-    // Store verification code
-    const { error: tokenError } = await supabase
-        .from("verification_tokens")
-        .insert({
-            user_id: authData.user.id,
-            email,
-            token: code,
-            expires_at: expiresAt.toISOString(),
-        })
-
-    if (tokenError) {
-        console.error("Failed to store verification code:", tokenError)
-        return { error: "Failed to create verification code. Please try again." }
-    }
-
-    // Send verification email via Nodemailer with code
     try {
-        const emailResult = await sendEmail({
-            to: email,
-            subject: "Verify your StayEase Account",
-            text: `Welcome to StayEase! Your verification code is: ${code}`,
-            html: `
-                <div style="background-color: #fdfaf5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
-                    <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #f1e5d1;">
-                        <div style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 40px 20px; text-align: center;">
-                            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">StayEase</h1>
-                        </div>
-                        <div style="padding: 40px; text-align: center;">
-                            <h2 style="color: #0d9488; margin-bottom: 8px; font-size: 24px; font-weight: 700;">Verify your email</h2>
-                            <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">Hi ${fullName}, welcome to StayEase. Use the code below to complete your registration.</p>
-                            
-                            <div style="background: #fdfaf5; border: 2px dashed #f1e5d1; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
-                                <div style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Your Verification Code</div>
-                                <div style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px; font-family: 'Courier New', Courier, monospace;">${code}</div>
+        // 2. Create profile record
+        const { error: profileError } = await supabase
+            .from("profiles")
+            .insert({
+                id: userId,
+                email,
+                full_name: fullName,
+                role: "customer",
+                is_verified: false,
+            })
+
+        if (profileError) {
+            console.error("Profile creation error:", profileError)
+            throw new Error("Could not create user profile.")
+        }
+
+        // 3. Generate and store verification code
+        const code = generateVerificationCode()
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
+
+        const { error: tokenError } = await supabase
+            .from("verification_tokens")
+            .insert({
+                user_id: userId,
+                email,
+                token: code,
+                expires_at: expiresAt.toISOString(),
+            })
+
+        if (tokenError) {
+            console.error("Token creation error:", tokenError)
+            throw new Error("Could not generate verification code.")
+        }
+
+        // 4. Send verification email
+        try {
+            const emailResult = await sendEmail({
+                to: email,
+                subject: "Verify your StayEase Account",
+                text: `Welcome to StayEase! Your verification code is: ${code}`,
+                html: `
+                    <div style="background-color: #fdfaf5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
+                        <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #f1e5d1;">
+                            <div style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 40px 20px; text-align: center;">
+                                <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">StayEase</h1>
                             </div>
-                            
-                            <p style="color: #94a3b8; font-size: 13px;">This code will expire in <span style="color: #0d9488; font-weight: 600;">10 minutes</span>. If you didn't request this, you can safely ignore this email.</p>
-                        </div>
-                        <div style="background-color: #fefce8; padding: 20px; text-align: center; border-top: 1px solid #fef3c7;">
-                            <p style="color: #b45309; font-size: 12px; margin: 0;">&copy; 2026 StayEase Luxury Hotels. All rights reserved.</p>
+                            <div style="padding: 40px; text-align: center;">
+                                <h2 style="color: #0d9488; margin-bottom: 8px; font-size: 24px; font-weight: 700;">Verify your email</h2>
+                                <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">Hi ${fullName}, welcome to StayEase. Use the code below to complete your registration.</p>
+                                
+                                <div style="background: #fdfaf5; border: 2px dashed #f1e5d1; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
+                                    <div style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Your Verification Code</div>
+                                    <div style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px; font-family: 'Courier New', Courier, monospace;">${code}</div>
+                                </div>
+                                
+                                <p style="color: #94a3b8; font-size: 13px;">This code will expire in <span style="color: #0d9488; font-weight: 600;">10 minutes</span>. If you didn't request this, you can safely ignore this email.</p>
+                            </div>
+                            <div style="background-color: #fefce8; padding: 20px; text-align: center; border-top: 1px solid #fef3c7;">
+                                <p style="color: #b45309; font-size: 12px; margin: 0;">&copy; 2026 StayEase Luxury Hotels. All rights reserved.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `,
-        })
+                `,
+            })
 
-        if (!emailResult.success) {
-            console.error("Failed to send verification email:", emailResult.error)
+            if (!emailResult.success) {
+                return {
+                    success: true,
+                    emailError: true,
+                    warning: "Account created but we had trouble sending the email. You can resend it from the verification page."
+                }
+            }
+        } catch (emailErr) {
+            console.error("Email sending exception:", emailErr)
             return {
                 success: true,
                 emailError: true,
-                warning: "Account created but verification email could not be sent. You can request a new verification email after logging in."
+                warning: "Account created but email sending failed. Please try resending the code."
             }
         }
-    } catch (emailError) {
-        console.error("Email sending exception:", emailError)
-        return {
-            success: true,
-            emailError: true,
-            warning: "Account created but we encountered an issue sending the verification email. Please try again later."
-        }
-    }
 
-    return { success: true }
+        return { success: true }
+
+    } catch (operationError: any) {
+        console.error("Registration failed:", operationError.message)
+        // Cleanup: delete the auth user since profile or token creation failed
+        try {
+            const adminClient = await createAdminClient()
+            await adminClient.auth.admin.deleteUser(userId)
+            console.log("Cleanup: Successfully deleted zombie user", email)
+        } catch (cleanupErr) {
+            console.error("Cleanup failed. User might be stuck in Auth system:", cleanupErr)
+        }
+        return { error: operationError.message || "Failed to complete registration. Please try again." }
+    }
 }
 
 export async function resendVerificationEmail(email: string) {

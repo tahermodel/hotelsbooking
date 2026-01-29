@@ -28,7 +28,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 const supabase = await createClient()
 
-                // 1. Check if user exists in profiles table
                 const { data: profile } = await supabase
                     .from("profiles")
                     .select("id")
@@ -39,13 +38,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     throw new UserNotFound()
                 }
 
-                // 2. Try to sign in
                 const { data: { user }, error } = await supabase.auth.signInWithPassword({
                     email: credentials.email as string,
                     password: credentials.password as string,
                 })
 
                 if (error || !user) {
+                    if (error) console.warn("Login failed for", credentials.email, ":", error.message)
                     throw new InvalidPassword()
                 }
 
@@ -59,18 +58,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async signIn({ user, account, profile }) {
-            // Create or update profile on sign in (especially for Google OAuth)
             if (user.email && user.id) {
                 const supabase = await createClient()
 
-                // Check if profile already exists
                 const { data: existingProfile } = await supabase
                     .from("profiles")
                     .select("id")
                     .eq("id", user.id)
                     .single()
 
-                // If profile doesn't exist, create one
                 if (!existingProfile) {
                     const { error } = await supabase
                         .from("profiles")
@@ -79,7 +75,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             email: user.email,
                             full_name: user.name || profile?.name || "",
                             role: "customer",
-                            is_verified: account?.provider === "google", // Google users are verified
+                            is_verified: account?.provider === "google",
                         })
 
                     if (error) {

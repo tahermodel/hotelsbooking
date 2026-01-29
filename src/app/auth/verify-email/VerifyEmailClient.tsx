@@ -125,10 +125,10 @@ export default function VerifyEmailClient() {
                     </p>
                 </div>
 
-                <form onSubmit={handleVerify} className="space-y-8">
-                    <div className="flex justify-between gap-2 md:gap-3">
+                <form onSubmit={handleVerify} className="space-y-10">
+                    <div className="flex justify-center gap-2 sm:gap-4 md:gap-5">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="relative w-full aspect-square max-w-[56px]">
+                            <div key={i} className="relative w-12 h-16 sm:w-14 sm:h-20 lg:w-16 lg:h-24">
                                 <input
                                     id={`code-${i}`}
                                     type="text"
@@ -150,7 +150,7 @@ export default function VerifyEmailClient() {
                                             document.getElementById(`code-${i - 1}`)?.focus();
                                         }
                                     }}
-                                    className="w-full h-full rounded-xl border-2 border-white/10 bg-white/5 backdrop-blur-md text-center text-2xl font-bold text-[var(--foreground)] shadow-inner transition-all focus:border-[var(--primary)] focus:bg-white/10 focus:outline-none"
+                                    className="w-full h-full rounded-2xl border-2 border-white/20 bg-white/10 backdrop-blur-xl text-center text-3xl md:text-4xl font-black text-[var(--foreground)] shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-all focus:border-[var(--primary)] focus:bg-white/20 focus:scale-105 focus:outline-none ring-offset-background"
                                 />
                             </div>
                         ))}
@@ -158,12 +158,12 @@ export default function VerifyEmailClient() {
 
                     <div className="min-h-[20px]">
                         {error && (
-                            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
+                            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-4">
                                 <p className="text-sm font-bold text-red-600 tracking-tight">{error}</p>
                             </div>
                         )}
                         {resendMessage && (
-                            <div className="p-3 rounded-xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-center animate-in fade-in slide-in-from-top-2">
+                            <div className="p-4 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-center animate-in fade-in slide-in-from-top-4">
                                 <p className="text-sm font-bold text-[var(--primary)] tracking-tight">{resendMessage}</p>
                             </div>
                         )}

@@ -29,7 +29,7 @@ export async function Header() {
                     </div>
 
                     {/* Right Navigation (Auth) */}
-                    <div className="col-start-3 flex items-center justify-end space-x-3 md:space-x-4">
+                    <div className="col-start-3 flex items-center justify-end space-x-2 md:space-x-4">
                         {session ? (
                             <>
                                 <Link href="/account" className="text-xs md:text-sm font-bold text-muted-foreground hover:text-primary transition-colors hidden sm:block">
@@ -40,9 +40,9 @@ export async function Header() {
                                 </form>
                             </>
                         ) : (
-                            <Link href="/login">
-                                <Button size="sm" className="liquid-flicker shadow-xl rounded-full px-5 md:px-7 bg-primary hover:bg-primary/90 text-white font-extrabold border-none text-[10px] md:text-xs">
-                                    SIGN IN
+                            <Link href="/login" className="flex items-center">
+                                <Button size="sm" className="liquid-flicker shadow-2xl rounded-full px-4 py-1.5 md:px-6 md:py-2 bg-primary hover:bg-primary/90 text-white font-black border-none text-[10px] md:text-[11px] tracking-widest uppercase transition-all hover:scale-105 active:scale-95 leading-none min-w-[80px] md:min-w-[100px]">
+                                    Sign In
                                 </Button>
                             </Link>
                         )}
