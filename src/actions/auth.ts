@@ -240,6 +240,8 @@ export async function resendVerificationEmail(email: string) {
 }
 
 export async function verifyCode(email: string, code: string) {
+    const normalizedEmail = email.toLowerCase().trim()
+
     try {
         // Find verification token
         // Use findFirst because composite key in where might be tricky if we don't have both parts exactly as expected by Prisma Client unique constraints (but we do).
@@ -247,7 +249,7 @@ export async function verifyCode(email: string, code: string) {
 
         const tokenRecord = await prisma.verificationToken.findFirst({
             where: {
-                identifier: email,
+                identifier: normalizedEmail,
                 token: code,
                 expires: {
                     gt: new Date()
@@ -261,7 +263,7 @@ export async function verifyCode(email: string, code: string) {
 
         // Mark user as verified
         const user = await prisma.user.update({
-            where: { email },
+            where: { email: normalizedEmail },
             data: {
                 is_verified: true,
                 emailVerified: new Date(),
@@ -270,7 +272,7 @@ export async function verifyCode(email: string, code: string) {
 
         // Delete the used token(s)
         await prisma.verificationToken.deleteMany({
-            where: { identifier: email }
+            where: { identifier: normalizedEmail }
         })
 
         return { success: true }
