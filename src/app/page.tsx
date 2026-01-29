@@ -1,18 +1,18 @@
 import { Header } from "@/components/layout/header"
 import { SearchFilters } from "@/components/search/search-filters"
 import { HotelCard } from "@/components/hotels/hotel-card"
-import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const supabase = await createClient()
-  const { data: featuredHotels } = await supabase
-    .from('hotels')
-    .select('*')
-    .eq('is_active', true)
-    .limit(6)
+  const featuredHotels = await prisma.hotel.findMany({
+    where: { is_active: true },
+    take: 6
+  })
+
+
 
   return (
     <div className="flex min-h-screen flex-col bg-white">

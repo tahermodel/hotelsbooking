@@ -1,6 +1,6 @@
 import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Users, Building2, FileText, BarChart3 } from "lucide-react"
@@ -11,13 +11,13 @@ export const dynamic = 'force-dynamic'
 export default async function AdminDashboardPage() {
     const session = await auth()
     // In a real app, check for 'platform_admin' role
-    if (!session?.user) redirect("/login")
+    if (!session?.user?.id || session.user.role !== 'platform_admin') redirect("/login")
 
-    const supabase = await createClient()
-
-    const { count: hotelCount } = await supabase.from('hotels').select('*', { count: 'exact', head: true })
-    const { count: userCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
-    const { count: pendingApps } = await supabase.from('hotel_applications').select('*', { count: 'exact', head: true }).eq('status', 'pending')
+    const hotelCount = await prisma.hotel.count()
+    const userCount = await prisma.user.count()
+    const pendingApps = await prisma.hotelApplication.count({
+        where: { status: 'pending' }
+    })
 
     return (
         <div className="flex min-h-screen flex-col">

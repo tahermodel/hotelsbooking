@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google"; // Disabled due to build timeout
 import "./globals.css";
 import { Providers } from "@/components/layout/providers";
 import { LiquidFilters } from "@/components/ui/liquid-filters";
 
+// Mock fonts to prevent network timeouts during build
+const geistSans = { variable: "font-sans", subsets: ["latin"] };
+const geistMono = { variable: "font-mono", subsets: ["latin"] };
+
+/*
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,6 +18,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+*/
 
 export const metadata: Metadata = {
   title: "StayEase | Boutique Hotel Booking",

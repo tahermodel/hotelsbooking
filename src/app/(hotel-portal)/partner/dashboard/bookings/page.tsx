@@ -1,6 +1,6 @@
 import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { formatCurrency } from "@/lib/utils"
 
@@ -8,21 +8,21 @@ export const dynamic = 'force-dynamic'
 
 export default async function PartnerBookingsPage() {
     const session = await auth()
-    if (!session) redirect("/login")
+    if (!session?.user?.id) redirect("/login")
 
-    const supabase = await createClient()
-    const { data: hotels } = await supabase
-        .from('hotels')
-        .select('id')
-        .eq('owner_id', session.user.id)
-
-    const hotelIds = hotels?.map(h => h.id) || []
-
-    const { data: bookings } = await supabase
-        .from('bookings')
-        .select('*, hotels(name)')
-        .in('hotel_id', hotelIds)
-        .order('created_at', { ascending: false })
+    const bookings = await prisma.booking.findMany({
+        where: {
+            hotel: {
+                owner_id: session.user.id
+            }
+        },
+        include: {
+            hotel: {
+                select: { name: true }
+            }
+        },
+        orderBy: { created_at: 'desc' }
+    })
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -35,7 +35,7 @@ export default async function PartnerBookingsPage() {
                             <div>
                                 <p className="text-sm font-medium text-primary">{booking.booking_reference}</p>
                                 <h3 className="font-bold text-lg">{booking.guest_name}</h3>
-                                <p className="text-sm text-muted-foreground">{booking.hotels.name} | {booking.check_in_date} - {booking.check_out_date}</p>
+                                <p className="text-sm text-muted-foreground">{booking.hotel.name} | {new Date(booking.check_in_date).toLocaleDateString()} - {new Date(booking.check_out_date).toLocaleDateString()}</p>
                             </div>
                             <div className="text-right">
                                 <p className="font-bold text-lg">{formatCurrency(booking.total_amount)}</p>

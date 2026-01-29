@@ -1,35 +1,40 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
+import { auth } from "@/lib/auth"
 
 export async function getHotels(searchTerm?: string) {
-    const supabase = await createClient()
-    let query = supabase.from('hotels').select('*').eq('is_active', true)
-
-    if (searchTerm) {
-        query = query.or(`name.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,country.ilike.%${searchTerm}%`)
-    }
-
-    const { data, error } = await query
-    if (error) throw new Error(error.message)
-    return data
+    return await prisma.hotel.findMany({
+        where: {
+            is_active: true,
+            OR: searchTerm ? [
+                { name: { contains: searchTerm, mode: 'insensitive' } },
+                { city: { contains: searchTerm, mode: 'insensitive' } },
+                { country: { contains: searchTerm, mode: 'insensitive' } },
+                { address: { contains: searchTerm, mode: 'insensitive' } },
+            ] : undefined
+        }
+    })
 }
 
 export async function getHotelBySlug(slug: string) {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from('hotels')
-        .select('*, room_types(*)')
-        .eq('slug', slug)
-        .single()
-
-    if (error) return null
-    return data
+    return await prisma.hotel.findUnique({
+        where: { slug: slug },
+        include: { rooms: true }
+    })
 }
 
 export async function createHotel(data: any) {
-    const supabase = await createClient()
-    const { data: hotel, error } = await supabase.from('hotels').insert(data).select().single()
-    if (error) throw new Error(error.message)
-    return hotel
+    const session = await auth()
+    if (!session?.user?.id || (session.user.role !== 'platform_admin' && session.user.role !== 'hotel_admin')) {
+        throw new Error("Unauthorized: Only admins can create hotels")
+    }
+
+    return await prisma.hotel.create({
+        data: {
+            ...data,
+            owner_id: session.user.id
+        }
+    })
 }
+

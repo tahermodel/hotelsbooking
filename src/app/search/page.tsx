@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/header"
 import { SearchFilters } from "@/components/search/search-filters"
 import { HotelCard } from "@/components/hotels/hotel-card"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = 'force-dynamic'
 
@@ -11,20 +11,25 @@ export default async function SearchPage({
     searchParams: Promise<{ q?: string, guests?: string, stars?: string, minPrice?: string, maxPrice?: string }>
 }) {
     const searchParamsObj = await searchParams
-    const supabase = await createClient()
 
-    let query = supabase.from('hotels').select('*').eq('is_active', true)
+    const starRatings = searchParamsObj.stars ? searchParamsObj.stars.split(',').map(Number) : undefined
 
-    if (searchParamsObj.q) {
-        query = query.or(`city.ilike.%${searchParamsObj.q}%,name.ilike.%${searchParamsObj.q}%`)
-    }
-
-    if (searchParamsObj.stars) {
-        const starList = searchParamsObj.stars.split(',').map(Number)
-        query = query.in('star_rating', starList)
-    }
-
-    const { data: hotels } = await query
+    const hotels = await prisma.hotel.findMany({
+        where: {
+            is_active: true,
+            AND: [
+                searchParamsObj.q ? {
+                    OR: [
+                        { name: { contains: searchParamsObj.q, mode: 'insensitive' } },
+                        { city: { contains: searchParamsObj.q, mode: 'insensitive' } },
+                    ]
+                } : {},
+                starRatings ? {
+                    star_rating: { in: starRatings }
+                } : {}
+            ]
+        }
+    })
 
     return (
         <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500/5 via-background to-background">

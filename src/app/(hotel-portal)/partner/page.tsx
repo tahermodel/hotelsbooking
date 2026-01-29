@@ -67,7 +67,7 @@ export default async function PartnerPage() {
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="mt-1 w-5 h-5 rounded-full bg-primary flex-shrink-0" />
-                                    <p><strong>Cancellations:</strong> Partners must honor the platform's cancellation policy.</p>
+                                    <p><strong>Cancellations:</strong> Partners must honor the platform&apos;s cancellation policy.</p>
                                 </li>
                             </ul>
                         </div>

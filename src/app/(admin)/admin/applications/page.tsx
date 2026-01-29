@@ -1,15 +1,13 @@
 import { Header } from "@/components/layout/header"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminApplicationsPage() {
-    const supabase = await createClient()
-    const { data: applications } = await supabase
-        .from('hotel_applications')
-        .select('*')
-        .order('created_at', { ascending: false })
+    const applications = await prisma.hotelApplication.findMany({
+        orderBy: { created_at: 'desc' }
+    })
 
     return (
         <div className="flex min-h-screen flex-col">

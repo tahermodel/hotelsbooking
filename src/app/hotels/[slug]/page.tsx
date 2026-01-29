@@ -1,5 +1,5 @@
 import { Header } from "@/components/layout/header"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import Image from "next/image"
 import { Star, MapPin, Wifi, Car, Coffee, Tv } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,12 +9,12 @@ export const dynamic = 'force-dynamic'
 
 export default async function HotelPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const supabase = await createClient()
-    const { data: hotel } = await supabase
-        .from('hotels')
-        .select('*, room_types(*)')
-        .eq('slug', slug)
-        .single()
+
+    // Fetch hotel with rooms
+    const hotel = await prisma.hotel.findUnique({
+        where: { slug: slug },
+        include: { rooms: true }
+    })
 
     if (!hotel) return <div>Hotel not found</div>
 
@@ -72,7 +72,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                         <div className="rounded-3xl glass-surface border-white/20 p-8 sticky top-24 shadow-2xl backdrop-blur-2xl">
                             <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Available Curated Rooms</h3>
                             <div className="space-y-6">
-                                {hotel.room_types?.map((room: any) => (
+                                {hotel.rooms?.map((room: any) => (
                                     <div key={room.id} className="p-6 glass bg-white/5 border-white/10 rounded-2xl transition-all hover:bg-white/10 group">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
@@ -97,3 +97,4 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
         </div>
     )
 }
+

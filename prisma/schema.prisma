@@ -1,0 +1,276 @@
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("DATABASE_POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  customer
+  hotel_admin
+  platform_admin
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  no_show
+}
+
+// User table matching NextAuth and App requirements
+model User {
+  id            String    @id @default(cuid())
+  
+  // Mapped to match existing Profile/Supabase structure where possible or snake_case preferred
+  name          String?   @map("full_name")
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?   @map("avatar_url")
+  password      String?   
+  role          UserRole  @default(customer)
+  
+  // Custom Profile fields
+  phone              String?
+  cancellation_count Int     @default(0) @map("cancellation_count")
+  no_show_count      Int     @default(0) @map("no_show_count")
+  is_blacklisted     Boolean @default(false) @map("is_blacklisted")
+  is_verified        Boolean @default(false) @map("is_verified")
+
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  hotels        Hotel[]   @relation("HotelOwner")
+  reviews       Review[]
+  cancellations Cancellation[]
+
+  created_at    DateTime @default(now()) @map("created_at")
+  updated_at    DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model Account {
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+ 
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Hotel {
+  id            String   @id @default(cuid())
+  owner_id      String   @map("owner_id")
+  owner         User     @relation("HotelOwner", fields: [owner_id], references: [id])
+  
+  name          String
+  slug          String   @unique
+  description   String?
+  address       String
+  city          String
+  country       String
+  star_rating   Float    @map("star_rating")
+  amenities     String[]
+  images        String[]
+  contact_email String   @map("contact_email")
+  contact_phone String?  @map("contact_phone")
+  check_in_time String   @map("check_in_time")
+  check_out_time String  @map("check_out_time")
+  
+  is_active     Boolean  @default(true) @map("is_active")
+  is_verified   Boolean  @default(false) @map("is_verified")
+
+  rooms         RoomType[]
+  bookings      Booking[]
+  reviews       Review[]
+
+  created_at    DateTime @default(now()) @map("created_at")
+  updated_at    DateTime @updatedAt @map("updated_at")
+
+  @@map("hotels")
+}
+
+model RoomType {
+  id                String   @id @default(cuid())
+  hotel_id          String   @map("hotel_id")
+  hotel             Hotel    @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  
+  name              String
+  description       String?
+  max_guests        Int      @map("max_guests")
+  bed_configuration String?  @map("bed_configuration")
+  size_sqm          Float?   @map("size_sqm")
+  amenities         String[]
+  images            String[]
+  base_price        Float    @map("base_price")
+  
+  created_at        DateTime @default(now()) @map("created_at")
+  updated_at        DateTime @updatedAt @map("updated_at")
+  
+  bookings          Booking[]
+  availability      RoomAvailability[]
+
+  @@map("room_types")
+}
+
+model Booking {
+  id                String        @id @default(cuid())
+  booking_reference String        @unique @map("booking_reference")
+  
+  user_id           String        @map("user_id")
+  user              User          @relation(fields: [user_id], references: [id])
+  
+  hotel_id          String        @map("hotel_id")
+  hotel             Hotel         @relation(fields: [hotel_id], references: [id])
+  
+  room_id           String        @map("room_id")
+  room              RoomType      @relation(fields: [room_id], references: [id])
+  
+  check_in_date     DateTime      @map("check_in_date")
+  check_out_date    DateTime      @map("check_out_date")
+  guests_count      Int           @map("guests_count")
+  total_amount      Float         @map("total_amount")
+  status            BookingStatus @default(pending)
+  
+  guest_name        String        @map("guest_name")
+  guest_email       String        @map("guest_email")
+
+  payment           Payment?
+  review            Review?
+  cancellation      Cancellation?
+
+  created_at        DateTime @default(now()) @map("created_at")
+  updated_at        DateTime @updatedAt @map("updated_at")
+
+  @@map("bookings")
+}
+
+model Payment {
+  id                       String   @id @default(cuid())
+  booking_id               String   @unique @map("booking_id")
+  booking                  Booking  @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  
+  stripe_payment_intent_id String   @unique @map("stripe_payment_intent_id")
+  amount                   Float
+  status                   String   @default("pending")
+  captured_at              DateTime? @map("captured_at")
+  
+  created_at               DateTime @default(now()) @map("created_at")
+  updated_at               DateTime @updatedAt @map("updated_at")
+
+  @@map("payments")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  booking_id  String   @unique @map("booking_id")
+  booking     Booking  @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  
+  user_id     String   @map("user_id")
+  user        User     @relation(fields: [user_id], references: [id])
+  
+  hotel_id    String   @map("hotel_id")
+  hotel       Hotel    @relation(fields: [hotel_id], references: [id])
+  
+  rating      Int
+  title       String?
+  content     String?
+  
+  created_at  DateTime @default(now()) @map("created_at")
+  updated_at  DateTime @updatedAt @map("updated_at")
+
+  @@map("reviews")
+}
+
+model RoomAvailability {
+  id            String   @id @default(cuid())
+  room_id       String   @map("room_id")
+  room          RoomType @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  
+  date          DateTime
+  is_available  Boolean  @default(true) @map("is_available")
+  
+  locked_until  DateTime? @map("locked_until")
+  locked_by     String?   @map("locked_by")
+  
+  created_at    DateTime @default(now()) @map("created_at")
+  updated_at    DateTime @updatedAt @map("updated_at")
+
+  @@unique([room_id, date])
+  @@map("room_availability")
+}
+
+model Cancellation {
+  id              String   @id @default(cuid())
+  booking_id      String   @unique @map("booking_id")
+  booking         Booking  @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  
+  cancelled_by    String   @map("cancelled_by")
+  user            User     @relation(fields: [cancelled_by], references: [id])
+  
+  reason          String
+  reason_details  String?  @map("reason_details")
+  refund_amount   Float    @map("refund_amount")
+  penalty_amount  Float    @map("penalty_amount")
+  
+  created_at      DateTime @default(now()) @map("created_at")
+  updated_at      DateTime @updatedAt @map("updated_at")
+
+  @@map("cancellations")
+}
+
+model HotelApplication {
+  id              String   @id @default(cuid())
+  applicant_email String   @map("applicant_email")
+  hotel_name      String   @map("hotel_name")
+  hotel_address   String   @map("hotel_address")
+  contact_person  String   @map("contact_person")
+  contact_phone   String?  @map("contact_phone")
+  status          String   @default("pending")
+  
+  created_at      DateTime @default(now()) @map("created_at")
+  updated_at      DateTime @updatedAt @map("updated_at")
+
+  @@map("hotel_applications")
+}
+

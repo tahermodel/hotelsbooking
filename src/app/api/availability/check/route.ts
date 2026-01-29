@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
 export const dynamic = 'force-dynamic'
@@ -13,18 +13,26 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "Missing parameters" }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const availability = await prisma.roomAvailability.findMany({
+        where: {
+            room: {
+                hotel_id: hotelId
+            },
+            date: {
+                gte: new Date(startDate),
+                lte: new Date(endDate)
+            },
+            is_available: true,
+            OR: [
+                { locked_until: null },
+                { locked_until: { lte: new Date() } }
+            ]
+        },
+        include: {
+            room: true
+        }
+    })
 
-    const { data, error } = await supabase
-        .from("room_availability")
-        .select("*, rooms(*)")
-        .eq("rooms.hotel_id", hotelId)
-        .gte("date", startDate)
-        .lte("date", endDate)
-        .eq("is_available", true)
-        .is("locked_until", null)
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    return NextResponse.json(data)
+    return NextResponse.json(availability)
 }
+

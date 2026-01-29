@@ -13,7 +13,7 @@ async function LoginPageContent({ searchParams }: { searchParams: Promise<{ mess
                 <div className="relative z-20 mt-auto">
                     <blockquote className="space-y-2">
                         <p className="text-lg">
-                            "This platform has transformed how our hotel manages bookings. The pay-later system is a game changer for guest trust."
+                            &quot;This platform has transformed how our hotel manages bookings. The pay-later system is a game changer for guest trust.&quot;
                         </p>
                         <footer className="text-sm">Sofia Davis, General Manager</footer>
                     </blockquote>

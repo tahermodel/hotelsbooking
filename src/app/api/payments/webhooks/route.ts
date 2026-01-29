@@ -1,6 +1,6 @@
 import { headers } from "next/headers"
 import { stripe } from "@/lib/stripe"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 
 export const dynamic = "force-dynamic"
 
@@ -19,22 +19,23 @@ export async function POST(req: Request) {
         return new Response(`Webhook Error: ${error.message}`, { status: 400 })
     }
 
-    const supabase = await createClient()
-
     if (event.type === "payment_intent.amount_capturable_updated") {
-        const intent = event.data.object
-        await supabase
-            .from("payments")
-            .update({ status: "authorized" })
-            .eq("stripe_payment_intent_id", intent.id)
+        const intent = event.data.object as any
+        await prisma.payment.update({
+            where: { stripe_payment_intent_id: intent.id },
+            data: { status: "authorized" }
+        })
     }
 
     if (event.type === "payment_intent.succeeded") {
-        const intent = event.data.object
-        await supabase
-            .from("payments")
-            .update({ status: "captured", captured_at: new Date().toISOString() })
-            .eq("stripe_payment_intent_id", intent.id)
+        const intent = event.data.object as any
+        await prisma.payment.update({
+            where: { stripe_payment_intent_id: intent.id },
+            data: {
+                status: "captured",
+                captured_at: new Date()
+            }
+        })
     }
 
     return new Response(null, { status: 200 })

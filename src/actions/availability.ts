@@ -1,6 +1,6 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { addMinutes } from "date-fns"
 
@@ -8,31 +8,58 @@ export async function lockRoom(roomId: string, dates: string[]) {
     const session = await auth()
     if (!session?.user?.id) throw new Error("Unauthorized")
 
-    const supabase = await createClient()
-    const lockExpiresAt = addMinutes(new Date(), 10).toISOString()
+    const lockExpiresAt = addMinutes(new Date(), 10)
 
-    const { data, error } = await supabase.rpc('acquire_room_lock', {
-        p_room_id: roomId,
-        p_dates: dates,
-        p_user_id: session.user.id,
-        p_expires_at: lockExpiresAt
+    // Using a transaction to simulate the RPC behavior
+    return await prisma.$transaction(async (tx) => {
+        // 1. Check if all dates are available and not locked by others
+        const availability = await tx.roomAvailability.findMany({
+            where: {
+                room_id: roomId,
+                date: { in: dates.map(d => new Date(d)) },
+                OR: [
+                    { is_available: false },
+                    {
+                        locked_until: { gt: new Date() },
+                        locked_by: { not: session.user.id }
+                    }
+                ]
+            }
+        })
+
+        if (availability.length > 0) {
+            throw new Error("Some dates are no longer available")
+        }
+
+        // 2. Lock the dates
+        await tx.roomAvailability.updateMany({
+            where: {
+                room_id: roomId,
+                date: { in: dates.map(d => new Date(d)) }
+            },
+            data: {
+                locked_until: lockExpiresAt,
+                locked_by: session.user.id
+            }
+        })
+
+        return true
     })
-
-    if (error) throw new Error(error.message)
-    return data
 }
 
 export async function releaseRoomLock(roomId: string, dates: string[]) {
     const session = await auth()
     if (!session?.user?.id) return
 
-    const supabase = await createClient()
-
-    const { error } = await supabase
-        .from('room_availability')
-        .update({ locked_until: null, locked_by: null })
-        .match({ room_id: roomId, locked_by: session.user.id })
-        .in('date', dates)
-
-    if (error) throw new Error(error.message)
+    await prisma.roomAvailability.updateMany({
+        where: {
+            room_id: roomId,
+            locked_by: session.user.id,
+            date: { in: dates.map(d => new Date(d)) }
+        },
+        data: {
+            locked_until: null,
+            locked_by: null
+        }
+    })
 }

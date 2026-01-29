@@ -1,6 +1,6 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
 export async function submitReview(data: {
@@ -13,22 +13,29 @@ export async function submitReview(data: {
     const session = await auth()
     if (!session?.user?.id) throw new Error("Unauthorized")
 
-    const supabase = await createClient()
-    const { error } = await supabase.from('reviews').insert({
-        ...data,
-        user_id: session.user.id
+    await prisma.review.create({
+        data: {
+            booking_id: data.bookingId,
+            hotel_id: data.hotelId,
+            rating: data.rating,
+            title: data.title,
+            content: data.content,
+            user_id: session.user.id
+        }
     })
-    if (error) throw new Error(error.message)
 }
 
 export async function getHotelReviews(hotelId: string) {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from('reviews')
-        .select('*, profiles(full_name, avatar_url)')
-        .eq('hotel_id', hotelId)
-        .order('created_at', { ascending: false })
-
-    if (error) throw new Error(error.message)
-    return data
+    return await prisma.review.findMany({
+        where: { hotel_id: hotelId },
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    image: true
+                }
+            }
+        },
+        orderBy: { created_at: 'desc' }
+    })
 }

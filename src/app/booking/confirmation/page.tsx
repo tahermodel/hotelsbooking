@@ -14,7 +14,7 @@ export default async function ConfirmationPage({ searchParams }: { searchParams:
                 <CheckCircle2 className="w-20 h-20 text-green-500 mb-6" />
                 <h1 className="text-4xl font-bold mb-4">Reservation Confirmed!</h1>
                 <p className="text-xl text-muted-foreground mb-8 max-w-md">
-                    Your booking (Ref: {id}) is successfully confirmed. We've sent the details to your email.
+                    Your booking (Ref: {id}) is successfully confirmed. We&apos;ve sent the details to your email.
                 </p>
                 <div className="flex gap-4">
                     <Link href="/account/bookings">

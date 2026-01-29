@@ -1,6 +1,6 @@
 import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
-import { createClient } from "@/lib/supabase/server"
+import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Plus, Hotel } from "lucide-react"
@@ -10,13 +10,10 @@ export const dynamic = 'force-dynamic'
 
 export default async function PartnerDashboardPage() {
     const session = await auth()
-    if (!session?.user) redirect("/login")
-
-    const supabase = await createClient()
-    const { data: hotels } = await supabase
-        .from('hotels')
-        .select('*')
-        .eq('owner_id', session.user.id)
+    if (!session?.user?.id) redirect("/login")
+    const hotels = await prisma.hotel.findMany({
+        where: { owner_id: session.user.id }
+    })
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -34,7 +31,7 @@ export default async function PartnerDashboardPage() {
                     <div className="flex flex-col items-center justify-center py-20 rounded-2xl glass-surface border-white/20 shadow-xl">
                         <Hotel className="w-20 h-20 text-muted-foreground/30 mb-6" />
                         <h2 className="text-2xl font-black mb-2">No Hotels Found</h2>
-                        <p className="text-muted-foreground mb-8 text-center max-w-sm">You haven't added any properties to our platform yet. Start growing your business today.</p>
+                        <p className="text-muted-foreground mb-8 text-center max-w-sm">You haven&apos;t added any properties to our platform yet. Start growing your business today.</p>
                         <Button variant="outline" className="glass px-8 rounded-xl liquid-flicker">Learn how to get started</Button>
                     </div>
                 ) : (
