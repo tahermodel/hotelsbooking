@@ -30,7 +30,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 const { data: profile } = await supabase
                     .from("profiles")
-                    .select("id")
+                    .select("id, is_verified, full_name")
                     .eq("email", credentials.email)
                     .single()
 
@@ -38,20 +38,40 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     throw new UserNotFound()
                 }
 
-                const { data: { user }, error } = await supabase.auth.signInWithPassword({
+                let { data: { user }, error } = await supabase.auth.signInWithPassword({
                     email: credentials.email as string,
                     password: credentials.password as string,
                 })
 
+                if (error && error.message.toLowerCase().includes("email not confirmed")) {
+                    if (profile.is_verified) {
+                        // User is verified in our DB but not in Supabase Auth
+                        // This can happen if the verification process didn't sync with Supabase Auth
+                        const { createAdminClient } = await import("@/lib/supabase/admin")
+                        const adminClient = await createAdminClient()
+                        await adminClient.auth.admin.updateUserById(profile.id, { email_confirm: true })
+
+                        // Retry sign in
+                        const retry = await supabase.auth.signInWithPassword({
+                            email: credentials.email as string,
+                            password: credentials.password as string,
+                        })
+                        user = retry.data.user
+                        error = retry.error
+                    } else {
+                        throw new CredentialsSignin("Please verify your email address before signing in.")
+                    }
+                }
+
                 if (error || !user) {
-                    if (error) console.warn("Login failed for", credentials.email, ":", error.message)
+                    if (error) console.error("Login failed for", credentials.email, ":", error.message)
                     throw new InvalidPassword()
                 }
 
                 return {
                     id: user.id,
                     email: user.email,
-                    name: user.user_metadata.full_name,
+                    name: user.user_metadata?.full_name || profile.full_name || "",
                 }
             },
         }),

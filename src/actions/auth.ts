@@ -308,15 +308,32 @@ export async function verifyCode(email: string, code: string) {
         return { error: "Invalid or expired verification code" }
     }
 
-    // Mark user as verified
-    const { error: updateError } = await supabase
+    const adminClient = await createAdminClient()
+
+    // Mark user as verified in profiles table
+    const { error: updateError } = await adminClient
         .from("profiles")
         .update({ is_verified: true })
         .eq("id", tokens.user_id)
 
     if (updateError) {
-        console.error("Failed to mark user as verified:", updateError)
+        console.error("Failed to mark user as verified in profiles:", updateError)
         return { error: "Failed to verify email. Please try again." }
+    }
+
+    // Also mark as verified in Supabase Auth
+    try {
+        const { error: authUpdateError } = await adminClient.auth.admin.updateUserById(
+            tokens.user_id,
+            { email_confirm: true }
+        )
+        if (authUpdateError) {
+            console.error("Failed to confirm email in Supabase Auth:", authUpdateError)
+            // We don't necessarily want to fail here if the profile update succeeded,
+            // but it will cause login issues.
+        }
+    } catch (err) {
+        console.error("Error updating auth user:", err)
     }
 
     // Delete the used verification code
