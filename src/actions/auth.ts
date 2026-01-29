@@ -31,11 +31,9 @@ function checkEmailRateLimit(email: string): boolean {
     }
 
     const attempts = emailSendAttempts.get(email)!
-    // Remove old attempts outside the window
     const recentAttempts = attempts.filter(time => now - time < limit)
 
-    if (recentAttempts.length >= 3) {
-        // Max 3 emails per 5 minutes per email address
+    if (recentAttempts.length >= 5) {
         return false
     }
 
@@ -49,7 +47,6 @@ export async function register(formData: FormData) {
     const password = formData.get("password") as string
     const fullName = formData.get("fullName") as string
 
-    // Validate inputs
     if (!email || !password || !fullName) {
         return { error: "Missing required fields" }
     }
@@ -58,14 +55,12 @@ export async function register(formData: FormData) {
         return { error: "Password must be at least 6 characters" }
     }
 
-    // Check rate limit
     if (!checkEmailRateLimit(email)) {
-        return { error: "Too many registration attempts. Please try again in 5 minutes." }
+        return { error: "Too many attempts. Please wait 5 minutes." }
     }
 
     const supabase = await createClient()
 
-    // Sign up user in Supabase Auth (without email confirmation)
     const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -77,6 +72,9 @@ export async function register(formData: FormData) {
     })
 
     if (authError) {
+        if (authError.message.toLowerCase().includes("rate limit")) {
+            return { error: "Email provider rate limit exceeded. This is a security feature from Supabase. Please try again in an hour or disable 'Confirm email' in Supabase dashboard." }
+        }
         return { error: authError.message }
     }
 

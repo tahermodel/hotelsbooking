@@ -1,7 +1,15 @@
-import NextAuth from "next-auth"
+import NextAuth, { CredentialsSignin } from "next-auth"
 import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import { createClient } from "@/lib/supabase/auth-client"
+
+class UserNotFound extends CredentialsSignin {
+    code = "user_not_found"
+}
+
+class InvalidPassword extends CredentialsSignin {
+    code = "invalid_password"
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers: [
@@ -19,12 +27,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 if (!credentials?.email || !credentials?.password) return null
 
                 const supabase = await createClient()
+
+                // 1. Check if user exists in profiles table
+                const { data: profile } = await supabase
+                    .from("profiles")
+                    .select("id")
+                    .eq("email", credentials.email)
+                    .single()
+
+                if (!profile) {
+                    throw new UserNotFound()
+                }
+
+                // 2. Try to sign in
                 const { data: { user }, error } = await supabase.auth.signInWithPassword({
                     email: credentials.email as string,
                     password: credentials.password as string,
                 })
 
-                if (error || !user) return null
+                if (error || !user) {
+                    throw new InvalidPassword()
+                }
 
                 return {
                     id: user.id,

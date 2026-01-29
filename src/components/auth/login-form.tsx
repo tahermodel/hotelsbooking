@@ -32,7 +32,13 @@ export function LoginForm({ message }: LoginFormProps) {
         setLoading(false)
 
         if (result?.error) {
-            setError(result.error || "Invalid email or password")
+            if (result.error === "user_not_found") {
+                setError("email not found")
+            } else if (result.error === "invalid_password") {
+                setError("invalid password")
+            } else {
+                setError("Invalid email or password")
+            }
         } else if (result?.ok) {
             router.push("/")
             router.refresh()
@@ -71,7 +77,11 @@ export function LoginForm({ message }: LoginFormProps) {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+                        {error && (
+                            <p className="text-sm font-medium text-destructive text-center font-mono py-2">
+                                {error}
+                            </p>
+                        )}
                         <Button disabled={loading}>
                             {loading ? "Signing in..." : "Sign In with Email"}
                         </Button>

@@ -144,12 +144,12 @@ export default function VerifyEmailClient() {
                     <div className="min-h-[20px]">
                         {error && (
                             <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
-                                <p className="text-sm font-medium text-red-600">{error}</p>
+                                <p className="text-sm font-medium text-red-600 font-mono center">{error}</p>
                             </div>
                         )}
                         {resendMessage && (
                             <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-center animate-in fade-in slide-in-from-top-2">
-                                <p className="text-sm font-medium text-green-600">{resendMessage}</p>
+                                <p className="text-sm font-medium text-green-600 font-mono center">{resendMessage}</p>
                             </div>
                         )}
                     </div>
