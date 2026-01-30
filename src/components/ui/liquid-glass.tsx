@@ -20,8 +20,8 @@ export function LiquidGlass({
     const [refractionScale, setRefractionScale] = useState(0)
 
     useEffect(() => {
-        // Randomly choose extreme magnification (positive) or minification (negative)
-        const scale = Math.random() > 0.5 ? 600 : -600
+        // Choose extreme magnification (positive) or minification (negative)
+        const scale = Math.random() > 0.5 ? 200 : -200
         setRefractionScale(scale)
     }, [])
     const containerRef = useRef<HTMLDivElement>(null)
@@ -264,7 +264,7 @@ export function LiquidGlass({
                     <filter id={filterId}>
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.003"
+                            baseFrequency="0.01"
                             numOctaves="1"
                             seed="5"
                             result="noise"
@@ -280,16 +280,23 @@ export function LiquidGlass({
                 </defs>
             </svg>
 
-            {/* Breathing Lens Rim - Uses SVG filter for true optical distortion */}
+            {/* The Lens Rim - Physically distorts/warps the background */}
             <div
                 className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: `url(#${filterId})`,
-                    WebkitBackdropFilter: `url(#${filterId})`,
-                    maskImage: 'radial-gradient(ellipse at center, transparent 50%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 50%, black 100%)'
+                    backdropFilter: `url(#${filterId}) brightness(1.1) contrast(1.1)`,
+                    WebkitBackdropFilter: `url(#${filterId}) brightness(1.1) contrast(1.1)`,
+                    // Box-aware mask: Only show the filter on the outer 40px
+                    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    maskComposite: 'exclude',
+                    WebkitMaskComposite: 'destination-out',
+                    padding: '40px'
                 }}
             />
+
+            {/* Visual Rim Boundary - Makes the distortion "detectable" */}
+            <div className="absolute inset-[40px] z-[3] pointer-events-none rounded-[calc(1.5rem-20px)] border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
 
             <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden rounded-3xl">
                 <div
