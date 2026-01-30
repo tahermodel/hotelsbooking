@@ -77,27 +77,16 @@ export function LiquidGlass({
             vec2 mouseOffset = (uMouse - vec2(0.5)) * 0.15;
             float mouseHighlight = pow(max(0.0, 1.0 - length(uv - vec2(0.5) - mouseOffset) * 2.5), 3.0) * 0.3;
             
-            float angle = atan(uv.y - 0.5, uv.x - 0.5);
-            float dist = length(uv - vec2(0.5));
-            
-            float hue = (angle / (2.0 * PI) + 0.5) + time * 0.2;
-            float rainbowStrength = smoothstep(0.2, 0.5, dist) * 0.25;
-            rainbowStrength *= 1.0 + sin(angle * 3.0 + time * 2.0) * 0.3;
-            vec3 rainbow = hsv2rgb(vec3(hue, 0.6, 1.0));
-            
             float movingShine = sin(uv.x * 4.0 + uv.y * 2.0 - time * 2.0) * 0.5 + 0.5;
             movingShine = pow(movingShine, 6.0) * 0.2;
             
-            vec3 baseColor = vec3(1.0, 1.0, 1.0);
-            
-            vec3 finalColor = baseColor;
+            vec3 finalColor = vec3(1.0);
             finalColor += topHighlight;
             finalColor += specular1;
             finalColor += specular2;
             finalColor += borderGlow;
             finalColor += mouseHighlight;
             finalColor += movingShine;
-            finalColor = mix(finalColor, rainbow, rainbowStrength);
             
             float alpha = 0.05;
             alpha += topHighlight * 0.5;
@@ -106,7 +95,6 @@ export function LiquidGlass({
             alpha += borderGlow * 0.6;
             alpha += mouseHighlight * 0.5;
             alpha += movingShine * 0.3;
-            alpha += rainbowStrength * 0.4;
             alpha = clamp(alpha, 0.0, 0.8);
             
             gl_FragColor = vec4(finalColor, alpha);
@@ -298,8 +286,8 @@ export function LiquidGlass({
                 style={{
                     backdropFilter: `url(#${filterId})`,
                     WebkitBackdropFilter: `url(#${filterId})`,
-                    maskImage: 'radial-gradient(ellipse at center, transparent 70%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 70%, black 100%)'
+                    maskImage: 'radial-gradient(ellipse at center, transparent 50%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 50%, black 100%)'
                 }}
             />
 
