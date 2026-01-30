@@ -262,22 +262,48 @@ export function LiquidGlass({
                 className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
 
-            {/* Breathing Lens Rim - Simulates shifting optical distortion */}
-            <motion.div
+            {/* Invisible SVG for defining the displacement filter */}
+            <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+                <defs>
+                    <filter id="rim-distortion">
+                        <feTurbulence
+                            type="fractalNoise"
+                            baseFrequency="0.02"
+                            numOctaves="1"
+                            seed="5"
+                            result="noise"
+                        >
+                            <animate
+                                attributeName="baseFrequency"
+                                values="0.015;0.025;0.015"
+                                dur="10s"
+                                repeatCount="indefinite"
+                            />
+                        </feTurbulence>
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="noise"
+                            scale="30"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                        >
+                            <animate
+                                attributeName="scale"
+                                values="20;50;20"
+                                dur="8s"
+                                repeatCount="indefinite"
+                            />
+                        </feDisplacementMap>
+                    </filter>
+                </defs>
+            </svg>
+
+            {/* Breathing Lens Rim - Uses SVG filter for true optical distortion */}
+            <div
                 className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
-                animate={{
-                    backdropFilter: [
-                        "blur(16px) saturate(180%) contrast(125%) brightness(1.1)", // State A: "Magnified"/Intense
-                        "blur(8px) saturate(140%) contrast(110%) brightness(1.0)"   // State B: "Minified"/Relaxed
-                    ]
-                }}
-                transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                    ease: "easeInOut"
-                }}
                 style={{
+                    backdropFilter: 'url(#rim-distortion) blur(2px)',
+                    WebkitBackdropFilter: 'url(#rim-distortion) blur(2px)',
                     maskImage: 'radial-gradient(ellipse at center, transparent 90%, black 100%)',
                     WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 90%, black 100%)'
                 }}
