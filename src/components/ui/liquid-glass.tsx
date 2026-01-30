@@ -46,33 +46,62 @@ export function LiquidGlass({
         uniform vec2 uMouse;
         uniform float uAspect;
         
+        #define PI 3.14159265359
+        
+        vec3 hsv2rgb(vec3 c) {
+            vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+            vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+            return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        }
+        
         void main() {
             vec2 uv = vUv;
+            float time = uTime * 0.5;
             
-            float topHighlight = smoothstep(0.6, 0.0, uv.y) * 0.5;
+            float topHighlight = pow(1.0 - uv.y, 2.0) * 0.7;
             
-            float specular = pow(max(0.0, 1.0 - length(uv - vec2(0.35, 0.25)) * 2.5), 3.0) * 0.4;
+            float specular1 = pow(max(0.0, 1.0 - length(uv - vec2(0.3, 0.2)) * 2.0), 4.0) * 0.6;
+            float specular2 = pow(max(0.0, 1.0 - length(uv - vec2(0.7, 0.15)) * 3.0), 5.0) * 0.3;
             
             float edgeDist = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
-            float borderGlow = smoothstep(0.06, 0.0, edgeDist) * 0.3;
+            float borderGlow = pow(smoothstep(0.08, 0.0, edgeDist), 1.5) * 0.5;
             
-            vec2 mouseOffset = (uMouse - vec2(0.5)) * 0.05;
-            float mouseHighlight = pow(max(0.0, 1.0 - length(uv - vec2(0.5) - mouseOffset) * 3.0), 4.0) * 0.15;
+            vec2 mouseOffset = (uMouse - vec2(0.5)) * 0.15;
+            float mouseHighlight = pow(max(0.0, 1.0 - length(uv - vec2(0.5) - mouseOffset) * 2.5), 3.0) * 0.3;
             
-            vec3 color = vec3(1.0);
-            color += topHighlight;
-            color += specular;
-            color += borderGlow;
-            color += mouseHighlight;
+            float angle = atan(uv.y - 0.5, uv.x - 0.5);
+            float dist = length(uv - vec2(0.5));
             
-            float alpha = 0.0;
-            alpha += topHighlight * 0.6;
-            alpha += specular * 0.8;
-            alpha += borderGlow * 0.5;
-            alpha += mouseHighlight * 0.4;
-            alpha = clamp(alpha, 0.0, 0.7);
+            float hue = (angle / (2.0 * PI) + 0.5) + time * 0.2;
+            float rainbowStrength = smoothstep(0.2, 0.5, dist) * 0.25;
+            rainbowStrength *= 1.0 + sin(angle * 3.0 + time * 2.0) * 0.3;
+            vec3 rainbow = hsv2rgb(vec3(hue, 0.6, 1.0));
             
-            gl_FragColor = vec4(color, alpha);
+            float movingShine = sin(uv.x * 4.0 + uv.y * 2.0 - time * 2.0) * 0.5 + 0.5;
+            movingShine = pow(movingShine, 6.0) * 0.2;
+            
+            vec3 baseColor = vec3(1.0, 1.0, 1.0);
+            
+            vec3 finalColor = baseColor;
+            finalColor += topHighlight;
+            finalColor += specular1;
+            finalColor += specular2;
+            finalColor += borderGlow;
+            finalColor += mouseHighlight;
+            finalColor += movingShine;
+            finalColor = mix(finalColor, rainbow, rainbowStrength);
+            
+            float alpha = 0.05;
+            alpha += topHighlight * 0.5;
+            alpha += specular1 * 0.7;
+            alpha += specular2 * 0.5;
+            alpha += borderGlow * 0.6;
+            alpha += mouseHighlight * 0.5;
+            alpha += movingShine * 0.3;
+            alpha += rainbowStrength * 0.4;
+            alpha = clamp(alpha, 0.0, 0.8);
+            
+            gl_FragColor = vec4(finalColor, alpha);
         }
     `
 
@@ -99,7 +128,6 @@ export function LiquidGlass({
             const uniforms = {
                 uTime: { value: 0 },
                 uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-                uResolution: { value: new THREE.Vector2(1, 1) },
                 uAspect: { value: 1 }
             }
 
@@ -110,7 +138,7 @@ export function LiquidGlass({
                 uniforms,
                 transparent: true,
                 depthWrite: false,
-                blending: THREE.NormalBlending
+                blending: THREE.AdditiveBlending
             })
 
             const mesh = new THREE.Mesh(geometry, material)
@@ -148,7 +176,6 @@ export function LiquidGlass({
         const height = Math.max(rect.height, 1)
 
         sceneData.renderer.setSize(width, height)
-        sceneData.uniforms.uResolution.value.set(width, height)
         sceneData.uniforms.uAspect.value = width / height
     }, [])
 
@@ -218,30 +245,33 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-white/25 backdrop-blur-md",
-                "border border-white/50",
-                "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_-1px_0_rgba(255,255,255,0.1)]",
+                "bg-white/15",
+                "border border-white/40",
                 className
             )}
             whileHover={animate ? {
                 scale: 1.015,
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(255,255,255,0.2), 0 0 30px rgba(255,255,255,0.15)"
             } : {}}
             whileTap={animate ? { scale: 0.99 } : {}}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 z-[1] pointer-events-none opacity-80"
+                className="absolute inset-0 z-[1] pointer-events-none"
             />
             <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
                 <div
                     className="absolute top-0 left-[5%] right-[5%] h-[1px]"
                     style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)'
                     }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+                <div
+                    className="absolute bottom-0 left-[15%] right-[15%] h-[1px]"
+                    style={{
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
+                    }}
+                />
             </div>
             <div className="relative z-10 w-full h-full">
                 {children}
