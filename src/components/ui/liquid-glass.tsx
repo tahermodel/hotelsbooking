@@ -262,12 +262,22 @@ export function LiquidGlass({
                 className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
 
-            {/* Edge Refraction Layer - Simulates sharpened rim bending */}
+            {/* Primary Rim - Heavy refraction and blur */}
             <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-3xl saturate-200"
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-3xl saturate-200 contrast-125"
                 style={{
-                    maskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)'
+                    maskImage: 'radial-gradient(ellipse at center, transparent 94%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 94%, black 100%)'
+                }}
+            />
+
+            {/* Secondary Lens Layer - Simulates optical banding/distortion */}
+            <div
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-md brightness-110"
+                style={{
+                    maskImage: 'radial-gradient(ellipse at center, transparent 90%, black 95%, transparent 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 90%, black 95%, transparent 100%)',
+                    opacity: 0.7
                 }}
             />
 
