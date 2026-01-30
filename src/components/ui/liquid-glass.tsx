@@ -246,7 +246,7 @@ export function LiquidGlass({
             className={cn(
                 "relative overflow-hidden rounded-3xl",
                 "bg-white/5", // Very transparent
-                "backdrop-blur-xl backdrop-saturate-150", // The 'bending' and color pop
+                "backdrop-blur-md backdrop-saturate-150", // Reduced blur, kept saturation
                 "border border-white/20", // Subtle border
                 "shadow-sm",
                 className
