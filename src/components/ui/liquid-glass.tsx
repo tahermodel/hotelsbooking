@@ -262,12 +262,12 @@ export function LiquidGlass({
                 className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
 
-            {/* Edge Refraction Layer - Simulates bending at the glass edges */}
+            {/* Edge Refraction Layer - Simulates sharpened rim bending */}
             <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-md"
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-3xl saturate-200"
                 style={{
-                    maskImage: 'radial-gradient(ellipse at center, transparent 85%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 85%, black 100%)'
+                    maskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)'
                 }}
             />
 
@@ -275,14 +275,16 @@ export function LiquidGlass({
                 <div
                     className="absolute inset-0"
                     style={{
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%)',
-                        mixBlendMode: 'overlay'
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%)',
+                        mixBlendMode: 'overlay',
+                        boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
                     }}
                 />
                 <div
-                    className="absolute top-0 left-[5%] right-[5%] h-[1px]"
+                    className="absolute top-0 left-[2%] right-[2%] h-[2px]"
                     style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)',
+                        filter: 'blur(1px)'
                     }}
                 />
                 <div
