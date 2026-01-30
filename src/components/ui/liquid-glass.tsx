@@ -21,7 +21,7 @@ export function LiquidGlass({
 
     useEffect(() => {
         // Choose extreme magnification (positive) or minification (negative)
-        const scale = Math.random() > 0.5 ? 200 : -200
+        const scale = Math.random() > 0.5 ? 400 : -400
         setRefractionScale(scale)
     }, [])
     const containerRef = useRef<HTMLDivElement>(null)
@@ -258,14 +258,14 @@ export function LiquidGlass({
                 className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
 
-            {/* Invisible SVG for defining the displacement filter */}
-            <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+            {/* Invisible but present SVG for defining the displacement filter */}
+            <svg style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0.01, pointerEvents: 'none' }}>
                 <defs>
-                    <filter id={filterId}>
+                    <filter id={filterId} colorInterpolationFilters="sRGB">
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.01"
-                            numOctaves="1"
+                            baseFrequency="0.008"
+                            numOctaves="2"
                             seed="5"
                             result="noise"
                         />
@@ -284,19 +284,12 @@ export function LiquidGlass({
             <div
                 className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: `url(#${filterId}) brightness(1.1) contrast(1.1)`,
-                    WebkitBackdropFilter: `url(#${filterId}) brightness(1.1) contrast(1.1)`,
-                    // Box-aware mask: Only show the filter on the outer 40px
-                    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    maskComposite: 'exclude',
-                    WebkitMaskComposite: 'destination-out',
-                    padding: '40px'
+                    backdropFilter: `url(#${filterId}) saturate(150%)`,
+                    WebkitBackdropFilter: `url(#${filterId}) saturate(150%)`,
+                    maskImage: 'radial-gradient(ellipse at center, transparent 94%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 94%, black 100%)'
                 }}
             />
-
-            {/* Visual Rim Boundary - Makes the distortion "detectable" */}
-            <div className="absolute inset-[40px] z-[3] pointer-events-none rounded-[calc(1.5rem-20px)] border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
 
             <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden rounded-3xl">
                 <div
