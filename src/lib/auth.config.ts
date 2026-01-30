@@ -6,10 +6,23 @@ export const authConfig = {
     pages: {
         signIn: "/login",
     },
+    trustHost: true,
     callbacks: {
+        authorized({ auth, request: { nextUrl } }) {
+            const isLoggedIn = !!auth?.user
+            const isOnDashboard = nextUrl.pathname.startsWith("/account") ||
+                nextUrl.pathname.startsWith("/booking") ||
+                nextUrl.pathname.startsWith("/partner/dashboard")
+
+            if (isOnDashboard) {
+                if (isLoggedIn) return true
+                return false // Redirect to login
+            }
+            return true
+        },
         async jwt({ token, user, trigger, session }) {
             if (user) {
-                token.role = user.role
+                token.role = (user as any).role || "customer"
                 token.id = user.id
             }
             if (trigger === "update" && session?.user) {
@@ -29,16 +42,7 @@ export const authConfig = {
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            profile(profile) {
-                return {
-                    id: profile.sub,
-                    name: profile.name,
-                    email: profile.email,
-                    image: profile.picture,
-                    role: "customer",
-                    is_verified: true, // Google accounts are implicitly verified
-                }
-            }
+            allowDangerousEmailAccountLinking: true,
         }),
     ],
     session: { strategy: "jwt" },

@@ -1,7 +1,15 @@
 import { LoginForm } from "@/components/auth/login-form"
 import { Suspense } from "react"
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
 async function LoginPageContent({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
+    const session = await auth()
+
+    if (session) {
+        redirect("/")
+    }
+
     const params = await searchParams
     return (
         <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
