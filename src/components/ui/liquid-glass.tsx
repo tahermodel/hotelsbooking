@@ -314,35 +314,30 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-gradient-to-br from-white/8 via-white/5 to-white/3",
-                "border border-white/25",
-                "shadow-[0_4px_24px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]",
+                "bg-white/20 backdrop-blur-md",
+                "border border-white/40",
+                "shadow-[0_8px_32px_rgba(31,38,135,0.15),inset_0_1px_0_rgba(255,255,255,0.4)]",
                 className
             )}
             whileHover={animate ? {
                 scale: 1.015,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06)"
+                boxShadow: "0 16px 48px rgba(31,38,135,0.2), inset 0 1px 0 rgba(255,255,255,0.5)"
             } : {}}
             whileTap={animate ? { scale: 0.99 } : {}}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 z-[1] pointer-events-none"
+                className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
             <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
                 <div
-                    className="absolute top-0 left-[10%] right-[10%] h-[1px]"
+                    className="absolute top-0 left-[5%] right-[5%] h-[1px]"
                     style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)'
                     }}
                 />
-                <div
-                    className="absolute bottom-0 left-[20%] right-[20%] h-[1px]"
-                    style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)'
-                    }}
-                />
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
             </div>
             <div className="relative z-10 w-full h-full">
                 {children}

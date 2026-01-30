@@ -15,10 +15,15 @@ export default async function Home() {
 
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-background relative overflow-hidden">
+      {/* Ambient Background Elements */}
+      <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] rounded-full bg-secondary/20 blur-[130px] pointer-events-none" />
+      <div className="absolute top-[40%] right-[5%] w-[300px] h-[300px] rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
+
       <Header />
-      <main className="flex-1 w-full">
-        <section className="relative py-12 md:py-20 bg-white">
+      <main className="flex-1 w-full relative z-10">
+        <section className="relative py-12 md:py-20">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center space-y-6 md:space-y-10 text-center">
               <div className="space-y-3 md:space-y-4">
@@ -37,7 +42,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="py-12 md:py-20 bg-white border-t border-primary/5">
+        <section className="py-12 md:py-20 border-t border-primary/5">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-0 mb-8 md:mb-12">
               <div>
@@ -55,7 +60,7 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-primary/5 bg-white">
+      <footer className="border-t border-primary/5 bg-background/50 backdrop-blur-sm relative z-10">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-black tracking-tighter text-primary">StayEase</span>
