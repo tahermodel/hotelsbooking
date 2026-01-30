@@ -20,8 +20,8 @@ export function LiquidGlass({
     const [refractionScale, setRefractionScale] = useState(0)
 
     useEffect(() => {
-        // Choose extreme magnification (positive) or minification (negative)
-        const scale = Math.random() > 0.5 ? 400 : -400
+        // Choose magnification (positive) or minification (negative) - Scale reduced for quality
+        const scale = Math.random() > 0.5 ? 50 : -50
         setRefractionScale(scale)
     }, [])
     const containerRef = useRef<HTMLDivElement>(null)
@@ -258,14 +258,8 @@ export function LiquidGlass({
                 className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
 
-            {/* Whole Surface Refraction Layer - Physically distorts/warps the entire background */}
-            <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
-                style={{
-                    backdropFilter: `url(#${filterId}) saturate(120%)`,
-                    WebkitBackdropFilter: `url(#${filterId}) saturate(120%)`
-                }}
-            />
+            {/* Whole Surface Refraction Layer - Removed, reverting to Rim Only */}
+
 
             {/* Invisible but present SVG for defining the displacement filter */}
             <svg style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0.01, pointerEvents: 'none' }}>
@@ -273,7 +267,7 @@ export function LiquidGlass({
                     <filter id={filterId} colorInterpolationFilters="sRGB">
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.002 0.05"
+                            baseFrequency="0.005"
                             numOctaves="1"
                             seed="5"
                             result="noise"
@@ -288,6 +282,17 @@ export function LiquidGlass({
                     </filter>
                 </defs>
             </svg>
+
+            {/* The Lens Rim - Physically distorts/warps the background at the edges only */}
+            <div
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
+                style={{
+                    backdropFilter: `url(#${filterId}) saturate(150%) blur(1px)`,
+                    WebkitBackdropFilter: `url(#${filterId}) saturate(150%) blur(1px)`,
+                    maskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)'
+                }}
+            />
 
 
 
