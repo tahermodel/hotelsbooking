@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useCallback } from "react"
+import React, { useEffect, useRef, useCallback, useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import * as THREE from 'three'
@@ -16,6 +16,14 @@ export function LiquidGlass({
     className,
     animate = true
 }: LiquidGlassProps) {
+    const filterId = useMemo(() => `rim-distortion-${Math.random().toString(36).substr(2, 9)}`, [])
+    const [refractionScale, setRefractionScale] = useState(0)
+
+    useEffect(() => {
+        // Randomly choose extreme magnification (positive) or minification (negative)
+        const scale = Math.random() > 0.5 ? 600 : -600
+        setRefractionScale(scale)
+    }, [])
     const containerRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const sceneRef = useRef<{
@@ -265,35 +273,21 @@ export function LiquidGlass({
             {/* Invisible SVG for defining the displacement filter */}
             <svg style={{ position: 'absolute', width: 0, height: 0 }}>
                 <defs>
-                    <filter id="rim-distortion">
+                    <filter id={filterId}>
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.005"
-                            numOctaves="2"
+                            baseFrequency="0.003"
+                            numOctaves="1"
                             seed="5"
                             result="noise"
-                        >
-                            <animate
-                                attributeName="baseFrequency"
-                                values="0.005;0.008;0.005"
-                                dur="12s"
-                                repeatCount="indefinite"
-                            />
-                        </feTurbulence>
+                        />
                         <feDisplacementMap
                             in="SourceGraphic"
                             in2="noise"
-                            scale="150"
+                            scale={refractionScale}
                             xChannelSelector="R"
                             yChannelSelector="G"
-                        >
-                            <animate
-                                attributeName="scale"
-                                values="100;180;100"
-                                dur="10s"
-                                repeatCount="indefinite"
-                            />
-                        </feDisplacementMap>
+                        />
                     </filter>
                 </defs>
             </svg>
@@ -302,10 +296,10 @@ export function LiquidGlass({
             <div
                 className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: 'url(#rim-distortion)',
-                    WebkitBackdropFilter: 'url(#rim-distortion)',
-                    maskImage: 'radial-gradient(ellipse at center, transparent 88%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 88%, black 100%)'
+                    backdropFilter: `url(#${filterId})`,
+                    WebkitBackdropFilter: `url(#${filterId})`,
+                    maskImage: 'radial-gradient(ellipse at center, transparent 70%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 70%, black 100%)'
                 }}
             />
 
