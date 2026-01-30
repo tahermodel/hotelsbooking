@@ -262,22 +262,24 @@ export function LiquidGlass({
                 className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
 
-            {/* Primary Rim - Heavy refraction and blur */}
-            <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-3xl saturate-200 contrast-125"
-                style={{
-                    maskImage: 'radial-gradient(ellipse at center, transparent 94%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 94%, black 100%)'
+            {/* Breathing Lens Rim - Simulates shifting optical distortion */}
+            <motion.div
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
+                animate={{
+                    backdropFilter: [
+                        "blur(16px) saturate(180%) contrast(125%) brightness(1.1)", // State A: "Magnified"/Intense
+                        "blur(8px) saturate(140%) contrast(110%) brightness(1.0)"   // State B: "Minified"/Relaxed
+                    ]
                 }}
-            />
-
-            {/* Secondary Lens Layer - Simulates optical banding/distortion */}
-            <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-md brightness-110"
+                transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "easeInOut"
+                }}
                 style={{
-                    maskImage: 'radial-gradient(ellipse at center, transparent 90%, black 95%, transparent 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 90%, black 95%, transparent 100%)',
-                    opacity: 0.7
+                    maskImage: 'radial-gradient(ellipse at center, transparent 90%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 90%, black 100%)'
                 }}
             />
 
