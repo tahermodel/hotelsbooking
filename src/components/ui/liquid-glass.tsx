@@ -268,29 +268,29 @@ export function LiquidGlass({
                     <filter id="rim-distortion">
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.02"
-                            numOctaves="1"
+                            baseFrequency="0.005"
+                            numOctaves="2"
                             seed="5"
                             result="noise"
                         >
                             <animate
                                 attributeName="baseFrequency"
-                                values="0.015;0.025;0.015"
-                                dur="10s"
+                                values="0.005;0.008;0.005"
+                                dur="12s"
                                 repeatCount="indefinite"
                             />
                         </feTurbulence>
                         <feDisplacementMap
                             in="SourceGraphic"
                             in2="noise"
-                            scale="30"
+                            scale="150"
                             xChannelSelector="R"
                             yChannelSelector="G"
                         >
                             <animate
                                 attributeName="scale"
-                                values="20;50;20"
-                                dur="8s"
+                                values="100;180;100"
+                                dur="10s"
                                 repeatCount="indefinite"
                             />
                         </feDisplacementMap>
@@ -302,10 +302,10 @@ export function LiquidGlass({
             <div
                 className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: 'url(#rim-distortion) blur(2px)',
-                    WebkitBackdropFilter: 'url(#rim-distortion) blur(2px)',
-                    maskImage: 'radial-gradient(ellipse at center, transparent 90%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 90%, black 100%)'
+                    backdropFilter: 'url(#rim-distortion)',
+                    WebkitBackdropFilter: 'url(#rim-distortion)',
+                    maskImage: 'radial-gradient(ellipse at center, transparent 88%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 88%, black 100%)'
                 }}
             />
 
