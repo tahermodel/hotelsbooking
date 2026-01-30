@@ -129,12 +129,15 @@ export function LiquidGlass({
             glassColor = mix(glassColor, rainbow, fresnel * 0.5);
             
             float specAngle = angle + PI * 0.25;
-            float specular1 = pow(max(0.0, cos(specAngle * 2.0)), 8.0) * 0.2;
-            specular1 *= smoothstep(0.5, 0.2, fresnelDist);
+            float specular1 = pow(max(0.0, cos(specAngle * 2.0)), 4.0) * 0.5;
+            specular1 *= smoothstep(0.6, 0.1, fresnelDist);
             
-            float topLight = smoothstep(0.7, 0.2, uv.y);
-            topLight *= smoothstep(0.1, 0.3, uv.x) * smoothstep(0.9, 0.7, uv.x);
-            topLight *= 0.25;
+            float specular2 = pow(max(0.0, cos(angle + PI * 0.7)), 16.0) * 0.3;
+            specular2 *= smoothstep(0.4, 0.1, fresnelDist);
+            
+            float topLight = smoothstep(0.8, 0.1, uv.y);
+            topLight *= smoothstep(0.05, 0.2, uv.x) * smoothstep(0.95, 0.8, uv.x);
+            topLight *= 0.4;
             
             float caustics = 0.0;
             for(float i = 1.0; i <= 3.0; i++) {
@@ -146,27 +149,30 @@ export function LiquidGlass({
             
             float edgeHighlight = 0.0;
             float edgeDist = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
-            edgeHighlight = smoothstep(0.15, 0.0, edgeDist) * 0.3;
-            edgeHighlight *= 1.0 + sin(angle * 4.0 + time * 2.0) * 0.3;
+            edgeHighlight = smoothstep(0.12, 0.0, edgeDist) * 0.5;
+            edgeHighlight *= 1.0 + sin(angle * 4.0 + time * 2.0) * 0.4;
             
-            float shimmer = sin(uv.x * 30.0 + uv.y * 20.0 + time * 3.0) * 0.02;
+            float shimmer = sin(uv.x * 40.0 + uv.y * 30.0 + time * 4.0) * 0.04;
+            shimmer += sin(uv.x * 25.0 - uv.y * 15.0 + time * 3.0) * 0.02;
             shimmer *= edgeMask;
             
             vec3 finalColor = glassColor;
             finalColor += specular1;
+            finalColor += specular2;
             finalColor += topLight;
             finalColor += caustics;
             finalColor += edgeHighlight;
             finalColor += shimmer;
             
-            float alpha = 0.08;
-            alpha += fresnel * 0.15;
-            alpha += specular1 * 0.5;
-            alpha += topLight * 0.4;
-            alpha += caustics * 0.3;
-            alpha += edgeHighlight * 0.6;
+            float alpha = 0.12;
+            alpha += fresnel * 0.2;
+            alpha += specular1 * 0.6;
+            alpha += specular2 * 0.4;
+            alpha += topLight * 0.5;
+            alpha += caustics * 0.4;
+            alpha += edgeHighlight * 0.8;
             alpha *= edgeMask;
-            alpha = clamp(alpha, 0.0, 0.6);
+            alpha = clamp(alpha, 0.0, 0.75);
             
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -314,14 +320,14 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-white/20 backdrop-blur-md",
-                "border border-white/40",
-                "shadow-[0_8px_32px_rgba(31,38,135,0.15),inset_0_1px_0_rgba(255,255,255,0.4)]",
+                "bg-white/25 backdrop-blur-md",
+                "border border-white/50",
+                "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_-1px_0_rgba(255,255,255,0.1)]",
                 className
             )}
             whileHover={animate ? {
                 scale: 1.015,
-                boxShadow: "0 16px 48px rgba(31,38,135,0.2), inset 0 1px 0 rgba(255,255,255,0.5)"
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(255,255,255,0.2), 0 0 30px rgba(255,255,255,0.15)"
             } : {}}
             whileTap={animate ? { scale: 0.99 } : {}}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
