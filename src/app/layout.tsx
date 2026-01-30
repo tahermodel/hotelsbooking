@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google"; // Disabled due to build timeout
 import "./globals.css";
 import { Providers } from "@/components/layout/providers";
-import { LiquidFilters } from "@/components/ui/liquid-filters";
 
 // Mock fonts to prevent network timeouts during build
 const geistSans = { variable: "font-sans", subsets: ["latin"] };
@@ -35,7 +34,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LiquidFilters />
         <Providers>{children}</Providers>
       </body>
     </html>

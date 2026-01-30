@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/header"
 import { SearchFilters } from "@/components/search/search-filters"
 import { HotelCard } from "@/components/hotels/hotel-card"
 import { prisma } from "@/lib/prisma"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
 
 export const dynamic = 'force-dynamic'
 
@@ -42,33 +43,35 @@ export default async function SearchPage({
 
                 <div className="flex flex-col md:flex-row gap-12">
                     <aside className="md:w-72 space-y-8">
-                        <div className="p-8 rounded-3xl liquid-glass border-white/20 shadow-2xl space-y-10">
-                            <div>
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-6">Star Rating</h3>
-                                <div className="space-y-4">
-                                    {[5, 4, 3, 2].map(star => (
-                                        <label key={star} className="flex items-center space-x-4 cursor-pointer group">
-                                            <input type="checkbox" className="w-5 h-5 rounded bg-white/10 backdrop-blur-md border border-white/20 text-primary transition-all" />
-                                            <span className="text-sm font-bold group-hover:text-primary transition-colors">{star} Stars</span>
-                                        </label>
-                                    ))}
+                        <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl">
+                            <div className="space-y-10">
+                                <div>
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-6">Star Rating</h3>
+                                    <div className="space-y-4">
+                                        {[5, 4, 3, 2].map(star => (
+                                            <label key={star} className="flex items-center space-x-4 cursor-pointer group">
+                                                <input type="checkbox" className="w-5 h-5 rounded bg-white/10 backdrop-blur-md border border-white/20 text-primary transition-all" />
+                                                <span className="text-sm font-bold group-hover:text-primary transition-colors">{star} Stars</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </LiquidGlass>
                     </aside>
 
                     <div className="flex-1 space-y-10">
-                        <div className="liquid-glass p-2 rounded-2xl border-white/10">
+                        <LiquidGlass className="p-2 rounded-2xl border-white/10">
                             <SearchFilters />
-                        </div>
+                        </LiquidGlass>
                         <div className="grid gap-8 sm:grid-cols-2">
                             {hotels?.map((hotel: any) => (
                                 <HotelCard key={hotel.id} hotel={hotel} />
                             ))}
                             {(!hotels || hotels.length === 0) && (
-                                <div className="col-span-full py-24 text-center rounded-3xl liquid-glass border-dashed border-2 border-white/10 flex flex-col items-center justify-center">
+                                <LiquidGlass className="col-span-full py-24 text-center rounded-3xl border-dashed border-2 border-white/10 flex flex-col items-center justify-center">
                                     <p className="text-lg font-black text-muted-foreground italic tracking-widest uppercase opacity-40">No properties found.</p>
-                                </div>
+                                </LiquidGlass>
                             )}
                         </div>
                     </div>

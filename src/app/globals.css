@@ -46,76 +46,17 @@
 @layer utilities {
 
 
-  .liquid-glass {
+  .glass-content-overlay {
     position: relative;
+    z-index: 10;
+  }
+
+  /* Base glass utility for small elements */
+  .liquid-glass {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: url(#liquid-glass-refraction) blur(8px) saturate(150%);
-    -webkit-backdrop-filter: blur(8px) saturate(150%);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow:
-      0 8px 32px rgba(31, 38, 135, 0.15),
-      inset 0 4px 20px rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-  }
-
-  .liquid-glass:hover {
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow:
-      0 12px 40px rgba(31, 38, 135, 0.25),
-      inset 0 4px 25px rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-  }
-
-  /* Shiny effect */
-  .liquid-glass::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.5px;
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0) 30%,
-        rgba(255, 255, 255, 0.9) 50%,
-        rgba(255, 255, 255, 0) 70%);
-    background-size: 300% 300%;
-    animation: shine 6s linear infinite;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* Inner glow for depth */
-  .liquid-glass::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.25) 0%,
-        rgba(255, 255, 255, 0) 100%);
-    border-radius: 32px 32px 0 0;
-    pointer-events: none;
-  }
-
-  @keyframes shine {
-    0% {
-      background-position: 100% 0;
-    }
-
-    100% {
-      background-position: 0% 100%;
-    }
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 }
 

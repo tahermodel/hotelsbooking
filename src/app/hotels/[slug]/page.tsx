@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Star, MapPin, Wifi, Car, Coffee, Tv } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
 
 export const dynamic = 'force-dynamic'
 
@@ -24,7 +25,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
             <main className="flex-1 container py-12">
                 <div className="grid gap-12 lg:grid-cols-3">
                     <div className="lg:col-span-2 space-y-10">
-                        <div className="relative aspect-video overflow-hidden rounded-3xl liquid-glass shadow-2xl group">
+                        <LiquidGlass className="relative aspect-video overflow-hidden rounded-3xl shadow-2xl group border-white/20">
                             <Image
                                 src={hotel.images?.[0] || "/placeholder.jpg"}
                                 alt={hotel.name}
@@ -32,7 +33,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                        </div>
+                        </LiquidGlass>
 
                         <div className="space-y-8 px-2">
                             <div className="flex items-start justify-between">
@@ -69,7 +70,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                     </div>
 
                     <div className="space-y-6">
-                        <div className="rounded-3xl liquid-glass border-white/20 p-8 sticky top-24 shadow-2xl backdrop-blur-2xl">
+                        <LiquidGlass className="rounded-3xl border-white/20 p-8 sticky top-24 shadow-2xl backdrop-blur-2xl">
                             <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Available Curated Rooms</h3>
                             <div className="space-y-6">
                                 {hotel.rooms?.map((room: any) => (
@@ -90,7 +91,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </LiquidGlass>
                     </div>
                 </div>
             </main>
