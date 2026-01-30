@@ -246,7 +246,7 @@ export function LiquidGlass({
             className={cn(
                 "relative overflow-hidden rounded-3xl",
                 "bg-white/5", // Very transparent
-                "backdrop-blur-sm backdrop-saturate-150", // Minimal blur, kept saturation
+                "backdrop-blur-[2px] backdrop-saturate-150", // Custom micro-blur
                 "border border-white/20", // Subtle border
                 "shadow-sm",
                 className
