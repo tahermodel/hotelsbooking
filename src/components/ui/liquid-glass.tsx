@@ -263,39 +263,39 @@ export function LiquidGlass({
 
 
             {/* Invisible SVG for filters */}
-            <svg style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0.01, pointerEvents: 'none' }}>
+            <svg style={{ position: 'absolute', width: '0', height: '0', pointerEvents: 'none' }}>
                 <defs>
                     {/* Rim Filter: Strong Scale Distortion */}
-                    <filter id={rimFilterId} colorInterpolationFilters="sRGB">
+                    <filter id={rimFilterId} x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.005"
-                            numOctaves="1"
+                            baseFrequency="0.03"
+                            numOctaves="2"
                             seed="5"
                             result="noise"
                         />
                         <feDisplacementMap
                             in="SourceGraphic"
                             in2="noise"
-                            scale={refractionScale}
+                            scale={Math.abs(refractionScale)}
                             xChannelSelector="R"
                             yChannelSelector="G"
                         />
                     </filter>
 
                     {/* Body Filter: Horizontal Bending */}
-                    <filter id={bodyFilterId} colorInterpolationFilters="sRGB">
+                    <filter id={bodyFilterId} x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
                         <feTurbulence
-                            type="fractalNoise"
-                            baseFrequency="0.002 0.05"
-                            numOctaves="1"
+                            type="turbulence"
+                            baseFrequency="0.01 0.005"
+                            numOctaves="2"
                             seed="5"
                             result="noise"
                         />
                         <feDisplacementMap
                             in="SourceGraphic"
                             in2="noise"
-                            scale="30"
+                            scale="20"
                             xChannelSelector="R"
                             yChannelSelector="G"
                         />
@@ -303,31 +303,42 @@ export function LiquidGlass({
                 </defs>
             </svg>
 
-            {/* Body Layer - Horizontal Bending (Center) */}
+            {/* 0. DISPLACEMENT LAYERS (Bottom) - Only affect the BACKDROP */}
+            {/* These divs must have background:transparent to only distort the content BEHIND the component */}
+
+            {/* Body Filter: Horizontal Bending (Center) */}
             <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
+                className="absolute inset-0 z-[0] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: `url(#${bodyFilterId})`,
+                    backgroundColor: 'transparent',
+                    backdropFilter: `url(#${bodyFilterId})`, // Distorts what is BEHIND
                     WebkitBackdropFilter: `url(#${bodyFilterId})`,
-                    maskImage: 'radial-gradient(ellipse at center, black 96%, transparent 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 96%, transparent 100%)'
+                    maskImage: 'radial-gradient(ellipse at center, black 60%, transparent 100%)', // Focus on body
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 60%, transparent 100%)'
                 }}
             />
 
-            {/* Rim Layer - Magnification/Minification (Edges) */}
+            {/* Rim Filter: Magnification/Minification (Edges) */}
             <div
-                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
+                className="absolute inset-0 z-[0] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: `url(#${rimFilterId}) saturate(150%) blur(1px)`,
-                    WebkitBackdropFilter: `url(#${rimFilterId}) saturate(150%) blur(1px)`,
-                    maskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)'
+                    backgroundColor: 'transparent',
+                    backdropFilter: `url(#${rimFilterId}) blur(0.5px)`, // Distorts what is BEHIND
+                    WebkitBackdropFilter: `url(#${rimFilterId}) blur(0.5px)`,
+                    maskImage: 'radial-gradient(ellipse at center, transparent 80%, black 100%)', // Focus on rim
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 80%, black 100%)'
                 }}
             />
 
+            {/* 1. VISUAL LAYERS (Top) - Sitting ON TOP of the distortion */}
+            {/* WebGL Canvas (Noise/Shine) - NOT distorted by the filters above because it's higher z-index/separate */}
+            <canvas
+                ref={canvasRef}
+                className="absolute inset-0 z-[1] pointer-events-none opacity-80"
+            />
 
-
-            <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden rounded-3xl">
+            {/* Static Glass Highlights/Reflection - NOT distorted */}
+            <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
                 <div
                     className="absolute inset-0"
                     style={{
