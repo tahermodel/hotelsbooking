@@ -16,7 +16,8 @@ export function LiquidGlass({
     className,
     animate = true
 }: LiquidGlassProps) {
-    const filterId = useMemo(() => `rim-distortion-${Math.random().toString(36).substr(2, 9)}`, [])
+    const rimFilterId = useMemo(() => `rim-distortion-${Math.random().toString(36).substr(2, 9)}`, [])
+    const bodyFilterId = useMemo(() => `body-distortion-${Math.random().toString(36).substr(2, 9)}`, [])
     const [refractionScale, setRefractionScale] = useState(0)
 
     useEffect(() => {
@@ -261,10 +262,11 @@ export function LiquidGlass({
             {/* Whole Surface Refraction Layer - Removed, reverting to Rim Only */}
 
 
-            {/* Invisible but present SVG for defining the displacement filter */}
+            {/* Invisible SVG for filters */}
             <svg style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0.01, pointerEvents: 'none' }}>
                 <defs>
-                    <filter id={filterId} colorInterpolationFilters="sRGB">
+                    {/* Rim Filter: Strong Scale Distortion */}
+                    <filter id={rimFilterId} colorInterpolationFilters="sRGB">
                         <feTurbulence
                             type="fractalNoise"
                             baseFrequency="0.005"
@@ -280,15 +282,44 @@ export function LiquidGlass({
                             yChannelSelector="G"
                         />
                     </filter>
+
+                    {/* Body Filter: Horizontal Bending */}
+                    <filter id={bodyFilterId} colorInterpolationFilters="sRGB">
+                        <feTurbulence
+                            type="fractalNoise"
+                            baseFrequency="0.002 0.05"
+                            numOctaves="1"
+                            seed="5"
+                            result="noise"
+                        />
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="noise"
+                            scale="30"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                        />
+                    </filter>
                 </defs>
             </svg>
 
-            {/* The Lens Rim - Physically distorts/warps the background at the edges only */}
+            {/* Body Layer - Horizontal Bending (Center) */}
             <div
                 className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
                 style={{
-                    backdropFilter: `url(#${filterId}) saturate(150%) blur(1px)`,
-                    WebkitBackdropFilter: `url(#${filterId}) saturate(150%) blur(1px)`,
+                    backdropFilter: `url(#${bodyFilterId})`,
+                    WebkitBackdropFilter: `url(#${bodyFilterId})`,
+                    maskImage: 'radial-gradient(ellipse at center, black 96%, transparent 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 96%, transparent 100%)'
+                }}
+            />
+
+            {/* Rim Layer - Magnification/Minification (Edges) */}
+            <div
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl"
+                style={{
+                    backdropFilter: `url(#${rimFilterId}) saturate(150%) blur(1px)`,
+                    WebkitBackdropFilter: `url(#${rimFilterId}) saturate(150%) blur(1px)`,
                     maskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)',
                     WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 96%, black 100%)'
                 }}
