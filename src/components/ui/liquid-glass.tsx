@@ -245,8 +245,8 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-white/5", // Very transparent
-                "backdrop-blur-[2px] backdrop-saturate-150", // Custom micro-blur
+                "bg-white/5", // Very transparent base
+                "backdrop-blur-[2px] backdrop-saturate-150", // Base ultra-subtle refraction
                 "border border-white/20", // Subtle border
                 "shadow-sm",
                 className
@@ -259,19 +259,36 @@ export function LiquidGlass({
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 z-[1] pointer-events-none"
+                className="absolute inset-0 z-[1] pointer-events-none opacity-80"
             />
-            <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
+
+            {/* Edge Refraction Layer - Simulates bending at the glass edges */}
+            <div
+                className="absolute inset-0 z-[2] pointer-events-none rounded-3xl backdrop-blur-md"
+                style={{
+                    maskImage: 'radial-gradient(ellipse at center, transparent 85%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 85%, black 100%)'
+                }}
+            />
+
+            <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden rounded-3xl">
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%)',
+                        mixBlendMode: 'overlay'
+                    }}
+                />
                 <div
                     className="absolute top-0 left-[5%] right-[5%] h-[1px]"
                     style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)'
                     }}
                 />
                 <div
                     className="absolute bottom-0 left-[15%] right-[15%] h-[1px]"
                     style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)'
                     }}
                 />
             </div>
