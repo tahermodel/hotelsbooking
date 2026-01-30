@@ -245,8 +245,10 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-white/15",
-                "border border-white/40",
+                "bg-white/5", // Very transparent
+                "backdrop-blur-xl backdrop-saturate-150", // The 'bending' and color pop
+                "border border-white/20", // Subtle border
+                "shadow-sm",
                 className
             )}
             whileHover={animate ? {
