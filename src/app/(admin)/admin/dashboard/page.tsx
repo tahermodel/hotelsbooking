@@ -26,9 +26,9 @@ export default async function AdminDashboardPage() {
                 <h1 className="text-3xl font-bold mb-8">Platform Administration</h1>
 
                 <div className="grid gap-6 md:grid-cols-3 mb-12">
-                    <div className="p-8 rounded-2xl glass-surface border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
+                    <div className="p-8 rounded-2xl liquid-glass border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
                         <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 rounded-2xl glass bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div className="w-14 h-14 rounded-2xl liquid-glass bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <Building2 className="w-7 h-7 text-primary" />
                             </div>
                             <div>
@@ -37,9 +37,9 @@ export default async function AdminDashboardPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="p-8 rounded-2xl glass-surface border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
+                    <div className="p-8 rounded-2xl liquid-glass border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
                         <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 rounded-2xl glass bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div className="w-14 h-14 rounded-2xl liquid-glass bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <Users className="w-7 h-7 text-blue-400" />
                             </div>
                             <div>
@@ -48,9 +48,9 @@ export default async function AdminDashboardPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="p-8 rounded-2xl glass-surface border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
+                    <div className="p-8 rounded-2xl liquid-glass border-white/20 shadow-xl group hover:-translate-y-1 transition-all">
                         <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 rounded-2xl glass bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div className="w-14 h-14 rounded-2xl liquid-glass bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <FileText className="w-7 h-7 text-yellow-400" />
                             </div>
                             <div>
@@ -62,26 +62,26 @@ export default async function AdminDashboardPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2">
-                    <section className="p-8 rounded-2xl glass-surface border-white/20 shadow-xl">
+                    <section className="p-8 rounded-2xl liquid-glass border-white/20 shadow-xl">
                         <h2 className="text-xl font-black mb-6 flex items-center gap-3">
                             <div className="w-1.5 h-6 bg-primary rounded-full" />
                             Quick Actions
                         </h2>
                         <div className="grid gap-3">
                             <Link href="/admin/applications">
-                                <Button variant="outline" className="w-full justify-start glass bg-white/5 hover:bg-white/10 border-white/10 h-12 rounded-xl liquid-flicker">Review Hotel Applications</Button>
+                                <Button variant="glass" className="w-full justify-start bg-white/5 hover:bg-white/10 border-white/10 h-12 rounded-xl liquid-flicker">Review Hotel Applications</Button>
                             </Link>
                             <Link href="/admin/hotels">
-                                <Button variant="outline" className="w-full justify-start glass bg-white/5 hover:bg-white/10 border-white/10 h-12 rounded-xl liquid-flicker">Manage All Hotels</Button>
+                                <Button variant="glass" className="w-full justify-start bg-white/5 hover:bg-white/10 border-white/10 h-12 rounded-xl liquid-flicker">Manage All Hotels</Button>
                             </Link>
                             <Link href="/admin/users">
-                                <Button variant="outline" className="w-full justify-start glass bg-white/5 hover:bg-white/10 border-white/10 h-12 rounded-xl liquid-flicker">Manage Platform Users</Button>
+                                <Button variant="glass" className="w-full justify-start bg-white/5 hover:bg-white/10 border-white/10 h-12 rounded-xl liquid-flicker">Manage Platform Users</Button>
                             </Link>
                         </div>
                     </section>
 
-                    <section className="p-8 rounded-2xl glass-surface border-white/20 border-dashed shadow-xl flex flex-col items-center justify-center text-center opacity-80">
-                        <div className="w-16 h-16 rounded-full glass bg-white/5 flex items-center justify-center mb-4">
+                    <section className="p-8 rounded-2xl liquid-glass border-white/20 border-dashed shadow-xl flex flex-col items-center justify-center text-center opacity-80">
+                        <div className="w-16 h-16 rounded-full liquid-glass bg-white/5 flex items-center justify-center mb-4">
                             <BarChart3 className="w-8 h-8 text-muted-foreground/50" />
                         </div>
                         <h2 className="text-xl font-black mb-2 italic">Platform Insights</h2>

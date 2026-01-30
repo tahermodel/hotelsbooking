@@ -24,7 +24,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
             <main className="flex-1 container py-12">
                 <div className="grid gap-12 lg:grid-cols-3">
                     <div className="lg:col-span-2 space-y-10">
-                        <div className="relative aspect-video overflow-hidden rounded-3xl glass shadow-2xl group">
+                        <div className="relative aspect-video overflow-hidden rounded-3xl liquid-glass shadow-2xl group">
                             <Image
                                 src={hotel.images?.[0] || "/placeholder.jpg"}
                                 alt={hotel.name}
@@ -43,7 +43,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                         <span>{hotel.address}, {hotel.city}, {hotel.country}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-2 glass px-4 py-2 rounded-2xl border-white/20">
+                                <div className="flex items-center space-x-2 liquid-glass px-4 py-2 rounded-2xl border-white/20">
                                     <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                                     <span className="text-xl font-black">{hotel.star_rating}</span>
                                 </div>
@@ -52,10 +52,10 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                             <div className="pt-10 border-t border-white/10">
                                 <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">World Class Amenities</h2>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                    <div className="flex items-center space-x-3 glass bg-white/5 p-4 rounded-2xl border-white/10"><Wifi className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Free WiFi</span></div>
-                                    <div className="flex items-center space-x-3 glass bg-white/5 p-4 rounded-2xl border-white/10"><Car className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Secure Parking</span></div>
-                                    <div className="flex items-center space-x-3 glass bg-white/5 p-4 rounded-2xl border-white/10"><Coffee className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Gourmet Breakfast</span></div>
-                                    <div className="flex items-center space-x-3 glass bg-white/5 p-4 rounded-2xl border-white/10"><Tv className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Smart Entertainment</span></div>
+                                    <div className="flex items-center space-x-3 liquid-glass bg-white/5 p-4 rounded-2xl border-white/10"><Wifi className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Free WiFi</span></div>
+                                    <div className="flex items-center space-x-3 liquid-glass bg-white/5 p-4 rounded-2xl border-white/10"><Car className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Secure Parking</span></div>
+                                    <div className="flex items-center space-x-3 liquid-glass bg-white/5 p-4 rounded-2xl border-white/10"><Coffee className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Gourmet Breakfast</span></div>
+                                    <div className="flex items-center space-x-3 liquid-glass bg-white/5 p-4 rounded-2xl border-white/10"><Tv className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Smart Entertainment</span></div>
                                 </div>
                             </div>
 
@@ -69,11 +69,11 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                     </div>
 
                     <div className="space-y-6">
-                        <div className="rounded-3xl glass-surface border-white/20 p-8 sticky top-24 shadow-2xl backdrop-blur-2xl">
+                        <div className="rounded-3xl liquid-glass border-white/20 p-8 sticky top-24 shadow-2xl backdrop-blur-2xl">
                             <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Available Curated Rooms</h3>
                             <div className="space-y-6">
                                 {hotel.rooms?.map((room: any) => (
-                                    <div key={room.id} className="p-6 glass bg-white/5 border-white/10 rounded-2xl transition-all hover:bg-white/10 group">
+                                    <div key={room.id} className="p-6 liquid-glass bg-white/5 border-white/10 rounded-2xl transition-all hover:bg-white/10 group">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
                                                 <h4 className="font-black text-lg group-hover:text-primary transition-colors">{room.name}</h4>

@@ -36,7 +36,7 @@ export async function Header() {
                                     Account
                                 </Link>
                                 <form action={handleSignOut}>
-                                    <Button variant="ghost" size="sm" className="glass hover:bg-white/20 rounded-full font-bold text-xs md:text-sm">Sign Out</Button>
+                                    <Button variant="glass" size="sm" className="rounded-full font-bold text-xs md:text-sm">Sign Out</Button>
                                 </form>
                             </>
                         ) : (

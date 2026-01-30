@@ -44,7 +44,7 @@ export default async function Home() {
                 <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground">Featured Destinations</h2>
                 <p className="text-xs md:text-sm text-muted-foreground mt-1">Handpicked properties for your next adventure.</p>
               </div>
-              <Button variant="ghost" className="hidden md:flex glass px-6 rounded-full hover:bg-white/20 liquid-flicker text-primary">View All</Button>
+              <Button variant="glass" className="hidden md:flex px-6 rounded-full hover:bg-primary/5 liquid-flicker text-primary">View All</Button>
             </div>
             <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full">
               {featuredHotels?.map((hotel) => (
