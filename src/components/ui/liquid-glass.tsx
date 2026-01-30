@@ -21,12 +21,156 @@ export function LiquidGlass({
     const sceneRef = useRef<{
         renderer: THREE.WebGLRenderer
         scene: THREE.Scene
-        camera: THREE.PerspectiveCamera
-        glassMesh: THREE.Mesh
+        camera: THREE.OrthographicCamera
+        mesh: THREE.Mesh
         clock: THREE.Clock
         animationId: number
-        mouse: { x: number; y: number; targetX: number; targetY: number }
+        uniforms: any
+        mouse: THREE.Vector2
+        targetMouse: THREE.Vector2
     } | null>(null)
+
+    const vertexShader = `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `
+
+    const fragmentShader = `
+        precision highp float;
+        
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform vec2 uMouse;
+        uniform vec2 uResolution;
+        uniform float uAspect;
+        
+        #define PI 3.14159265359
+        
+        float hash(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+        }
+        
+        float noise(vec2 p) {
+            vec2 i = floor(p);
+            vec2 f = fract(p);
+            f = f * f * (3.0 - 2.0 * f);
+            
+            float a = hash(i);
+            float b = hash(i + vec2(1.0, 0.0));
+            float c = hash(i + vec2(0.0, 1.0));
+            float d = hash(i + vec2(1.0, 1.0));
+            
+            return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+        }
+        
+        float fbm(vec2 p) {
+            float value = 0.0;
+            float amplitude = 0.5;
+            float frequency = 1.0;
+            for(int i = 0; i < 5; i++) {
+                value += amplitude * noise(p * frequency);
+                amplitude *= 0.5;
+                frequency *= 2.0;
+            }
+            return value;
+        }
+        
+        vec3 rgb2hsv(vec3 c) {
+            vec4 K = vec4(0.0, -1.0/3.0, 2.0/3.0, -1.0);
+            vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+            vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+            float d = q.x - min(q.w, q.y);
+            float e = 1.0e-10;
+            return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+        }
+        
+        vec3 hsv2rgb(vec3 c) {
+            vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+            vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+            return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        }
+        
+        void main() {
+            vec2 uv = vUv;
+            vec2 aspect = vec2(uAspect, 1.0);
+            vec2 center = vec2(0.5);
+            
+            float time = uTime * 0.3;
+            
+            vec2 mouseInfluence = (uMouse - center) * 0.08;
+            
+            float dist = length((uv - center) * aspect);
+            float edgeMask = smoothstep(0.6, 0.2, dist);
+            
+            vec2 warp = vec2(0.0);
+            warp.x = sin(uv.y * 12.0 + time * 2.0) * 0.008;
+            warp.y = cos(uv.x * 10.0 + time * 1.7) * 0.006;
+            warp += sin(uv.yx * 8.0 + time) * 0.004;
+            warp += mouseInfluence * edgeMask;
+            
+            float n = fbm(uv * 4.0 + time * 0.5);
+            warp += (n - 0.5) * 0.015;
+            
+            vec2 warpedUv = uv + warp * edgeMask;
+            
+            vec3 glassColor = vec3(0.97, 0.98, 1.0);
+            
+            vec2 fromCenter = (uv - center) * aspect;
+            float angle = atan(fromCenter.y, fromCenter.x);
+            float fresnelDist = length(fromCenter);
+            float fresnel = pow(fresnelDist * 1.5, 2.0);
+            fresnel = clamp(fresnel, 0.0, 1.0) * 0.4;
+            
+            float hue = (angle / (2.0 * PI) + 0.5) + time * 0.1;
+            vec3 rainbow = hsv2rgb(vec3(hue, 0.15, 1.0));
+            glassColor = mix(glassColor, rainbow, fresnel * 0.5);
+            
+            float specAngle = angle + PI * 0.25;
+            float specular1 = pow(max(0.0, cos(specAngle * 2.0)), 8.0) * 0.2;
+            specular1 *= smoothstep(0.5, 0.2, fresnelDist);
+            
+            float topLight = smoothstep(0.7, 0.2, uv.y);
+            topLight *= smoothstep(0.1, 0.3, uv.x) * smoothstep(0.9, 0.7, uv.x);
+            topLight *= 0.25;
+            
+            float caustics = 0.0;
+            for(float i = 1.0; i <= 3.0; i++) {
+                float scale = 6.0 * i;
+                float speed = 0.5 / i;
+                caustics += fbm(warpedUv * scale + time * speed) * (0.15 / i);
+            }
+            caustics *= edgeMask;
+            
+            float edgeHighlight = 0.0;
+            float edgeDist = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
+            edgeHighlight = smoothstep(0.15, 0.0, edgeDist) * 0.3;
+            edgeHighlight *= 1.0 + sin(angle * 4.0 + time * 2.0) * 0.3;
+            
+            float shimmer = sin(uv.x * 30.0 + uv.y * 20.0 + time * 3.0) * 0.02;
+            shimmer *= edgeMask;
+            
+            vec3 finalColor = glassColor;
+            finalColor += specular1;
+            finalColor += topLight;
+            finalColor += caustics;
+            finalColor += edgeHighlight;
+            finalColor += shimmer;
+            
+            float alpha = 0.08;
+            alpha += fresnel * 0.15;
+            alpha += specular1 * 0.5;
+            alpha += topLight * 0.4;
+            alpha += caustics * 0.3;
+            alpha += edgeHighlight * 0.6;
+            alpha *= edgeMask;
+            alpha = clamp(alpha, 0.0, 0.6);
+            
+            gl_FragColor = vec4(finalColor, alpha);
+        }
+    `
 
     const initScene = useCallback(() => {
         const canvas = canvasRef.current
@@ -38,68 +182,35 @@ export function LiquidGlass({
                 canvas,
                 alpha: true,
                 antialias: true,
-                powerPreference: "high-performance"
+                premultipliedAlpha: false
             })
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-            renderer.toneMapping = THREE.ACESFilmicToneMapping
-            renderer.toneMappingExposure = 1.2
-            renderer.outputColorSpace = THREE.SRGBColorSpace
+            renderer.setClearColor(0x000000, 0)
 
             const scene = new THREE.Scene()
 
-            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
-            camera.position.z = 3
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10)
+            camera.position.z = 1
 
-            const glassGeometry = new THREE.PlaneGeometry(4, 4, 128, 128)
+            const uniforms = {
+                uTime: { value: 0 },
+                uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+                uResolution: { value: new THREE.Vector2(1, 1) },
+                uAspect: { value: 1 }
+            }
 
-            const glassMaterial = new THREE.MeshPhysicalMaterial({
-                color: new THREE.Color(0xffffff),
-                metalness: 0.0,
-                roughness: 0.05,
-                transmission: 0.95,
-                thickness: 0.5,
-                ior: 1.45,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.1,
+            const geometry = new THREE.PlaneGeometry(2, 2)
+            const material = new THREE.ShaderMaterial({
+                vertexShader,
+                fragmentShader,
+                uniforms,
                 transparent: true,
-                opacity: 0.3,
-                side: THREE.DoubleSide,
-                envMapIntensity: 1.0,
-                reflectivity: 0.5,
-                sheen: 0.5,
-                sheenRoughness: 0.5,
-                sheenColor: new THREE.Color(0x88ccff)
+                depthWrite: false,
+                blending: THREE.NormalBlending
             })
 
-            const glassMesh = new THREE.Mesh(glassGeometry, glassMaterial)
-            scene.add(glassMesh)
-
-            const envTexture = new THREE.CubeTextureLoader().load([
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
-            ])
-            scene.environment = envTexture
-            glassMaterial.envMap = envTexture
-            glassMaterial.needsUpdate = true
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
-            scene.add(ambientLight)
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
-            directionalLight.position.set(5, 5, 5)
-            scene.add(directionalLight)
-
-            const pointLight1 = new THREE.PointLight(0x88ccff, 2, 20)
-            pointLight1.position.set(-3, 3, 3)
-            scene.add(pointLight1)
-
-            const pointLight2 = new THREE.PointLight(0xffcc88, 1.5, 20)
-            pointLight2.position.set(3, -2, 4)
-            scene.add(pointLight2)
+            const mesh = new THREE.Mesh(geometry, material)
+            scene.add(mesh)
 
             const clock = new THREE.Clock()
 
@@ -107,10 +218,12 @@ export function LiquidGlass({
                 renderer,
                 scene,
                 camera,
-                glassMesh,
+                mesh,
                 clock,
                 animationId: 0,
-                mouse: { x: 0, y: 0, targetX: 0, targetY: 0 }
+                uniforms,
+                mouse: new THREE.Vector2(0.5, 0.5),
+                targetMouse: new THREE.Vector2(0.5, 0.5)
             }
 
             updateSize()
@@ -131,51 +244,19 @@ export function LiquidGlass({
         const height = Math.max(rect.height, 1)
 
         sceneData.renderer.setSize(width, height)
-        sceneData.camera.aspect = width / height
-        sceneData.camera.updateProjectionMatrix()
-
-        const vFov = (sceneData.camera.fov * Math.PI) / 180
-        const planeHeight = 2 * Math.tan(vFov / 2) * sceneData.camera.position.z
-        const planeWidth = planeHeight * sceneData.camera.aspect
-
-        sceneData.glassMesh.scale.set(planeWidth / 4, planeHeight / 4, 1)
+        sceneData.uniforms.uResolution.value.set(width, height)
+        sceneData.uniforms.uAspect.value = width / height
     }, [])
 
     const animateScene = useCallback(() => {
         const sceneData = sceneRef.current
         if (!sceneData) return
 
-        const { renderer, scene, camera, glassMesh, clock, mouse } = sceneData
-        const time = clock.getElapsedTime()
+        const { renderer, scene, camera, clock, uniforms, mouse, targetMouse } = sceneData
 
-        mouse.x += (mouse.targetX - mouse.x) * 0.05
-        mouse.y += (mouse.targetY - mouse.y) * 0.05
-
-        glassMesh.rotation.x = mouse.y * 0.15 + Math.sin(time * 0.3) * 0.02
-        glassMesh.rotation.y = mouse.x * 0.15 + Math.cos(time * 0.4) * 0.02
-
-        const positions = glassMesh.geometry.attributes.position
-        const originalPositions = (glassMesh.geometry as any)._originalPositions
-
-        if (!originalPositions) {
-            (glassMesh.geometry as any)._originalPositions = positions.array.slice()
-        }
-
-        const origPos = (glassMesh.geometry as any)._originalPositions
-        if (origPos) {
-            for (let i = 0; i < positions.count; i++) {
-                const x = origPos[i * 3]
-                const y = origPos[i * 3 + 1]
-
-                const wave1 = Math.sin(x * 2 + time * 1.5) * 0.015
-                const wave2 = Math.cos(y * 2.5 + time * 1.2) * 0.012
-                const wave3 = Math.sin((x + y) * 1.5 + time) * 0.008
-
-                positions.setZ(i, wave1 + wave2 + wave3)
-            }
-            positions.needsUpdate = true
-            glassMesh.geometry.computeVertexNormals()
-        }
+        mouse.lerp(targetMouse, 0.08)
+        uniforms.uMouse.value.copy(mouse)
+        uniforms.uTime.value = clock.getElapsedTime()
 
         renderer.render(scene, camera)
         sceneData.animationId = requestAnimationFrame(animateScene)
@@ -187,15 +268,14 @@ export function LiquidGlass({
         if (!container || !sceneData) return
 
         const rect = container.getBoundingClientRect()
-        sceneData.mouse.targetX = ((e.clientX - rect.left) / rect.width) * 2 - 1
-        sceneData.mouse.targetY = -((e.clientY - rect.top) / rect.height) * 2 + 1
+        sceneData.targetMouse.x = (e.clientX - rect.left) / rect.width
+        sceneData.targetMouse.y = 1.0 - (e.clientY - rect.top) / rect.height
     }, [])
 
     const handleMouseLeave = useCallback(() => {
         const sceneData = sceneRef.current
         if (!sceneData) return
-        sceneData.mouse.targetX = 0
-        sceneData.mouse.targetY = 0
+        sceneData.targetMouse.set(0.5, 0.5)
     }, [])
 
     useEffect(() => {
@@ -216,9 +296,9 @@ export function LiquidGlass({
             if (sceneRef.current) {
                 cancelAnimationFrame(sceneRef.current.animationId)
                 sceneRef.current.renderer.dispose()
-                sceneRef.current.glassMesh.geometry.dispose()
-                if (sceneRef.current.glassMesh.material instanceof THREE.Material) {
-                    sceneRef.current.glassMesh.material.dispose()
+                sceneRef.current.mesh.geometry.dispose()
+                if (sceneRef.current.mesh.material instanceof THREE.Material) {
+                    sceneRef.current.mesh.material.dispose()
                 }
             }
             if (container && animate) {
@@ -234,27 +314,35 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-white/5 backdrop-blur-2xl",
-                "border border-white/20",
-                "shadow-[0_8px_32px_rgba(31,38,135,0.2),inset_0_1px_0_rgba(255,255,255,0.3)]",
+                "bg-gradient-to-br from-white/8 via-white/5 to-white/3",
+                "border border-white/25",
+                "shadow-[0_4px_24px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]",
                 className
             )}
             whileHover={animate ? {
-                scale: 1.02,
-                boxShadow: "0 20px 50px rgba(31,38,135,0.3), inset 0 1px 0 rgba(255,255,255,0.4)"
+                scale: 1.015,
+                boxShadow: "0 12px 40px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06)"
             } : {}}
             whileTap={animate ? { scale: 0.99 } : {}}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
         >
             <canvas
                 ref={canvasRef}
                 className="absolute inset-0 z-[1] pointer-events-none"
-                style={{ mixBlendMode: 'overlay' }}
             />
-            <div className="absolute inset-0 z-[2] pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-white/5 opacity-60" />
-                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-                <div className="absolute inset-y-0 left-0 w-[1px] bg-gradient-to-b from-white/40 via-white/10 to-transparent" />
+            <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
+                <div
+                    className="absolute top-0 left-[10%] right-[10%] h-[1px]"
+                    style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)'
+                    }}
+                />
+                <div
+                    className="absolute bottom-0 left-[20%] right-[20%] h-[1px]"
+                    style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)'
+                    }}
+                />
             </div>
             <div className="relative z-10 w-full h-full">
                 {children}
