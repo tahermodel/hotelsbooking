@@ -98,81 +98,72 @@ export function LiquidGlass({
             vec2 aspect = vec2(uAspect, 1.0);
             vec2 center = vec2(0.5);
             
-            float time = uTime * 0.3;
+            float time = uTime * 0.4;
             
-            vec2 mouseInfluence = (uMouse - center) * 0.08;
-            
-            float dist = length((uv - center) * aspect);
-            float edgeMask = smoothstep(0.6, 0.2, dist);
+            vec2 mouseInfluence = (uMouse - center) * 0.1;
             
             vec2 warp = vec2(0.0);
-            warp.x = sin(uv.y * 12.0 + time * 2.0) * 0.008;
-            warp.y = cos(uv.x * 10.0 + time * 1.7) * 0.006;
-            warp += sin(uv.yx * 8.0 + time) * 0.004;
-            warp += mouseInfluence * edgeMask;
+            warp.x = sin(uv.y * 8.0 + time * 2.0) * 0.006;
+            warp.y = cos(uv.x * 6.0 + time * 1.5) * 0.004;
+            warp += mouseInfluence;
             
-            float n = fbm(uv * 4.0 + time * 0.5);
-            warp += (n - 0.5) * 0.015;
+            float n = fbm(uv * 3.0 + time * 0.3);
+            warp += (n - 0.5) * 0.01;
             
-            vec2 warpedUv = uv + warp * edgeMask;
+            vec2 warpedUv = uv + warp;
             
-            vec3 glassColor = vec3(0.97, 0.98, 1.0);
+            vec3 glassColor = vec3(1.0);
             
-            vec2 fromCenter = (uv - center) * aspect;
-            float angle = atan(fromCenter.y, fromCenter.x);
-            float fresnelDist = length(fromCenter);
-            float fresnel = pow(fresnelDist * 1.5, 2.0);
-            fresnel = clamp(fresnel, 0.0, 1.0) * 0.4;
+            float topGradient = 1.0 - uv.y;
+            float mainHighlight = pow(topGradient, 1.5) * 0.6;
             
-            float hue = (angle / (2.0 * PI) + 0.5) + time * 0.1;
-            vec3 rainbow = hsv2rgb(vec3(hue, 0.15, 1.0));
-            glassColor = mix(glassColor, rainbow, fresnel * 0.5);
+            float diagonalHighlight = pow(max(0.0, 1.0 - length(uv - vec2(0.3, 0.2)) * 2.0), 2.0) * 0.4;
             
-            float specAngle = angle + PI * 0.25;
-            float specular1 = pow(max(0.0, cos(specAngle * 2.0)), 4.0) * 0.5;
-            specular1 *= smoothstep(0.6, 0.1, fresnelDist);
+            float bottomReflect = pow(uv.y, 3.0) * 0.15;
             
-            float specular2 = pow(max(0.0, cos(angle + PI * 0.7)), 16.0) * 0.3;
-            specular2 *= smoothstep(0.4, 0.1, fresnelDist);
+            float movingShine1 = sin(uv.x * 3.0 + uv.y * 2.0 + time * 1.5) * 0.5 + 0.5;
+            movingShine1 = pow(movingShine1, 4.0) * 0.25;
             
-            float topLight = smoothstep(0.8, 0.1, uv.y);
-            topLight *= smoothstep(0.05, 0.2, uv.x) * smoothstep(0.95, 0.8, uv.x);
-            topLight *= 0.4;
+            float movingShine2 = sin(uv.x * 5.0 - uv.y * 3.0 + time * 2.0) * 0.5 + 0.5;
+            movingShine2 = pow(movingShine2, 6.0) * 0.2;
             
-            float caustics = 0.0;
-            for(float i = 1.0; i <= 3.0; i++) {
-                float scale = 6.0 * i;
-                float speed = 0.5 / i;
-                caustics += fbm(warpedUv * scale + time * speed) * (0.15 / i);
-            }
-            caustics *= edgeMask;
+            float sparkle = sin(uv.x * 50.0 + time * 5.0) * sin(uv.y * 40.0 + time * 4.0);
+            sparkle = pow(max(0.0, sparkle), 8.0) * 0.3;
             
-            float edgeHighlight = 0.0;
+            float caustics = fbm(warpedUv * 8.0 + time * 0.5) * 0.15;
+            caustics += fbm(warpedUv * 12.0 - time * 0.3) * 0.1;
+            
             float edgeDist = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
-            edgeHighlight = smoothstep(0.12, 0.0, edgeDist) * 0.5;
-            edgeHighlight *= 1.0 + sin(angle * 4.0 + time * 2.0) * 0.4;
+            float borderShine = smoothstep(0.08, 0.0, edgeDist) * 0.6;
+            borderShine *= 1.0 + sin(atan(uv.y - 0.5, uv.x - 0.5) * 4.0 + time * 3.0) * 0.3;
             
-            float shimmer = sin(uv.x * 40.0 + uv.y * 30.0 + time * 4.0) * 0.04;
-            shimmer += sin(uv.x * 25.0 - uv.y * 15.0 + time * 3.0) * 0.02;
-            shimmer *= edgeMask;
+            float angle = atan(uv.y - 0.5, uv.x - 0.5);
+            vec3 rainbow = vec3(
+                sin(angle + time) * 0.5 + 0.5,
+                sin(angle + time + 2.094) * 0.5 + 0.5,
+                sin(angle + time + 4.189) * 0.5 + 0.5
+            );
+            rainbow = mix(vec3(1.0), rainbow, 0.08);
             
             vec3 finalColor = glassColor;
-            finalColor += specular1;
-            finalColor += specular2;
-            finalColor += topLight;
+            finalColor *= rainbow;
+            finalColor += mainHighlight;
+            finalColor += diagonalHighlight;
+            finalColor += bottomReflect;
+            finalColor += movingShine1;
+            finalColor += movingShine2;
+            finalColor += sparkle;
             finalColor += caustics;
-            finalColor += edgeHighlight;
-            finalColor += shimmer;
+            finalColor += borderShine;
             
-            float alpha = 0.12;
-            alpha += fresnel * 0.2;
-            alpha += specular1 * 0.6;
-            alpha += specular2 * 0.4;
-            alpha += topLight * 0.5;
-            alpha += caustics * 0.4;
-            alpha += edgeHighlight * 0.8;
-            alpha *= edgeMask;
-            alpha = clamp(alpha, 0.0, 0.75);
+            float alpha = 0.25;
+            alpha += mainHighlight * 0.4;
+            alpha += diagonalHighlight * 0.5;
+            alpha += movingShine1 * 0.3;
+            alpha += movingShine2 * 0.2;
+            alpha += sparkle * 0.5;
+            alpha += borderShine * 0.6;
+            alpha = clamp(alpha, 0.15, 0.85);
             
             gl_FragColor = vec4(finalColor, alpha);
         }
