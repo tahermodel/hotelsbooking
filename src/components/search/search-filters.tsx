@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Search, Calendar, Users } from "lucide-react"
-import { LiquidGlass } from "@/components/ui/liquid-glass"
 
 export function SearchFilters() {
     const router = useRouter()
@@ -23,7 +22,7 @@ export function SearchFilters() {
 
     return (
         <form onSubmit={handleSearch} className="relative w-full">
-            <LiquidGlass className="flex flex-col gap-2 md:gap-3 p-2 md:p-3 border-white/10 shadow-2xl md:flex-row md:items-center rounded-2xl md:rounded-[2rem]">
+            <div className="flex flex-col gap-2 md:gap-3 p-2 md:p-3 border border-white/10 shadow-2xl md:flex-row md:items-center rounded-2xl md:rounded-[2rem] bg-white/10 backdrop-blur-xl">
                 <div className="relative flex-1 group">
                     <div className="absolute inset-y-0 left-3 md:left-5 flex items-center pointer-events-none">
                         <Search className="h-4 md:h-5 w-4 md:w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -68,7 +67,7 @@ export function SearchFilters() {
                 <Button type="submit" className="h-12 md:h-16 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-xl liquid-flicker font-black uppercase tracking-widest bg-primary hover:bg-primary/90 text-white text-xs md:text-sm">
                     Explore
                 </Button>
-            </LiquidGlass>
+            </div>
         </form>
     )
 }

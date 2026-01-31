@@ -28,7 +28,7 @@ export default async function PartnerDashboardPage() {
                 </div>
 
                 {(!hotels || hotels.length === 0) ? (
-                    <div className="flex flex-col items-center justify-center py-20 rounded-2xl liquid-glass border-white/20 shadow-xl">
+                    <div className="flex flex-col items-center justify-center py-20 rounded-2xl bg-white/5 backdrop-blur-md border border-white/20 shadow-xl">
                         <Hotel className="w-20 h-20 text-muted-foreground/30 mb-6" />
                         <h2 className="text-2xl font-black mb-2">No Hotels Found</h2>
                         <p className="text-muted-foreground mb-8 text-center max-w-sm">You haven&apos;t added any properties to our platform yet. Start growing your business today.</p>
@@ -37,8 +37,8 @@ export default async function PartnerDashboardPage() {
                 ) : (
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                         {hotels.map((hotel: any) => (
-                            <div key={hotel.id} className="p-8 rounded-2xl liquid-glass border-white/20 hover:shadow-2xl transition-all group">
-                                <div className="w-12 h-12 rounded-xl liquid-glass bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <div key={hotel.id} className="p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/20 hover:shadow-2xl transition-all group">
+                                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                     <Hotel className="w-6 h-6 text-primary" />
                                 </div>
                                 <h3 className="font-black text-xl mb-2 group-hover:text-primary transition-colors">{hotel.name}</h3>

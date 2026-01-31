@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useCallback, useState, useMemo } from "react"
+import React, { useEffect, useRef, useCallback } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import * as THREE from 'three'
@@ -16,15 +16,6 @@ export function LiquidGlass({
     className,
     animate = true
 }: LiquidGlassProps) {
-    const rimFilterId = useMemo(() => `rim-distortion-${Math.random().toString(36).substr(2, 9)}`, [])
-    const bodyFilterId = useMemo(() => `body-distortion-${Math.random().toString(36).substr(2, 9)}`, [])
-    const [refractionScale, setRefractionScale] = useState(0)
-
-    useEffect(() => {
-        // Choose magnification (positive) or minification (negative) - Scale reduced for quality
-        const scale = Math.random() > 0.5 ? 50 : -50
-        setRefractionScale(scale)
-    }, [])
     const containerRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const sceneRef = useRef<{
@@ -78,16 +69,27 @@ export function LiquidGlass({
             vec2 mouseOffset = (uMouse - vec2(0.5)) * 0.15;
             float mouseHighlight = pow(max(0.0, 1.0 - length(uv - vec2(0.5) - mouseOffset) * 2.5), 3.0) * 0.3;
             
+            float angle = atan(uv.y - 0.5, uv.x - 0.5);
+            float dist = length(uv - vec2(0.5));
+            
+            float hue = (angle / (2.0 * PI) + 0.5) + time * 0.2;
+            float rainbowStrength = smoothstep(0.2, 0.5, dist) * 0.25;
+            rainbowStrength *= 1.0 + sin(angle * 3.0 + time * 2.0) * 0.3;
+            vec3 rainbow = hsv2rgb(vec3(hue, 0.6, 1.0));
+            
             float movingShine = sin(uv.x * 4.0 + uv.y * 2.0 - time * 2.0) * 0.5 + 0.5;
             movingShine = pow(movingShine, 6.0) * 0.2;
             
-            vec3 finalColor = vec3(1.0);
+            vec3 baseColor = vec3(1.0, 1.0, 1.0);
+            
+            vec3 finalColor = baseColor;
             finalColor += topHighlight;
             finalColor += specular1;
             finalColor += specular2;
             finalColor += borderGlow;
             finalColor += mouseHighlight;
             finalColor += movingShine;
+            finalColor = mix(finalColor, rainbow, rainbowStrength);
             
             float alpha = 0.05;
             alpha += topHighlight * 0.5;
@@ -96,6 +98,7 @@ export function LiquidGlass({
             alpha += borderGlow * 0.6;
             alpha += mouseHighlight * 0.5;
             alpha += movingShine * 0.3;
+            alpha += rainbowStrength * 0.4;
             alpha = clamp(alpha, 0.0, 0.8);
             
             gl_FragColor = vec4(finalColor, alpha);
@@ -242,8 +245,8 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-3xl",
-                "bg-white/5", // Very transparent base
-                "backdrop-blur-[1px] backdrop-saturate-150", // Base ultra-subtle refraction
+                "bg-white/5", // Very transparent
+                "backdrop-blur-[3px] backdrop-saturate-150", // Custom micro-blur
                 "border border-white/20", // Subtle border
                 "shadow-sm",
                 className
@@ -256,108 +259,19 @@ export function LiquidGlass({
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 z-[1] pointer-events-none opacity-80"
+                className="absolute inset-0 z-[1] pointer-events-none"
             />
-
-            {/* Whole Surface Refraction Layer - Removed, reverting to Rim Only */}
-
-
-            {/* Invisible SVG for filters */}
-            <svg style={{ position: 'absolute', width: '0', height: '0', pointerEvents: 'none' }}>
-                <defs>
-                    {/* Rim Filter: Strong Scale Distortion */}
-                    <filter id={rimFilterId} x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
-                        <feTurbulence
-                            type="fractalNoise"
-                            baseFrequency="0.03"
-                            numOctaves="2"
-                            seed="5"
-                            result="noise"
-                        />
-                        <feDisplacementMap
-                            in="SourceGraphic"
-                            in2="noise"
-                            scale={Math.abs(refractionScale)}
-                            xChannelSelector="R"
-                            yChannelSelector="G"
-                        />
-                    </filter>
-
-                    {/* Body Filter: Horizontal Bending */}
-                    <filter id={bodyFilterId} x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
-                        <feTurbulence
-                            type="turbulence"
-                            baseFrequency="0.01 0.005"
-                            numOctaves="2"
-                            seed="5"
-                            result="noise"
-                        />
-                        <feDisplacementMap
-                            in="SourceGraphic"
-                            in2="noise"
-                            scale="20"
-                            xChannelSelector="R"
-                            yChannelSelector="G"
-                        />
-                    </filter>
-                </defs>
-            </svg>
-
-            {/* 0. DISPLACEMENT LAYERS (Bottom) - Only affect the BACKDROP */}
-            {/* These divs must have background:transparent to only distort the content BEHIND the component */}
-
-            {/* Body Filter: Horizontal Bending (Center) */}
-            <div
-                className="absolute inset-0 z-[0] pointer-events-none rounded-3xl"
-                style={{
-                    backgroundColor: 'transparent',
-                    backdropFilter: `url(#${bodyFilterId})`, // Distorts what is BEHIND
-                    WebkitBackdropFilter: `url(#${bodyFilterId})`,
-                    maskImage: 'radial-gradient(ellipse at center, black 60%, transparent 100%)', // Focus on body
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 60%, transparent 100%)'
-                }}
-            />
-
-            {/* Rim Filter: Magnification/Minification (Edges) */}
-            <div
-                className="absolute inset-0 z-[0] pointer-events-none rounded-3xl"
-                style={{
-                    backgroundColor: 'transparent',
-                    backdropFilter: `url(#${rimFilterId}) blur(0.5px)`, // Distorts what is BEHIND
-                    WebkitBackdropFilter: `url(#${rimFilterId}) blur(0.5px)`,
-                    maskImage: 'radial-gradient(ellipse at center, transparent 80%, black 100%)', // Focus on rim
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 80%, black 100%)'
-                }}
-            />
-
-            {/* 1. VISUAL LAYERS (Top) - Sitting ON TOP of the distortion */}
-            {/* WebGL Canvas (Noise/Shine) - NOT distorted by the filters above because it's higher z-index/separate */}
-            <canvas
-                ref={canvasRef}
-                className="absolute inset-0 z-[1] pointer-events-none opacity-80"
-            />
-
-            {/* Static Glass Highlights/Reflection - NOT distorted */}
             <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
                 <div
-                    className="absolute inset-0"
+                    className="absolute top-0 left-[5%] right-[5%] h-[1px]"
                     style={{
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%)',
-                        mixBlendMode: 'overlay',
-                        boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
-                    }}
-                />
-                <div
-                    className="absolute top-0 left-[2%] right-[2%] h-[2px]"
-                    style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)',
-                        filter: 'blur(1px)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)'
                     }}
                 />
                 <div
                     className="absolute bottom-0 left-[15%] right-[15%] h-[1px]"
                     style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)'
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
                     }}
                 />
             </div>

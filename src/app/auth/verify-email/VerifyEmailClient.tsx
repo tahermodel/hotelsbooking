@@ -98,7 +98,7 @@ export default function VerifyEmailClient() {
                     </div>
                 </div>
                 <div className="flex items-center justify-center p-8 w-full h-full">
-                    <div className="liquid-glass p-8 md:p-12 w-full max-w-md rounded-2xl text-center space-y-6 animate-in fade-in zoom-in duration-500">
+                    <div className="bg-white/5 backdrop-blur-xl p-8 md:p-12 w-full max-w-md rounded-2xl text-center space-y-6 animate-in fade-in zoom-in duration-500 border border-white/10 shadow-2xl">
                         <div className="mx-auto w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20 shadow-lg shadow-green-500/5">
                             <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -141,7 +141,7 @@ export default function VerifyEmailClient() {
             </div>
 
             <div className="flex items-center justify-center p-4 md:p-8 w-full h-full">
-                <div className="liquid-glass p-8 md:p-12 w-full max-w-md rounded-2xl space-y-8 animate-in fade-in zoom-in duration-500 border border-white/40 shadow-2xl relative z-10">
+                <div className="bg-white/5 backdrop-blur-xl p-8 md:p-12 w-full max-w-md rounded-2xl space-y-8 animate-in fade-in zoom-in duration-500 border border-white/40 shadow-2xl relative z-10">
                     <div className="space-y-3 text-center">
                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--primary)]/10 bg-primary/10 mb-2 border border-[var(--primary)]/20 border-primary/20">
                             <svg className="w-7 h-7 text-[var(--primary)] text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">

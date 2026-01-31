@@ -2,11 +2,10 @@ import Link from "next/link"
 import Image from "next/image"
 import { Star, MapPin } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { LiquidGlass } from "@/components/ui/liquid-glass"
 
 export function HotelCard({ hotel }: { hotel: any }) {
     return (
-        <LiquidGlass className="p-0 border-white/10 group">
+        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-2xl transition-all hover:bg-white/10 group">
             <Link href={`/hotels/${hotel.slug}`} className="block overflow-hidden transition-all active:scale-[0.98]">
                 <div className="relative aspect-video overflow-hidden">
                     <Image
@@ -16,7 +15,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
                         className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
-                    <div className="absolute top-4 right-4 flex items-center space-x-1 px-3 py-1.5 rounded-full liquid-glass backdrop-blur-xl border-white/20">
+                    <div className="absolute top-4 right-4 flex items-center space-x-1 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
                         <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
                         <span className="text-xs font-black text-white">{hotel.star_rating}</span>
                     </div>
@@ -33,12 +32,12 @@ export function HotelCard({ hotel }: { hotel: any }) {
                             <span className="text-2xl font-black text-foreground">{formatCurrency(199)}</span>
                             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">per night</span>
                         </div>
-                        <div className="h-10 w-10 rounded-full liquid-glass flex items-center justify-center group-hover:bg-primary transition-colors">
+                        <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors">
                             <span className="text-lg font-bold text-primary group-hover:text-white">→</span>
                         </div>
                     </div>
                 </div>
             </Link>
-        </LiquidGlass>
+        </div>
     )
 }
