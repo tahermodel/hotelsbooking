@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
-    const { applicant_email, hotel_name, hotel_address, contact_person, contact_phone } = await req.json()
+    const { applicant_email, hotel_name, hotel_address, contact_person, contact_phone, property_description } = await req.json()
 
     const application = await prisma.hotelApplication.create({
         data: {
@@ -11,6 +11,7 @@ export async function POST(req: Request) {
             hotel_address,
             contact_person,
             contact_phone,
+            description: property_description,
             status: "pending"
         }
     })

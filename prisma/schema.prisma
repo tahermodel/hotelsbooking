@@ -259,17 +259,24 @@ model Cancellation {
   @@map("cancellations")
 }
 
+enum HotelApplicationStatus {
+  pending
+  approved
+  rejected
+}
+
 model HotelApplication {
-  id              String   @id @default(cuid())
-  applicant_email String   @map("applicant_email")
-  hotel_name      String   @map("hotel_name")
-  hotel_address   String   @map("hotel_address")
-  contact_person  String   @map("contact_person")
-  contact_phone   String?  @map("contact_phone")
-  status          String   @default("pending")
+  id              String                 @id @default(cuid())
+  applicant_email String                 @map("applicant_email")
+  hotel_name      String                 @map("hotel_name")
+  hotel_address   String                 @map("hotel_address")
+  contact_person  String                 @map("contact_person")
+  contact_phone   String?                @map("contact_phone")
+  description     String?
+  status          HotelApplicationStatus @default(pending)
   
-  created_at      DateTime @default(now()) @map("created_at")
-  updated_at      DateTime @updatedAt @map("updated_at")
+  created_at      DateTime               @default(now()) @map("created_at")
+  updated_at      DateTime               @updatedAt @map("updated_at")
 
   @@map("hotel_applications")
 }

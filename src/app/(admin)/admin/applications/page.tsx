@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
+import { updateApplicationStatus } from "./actions"
 
 export const dynamic = 'force-dynamic'
 
@@ -42,10 +43,21 @@ export default async function AdminApplicationsPage() {
                                 </div>
                             </div>
 
+                            {app.description && (
+                                <div className="pt-4 border-t">
+                                    <p className="text-sm font-medium">Property Description</p>
+                                    <p className="text-muted-foreground whitespace-pre-wrap">{app.description}</p>
+                                </div>
+                            )}
+
                             {app.status === 'pending' && (
                                 <div className="flex gap-2 pt-4">
-                                    <Button size="sm">Approve Application</Button>
-                                    <Button size="sm" variant="ghost" className="text-destructive">Reject</Button>
+                                    <form action={updateApplicationStatus.bind(null, app.id, "approved")}>
+                                        <Button size="sm" type="submit">Approve Application</Button>
+                                    </form>
+                                    <form action={updateApplicationStatus.bind(null, app.id, "rejected")}>
+                                        <Button size="sm" variant="ghost" className="text-destructive" type="submit">Reject</Button>
+                                    </form>
                                 </div>
                             )}
                         </div>
@@ -61,3 +73,4 @@ export default async function AdminApplicationsPage() {
         </div>
     )
 }
+
