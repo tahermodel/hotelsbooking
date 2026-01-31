@@ -57,7 +57,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 if (!user.is_verified) {
                     // Generate new code and delete old ones
-                    const code = generateVerificationCode()
+                    const code = await generateVerificationCode()
                     const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
                     await prisma.verificationToken.deleteMany({

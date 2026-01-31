@@ -10,9 +10,10 @@ export async function handleSignOut() {
     await nextAuthSignOut()
 }
 
-export function generateVerificationCode(): string {
+export async function generateVerificationCode(): Promise<string> {
     return Math.floor(100000 + Math.random() * 900000).toString()
 }
+
 
 export async function sendVerificationEmail(email: string, name: string, code: string) {
     return await sendEmail({
@@ -117,7 +118,7 @@ export async function register(formData: FormData) {
         })
 
         // 4. Generate verification code
-        const code = generateVerificationCode()
+        const code = await generateVerificationCode()
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 mins
 
         // 5. Store verification code
@@ -180,7 +181,7 @@ export async function resendVerificationEmail(email: string) {
         }
 
         // Generate new code
-        const code = generateVerificationCode()
+        const code = await generateVerificationCode()
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
         // Delete existing tokens
