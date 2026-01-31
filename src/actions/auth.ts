@@ -10,10 +10,41 @@ export async function handleSignOut() {
     await nextAuthSignOut()
 }
 
-function generateVerificationCode(): string {
-    // Generate a 6-digit code
+export function generateVerificationCode(): string {
     return Math.floor(100000 + Math.random() * 900000).toString()
 }
+
+export async function sendVerificationEmail(email: string, name: string, code: string) {
+    return await sendEmail({
+        to: email,
+        subject: "Verify your StayEase Account",
+        text: `Welcome to StayEase! Your verification code is: ${code}`,
+        html: `
+            <div style="background-color: #fdfaf5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
+                <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #f1e5d1;">
+                    <div style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 40px 20px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">StayEase</h1>
+                    </div>
+                    <div style="padding: 40px; text-align: center;">
+                        <h2 style="color: #0d9488; margin-bottom: 8px; font-size: 24px; font-weight: 700;">Verify your email</h2>
+                        <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">Hi ${name}, welcome to StayEase. Use the code below to complete your registration.</p>
+                        
+                        <div style="background: #fdfaf5; border: 2px dashed #f1e5d1; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
+                            <div style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Your Verification Code</div>
+                            <div style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px; font-family: 'Courier New', Courier, monospace;">${code}</div>
+                        </div>
+                        
+                        <p style="color: #94a3b8; font-size: 13px;">This code will expire in <span style="color: #0d9488; font-weight: 600;">10 minutes</span>. If you didn't request this, you can safely ignore this email.</p>
+                    </div>
+                    <div style="background-color: #fefce8; padding: 20px; text-align: center; border-top: 1px solid #fef3c7;">
+                        <p style="color: #b45309; font-size: 12px; margin: 0;">&copy; 2026 StayEase Luxury Hotels. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        `,
+    })
+}
+
 
 // Simple in-memory rate limiting (for production, use Redis)
 const emailSendAttempts = new Map<string, number[]>()
@@ -64,10 +95,8 @@ export async function register(formData: FormData) {
 
         if (existingUser) {
             if (!existingUser.is_verified) {
-                // Determine if we should allow re-registration or just say "check email"
-                // For security, usually "User already exists" is better, but UX wise:
                 return {
-                    error: "This email is already registered but not verified. Please check your inbox or sign in to resend the code."
+                    error: "This email exists, please sign in to it to verify your account."
                 }
             }
             return { error: "This email is already registered. Please sign in instead." }
@@ -105,34 +134,7 @@ export async function register(formData: FormData) {
 
         // 6. Send verification email
         try {
-            const emailResult = await sendEmail({
-                to: email,
-                subject: "Verify your StayEase Account",
-                text: `Welcome to StayEase! Your verification code is: ${code}`,
-                html: `
-                    <div style="background-color: #fdfaf5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
-                        <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #f1e5d1;">
-                            <div style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 40px 20px; text-align: center;">
-                                <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">StayEase</h1>
-                            </div>
-                            <div style="padding: 40px; text-align: center;">
-                                <h2 style="color: #0d9488; margin-bottom: 8px; font-size: 24px; font-weight: 700;">Verify your email</h2>
-                                <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">Hi ${fullName}, welcome to StayEase. Use the code below to complete your registration.</p>
-                                
-                                <div style="background: #fdfaf5; border: 2px dashed #f1e5d1; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
-                                    <div style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Your Verification Code</div>
-                                    <div style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px; font-family: 'Courier New', Courier, monospace;">${code}</div>
-                                </div>
-                                
-                                <p style="color: #94a3b8; font-size: 13px;">This code will expire in <span style="color: #0d9488; font-weight: 600;">10 minutes</span>. If you didn't request this, you can safely ignore this email.</p>
-                            </div>
-                            <div style="background-color: #fefce8; padding: 20px; text-align: center; border-top: 1px solid #fef3c7;">
-                                <p style="color: #b45309; font-size: 12px; margin: 0;">&copy; 2026 StayEase Luxury Hotels. All rights reserved.</p>
-                            </div>
-                        </div>
-                    </div>
-                `,
-            })
+            const emailResult = await sendVerificationEmail(email, fullName, code)
 
             if (!emailResult.success) {
                 return {
@@ -198,34 +200,7 @@ export async function resendVerificationEmail(email: string) {
         const fullName = user.name || "User"
 
         // Send Email
-        const emailResult = await sendEmail({
-            to: email,
-            subject: "New Verification Code - StayEase",
-            text: `Hi ${fullName}, your new verification code is: ${code}`,
-            html: `
-                <div style="background-color: #fdfaf5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
-                    <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #f1e5d1;">
-                        <div style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 40px 20px; text-align: center;">
-                            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">StayEase</h1>
-                        </div>
-                        <div style="padding: 40px; text-align: center;">
-                            <h2 style="color: #0d9488; margin-bottom: 8px; font-size: 24px; font-weight: 700;">New Code Request</h2>
-                            <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">Hi ${fullName}, here is your new verification code as requested.</p>
-                            
-                            <div style="background: #fdfaf5; border: 2px dashed #f1e5d1; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
-                                <div style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">New Verification Code</div>
-                                <div style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px; font-family: 'Courier New', Courier, monospace;">${code}</div>
-                            </div>
-                            
-                            <p style="color: #94a3b8; font-size: 13px;">This code will expire in <span style="color: #0d9488; font-weight: 600;">10 minutes</span>.</p>
-                        </div>
-                         <div style="background-color: #fefce8; padding: 20px; text-align: center; border-top: 1px solid #fef3c7;">
-                            <p style="color: #b45309; font-size: 12px; margin: 0;">&copy; 2026 StayEase Luxury Hotels. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            `,
-        })
+        const emailResult = await sendVerificationEmail(email, fullName, code)
 
         if (!emailResult.success) {
             return { error: "Failed to send verification email. Please try again." }

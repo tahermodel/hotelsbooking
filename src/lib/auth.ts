@@ -20,7 +20,12 @@ class EmailNotVerified extends CredentialsSignin {
     code = "email_not_verified"
 }
 
+class LoginWithGoogleRequired extends CredentialsSignin {
+    code = "login_with_google_required"
+}
+
 import type { Adapter } from "next-auth/adapters"
+import { generateVerificationCode, sendVerificationEmail } from "@/actions/auth"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
@@ -42,11 +47,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     where: { email: normalizedEmail }
                 })
 
-                if (!user || user.password === null) {
+                if (!user) {
                     throw new UserNotFound()
                 }
 
+                if (user.password === null) {
+                    throw new LoginWithGoogleRequired()
+                }
+
                 if (!user.is_verified) {
+                    // Generate new code and delete old ones
+                    const code = generateVerificationCode()
+                    const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
+
+                    await prisma.verificationToken.deleteMany({
+                        where: { identifier: normalizedEmail }
+                    })
+
+                    await prisma.verificationToken.create({
+                        data: {
+                            identifier: normalizedEmail,
+                            token: code,
+                            expires: expiresAt
+                        }
+                    })
+
+                    await sendVerificationEmail(normalizedEmail, user.name || "User", code)
+
                     throw new EmailNotVerified()
                 }
 
@@ -69,4 +96,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }),
     ],
 })
+
 

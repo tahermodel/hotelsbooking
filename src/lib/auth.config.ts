@@ -43,6 +43,17 @@ export const authConfig = {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             allowDangerousEmailAccountLinking: true,
+            profile(profile) {
+                return {
+                    id: profile.sub,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture,
+                    role: "customer",
+                    is_verified: true,
+                    emailVerified: new Date(),
+                }
+            },
         }),
     ],
     session: { strategy: "jwt" },

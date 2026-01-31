@@ -34,11 +34,13 @@ export function LoginForm({ message }: LoginFormProps) {
 
         if (result?.error) {
             if (result.error === "user_not_found") {
-                setError("email not found")
+                setError("This email is invalid")
             } else if (result.error === "invalid_password") {
-                setError("invalid password")
+                setError("Wrong password")
             } else if (result.error === "email_not_verified") {
-                setError("Email not verified. Please check your inbox.")
+                router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
+            } else if (result.error === "login_with_google_required") {
+                setError("This user is signed in with Google. Please use Google to sign in.")
             } else {
                 setError("Invalid email or password")
             }
