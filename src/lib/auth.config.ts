@@ -10,14 +10,24 @@ export const authConfig = {
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user
-            const isOnDashboard = nextUrl.pathname.startsWith("/account") ||
-                nextUrl.pathname.startsWith("/booking") ||
-                nextUrl.pathname.startsWith("/partner/dashboard")
+            const userRole = (auth?.user as any)?.role
 
-            if (isOnDashboard) {
-                if (isLoggedIn) return true
-                return false // Redirect to login
+            const isPartnerDashboard = nextUrl.pathname.startsWith("/partner/dashboard")
+            const isAdminDashboard = nextUrl.pathname.startsWith("/admin")
+            const isAccountPage = nextUrl.pathname.startsWith("/account") || nextUrl.pathname.startsWith("/booking")
+
+            if (isAdminDashboard) {
+                return isLoggedIn && userRole === "platform_admin"
             }
+
+            if (isPartnerDashboard) {
+                return isLoggedIn && (userRole === "hotel_admin" || userRole === "platform_admin")
+            }
+
+            if (isAccountPage) {
+                return isLoggedIn
+            }
+
             return true
         },
         async jwt({ token, user, trigger, session }) {
