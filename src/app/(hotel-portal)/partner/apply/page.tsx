@@ -1,7 +1,13 @@
 import { Header } from "@/components/layout/header"
 import { PartnerApplyForm } from "@/components/forms/partner-apply-form"
 
-export default function PartnerApplyPage() {
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
+
+export default async function PartnerApplyPage() {
+    const session = await auth()
+    if (!session?.user?.id) redirect("/login?callbackUrl=/partner/apply")
+
     return (
         <div className="flex min-h-screen flex-col">
             <Header />

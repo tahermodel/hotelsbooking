@@ -48,6 +48,7 @@ model User {
   hotels        Hotel[]   @relation("HotelOwner")
   reviews       Review[]
   cancellations Cancellation[]
+  hotel_applications HotelApplication[]
 
   created_at    DateTime @default(now()) @map("created_at")
   updated_at    DateTime @updatedAt @map("updated_at")
@@ -274,6 +275,9 @@ model HotelApplication {
   contact_phone   String?                @map("contact_phone")
   description     String?
   status          HotelApplicationStatus @default(pending)
+  
+  user_id         String                 @map("user_id")
+  user            User                   @relation(fields: [user_id], references: [id])
   
   created_at      DateTime               @default(now()) @map("created_at")
   updated_at      DateTime               @updatedAt @map("updated_at")

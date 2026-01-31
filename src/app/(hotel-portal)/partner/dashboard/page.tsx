@@ -21,10 +21,12 @@ export default async function PartnerDashboardPage() {
             <main className="flex-1 container py-12">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold">Partner Dashboard</h1>
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add New Hotel
-                    </Button>
+                    <Link href="/partner/apply">
+                        <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add New Hotel
+                        </Button>
+                    </Link>
                 </div>
 
                 {(!hotels || hotels.length === 0) ? (
