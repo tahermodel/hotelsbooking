@@ -1,39 +1,40 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Star, MapPin } from "lucide-react"
+import { Star, MapPin, ArrowRight } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 
 export function HotelCard({ hotel }: { hotel: any }) {
     return (
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-2xl transition-all hover:bg-white/10 group">
-            <Link href={`/hotels/${hotel.slug}`} className="block overflow-hidden transition-all active:scale-[0.98]">
+        <div className="card-section card-section-hover overflow-hidden group">
+            <Link href={`/hotels/${hotel.slug}`} className="block">
                 <div className="relative aspect-video overflow-hidden">
                     <Image
                         src={hotel.images?.[0] || "/placeholder.jpg"}
                         alt={hotel.name}
                         fill
-                        className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
-                    <div className="absolute top-4 right-4 flex items-center space-x-1 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
-                        <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                        <span className="text-xs font-black text-white">{hotel.star_rating}</span>
+                    <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-card/90 backdrop-blur-sm">
+                        <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                        <span className="text-xs font-bold">{hotel.star_rating}</span>
                     </div>
                 </div>
-                <div className="p-6 relative">
-                    <h3 className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors mb-1">{hotel.name}</h3>
-                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <MapPin className="h-3.5 w-3.5 opacity-60" />
-                        <span className="font-medium">{hotel.city}, {hotel.country}</span>
+                <div className="p-5">
+                    <h3 className="text-lg font-bold group-hover:text-primary transition-colors mb-1">
+                        {hotel.name}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-4">
+                        <MapPin className="h-3.5 w-3.5" />
+                        <span>{hotel.city}, {hotel.country}</span>
                     </div>
 
-                    <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-5">
-                        <div className="flex flex-col">
-                            <span className="text-2xl font-black text-foreground">{formatCurrency(199)}</span>
-                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">per night</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                        <div>
+                            <span className="text-xl font-bold">{formatCurrency(199)}</span>
+                            <span className="text-xs text-muted-foreground ml-1">/ night</span>
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors">
-                            <span className="text-lg font-bold text-primary group-hover:text-white">→</span>
+                        <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center group-hover:bg-primary transition-colors">
+                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-white transition-colors" />
                         </div>
                     </div>
                 </div>

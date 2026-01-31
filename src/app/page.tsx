@@ -3,6 +3,8 @@ import { SearchFilters } from "@/components/search/search-filters"
 import { HotelCard } from "@/components/hotels/hotel-card"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
+import { ArrowRight, Star, Shield, CreditCard } from "lucide-react"
+import Link from "next/link"
 
 export const dynamic = 'force-dynamic'
 
@@ -12,65 +14,132 @@ export default async function Home() {
     take: 6
   })
 
-
-
   return (
-    <div className="flex min-h-screen flex-col bg-background relative overflow-x-hidden">
-      {/* Ambient Background Elements */}
-      <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] rounded-full bg-secondary/20 blur-[130px] pointer-events-none" />
-      <div className="absolute top-[40%] right-[5%] w-[300px] h-[300px] rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
-
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 w-full relative z-10 pt-20">
-        <section className="relative py-12 md:py-20">
+      <main className="flex-1 w-full pt-20">
+        <section className="py-16 md:py-24">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center space-y-6 md:space-y-10 text-center">
-              <div className="space-y-3 md:space-y-4">
-                <h1 className="text-3xl font-black tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-foreground">
-                  Your Next Escape,<br />Perfectly Refracted.
-                </h1>
-                <p className="mx-auto max-w-[600px] text-sm md:text-base lg:text-lg text-muted-foreground font-medium">
-                  Experience boutique luxury with our seamless pay-later booking system.
-                </p>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8 animate-fade-in-up">
+                <div className="space-y-4">
+                  <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full">
+                    Book Now, Pay Later
+                  </span>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight">
+                    Find Your Perfect
+                    <span className="text-primary block">Escape</span>
+                  </h1>
+                  <p className="text-lg text-muted-foreground max-w-lg">
+                    Experience boutique luxury with our seamless booking system. Handpicked properties for the discerning traveler.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                      <Star className="w-5 h-5 text-secondary" />
+                    </div>
+                    <span className="text-sm font-medium">Premium Selection</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="text-sm font-medium">Verified Properties</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                      <CreditCard className="w-5 h-5 text-secondary" />
+                    </div>
+                    <span className="text-sm font-medium">Flexible Payment</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="w-full max-w-4xl">
-                <SearchFilters />
+              <div className="relative animate-fade-in stagger-2">
+                <div className="aspect-[4/3] rounded-2xl bg-muted overflow-hidden border border-border">
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground hero-pattern">
+                    <div className="text-center p-8">
+                      <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+                        <Star className="w-10 h-10 text-primary" />
+                      </div>
+                      <p className="text-sm font-medium">Hero Image Placeholder</p>
+                      <p className="text-xs text-muted-foreground mt-1">Replace with your hotel imagery</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-12 md:py-20 border-t border-primary/5">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-0 mb-8 md:mb-12">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground">Featured Destinations</h2>
-                <p className="text-xs md:text-sm text-muted-foreground mt-1">Handpicked properties for your next adventure.</p>
-              </div>
-              <Button variant="glass" className="hidden md:flex px-6 rounded-full hover:bg-primary/5 liquid-flicker text-primary">View All</Button>
+        <section className="py-12 bg-card border-y border-border">
+          <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="animate-fade-in-up stagger-3">
+              <SearchFilters />
             </div>
-            <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full">
-              {featuredHotels?.map((hotel) => (
-                <HotelCard key={hotel.id} hotel={hotel} />
+          </div>
+        </section>
+
+        <section className="py-16 md:py-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 animate-fade-in">
+              <div>
+                <span className="section-title">Explore</span>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">Featured Destinations</h2>
+                <p className="text-muted-foreground mt-2">Handpicked properties for your next adventure</p>
+              </div>
+              <Link href="/search">
+                <Button variant="outline" className="group">
+                  View All
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredHotels?.map((hotel, index) => (
+                <div key={hotel.id} className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}>
+                  <HotelCard hotel={hotel} />
+                </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-secondary text-secondary-foreground">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <div className="animate-fade-in-up stagger-1">
+                <div className="text-4xl font-bold mb-2">500+</div>
+                <div className="text-secondary-foreground/80">Premium Hotels</div>
+              </div>
+              <div className="animate-fade-in-up stagger-2">
+                <div className="text-4xl font-bold mb-2">50K+</div>
+                <div className="text-secondary-foreground/80">Happy Travelers</div>
+              </div>
+              <div className="animate-fade-in-up stagger-3">
+                <div className="text-4xl font-bold mb-2">4.9</div>
+                <div className="text-secondary-foreground/80">Average Rating</div>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-primary/5 bg-background/50 backdrop-blur-sm relative z-10">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-lg font-black tracking-tighter text-primary">StayEase</span>
-            <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved. This is a demonstration project not a real commercial one.</span>
+      <footer className="bg-card border-t border-border">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-xl font-bold text-primary">StayEase</span>
+              <span className="text-sm text-muted-foreground">© 2026. Demo project.</span>
+            </div>
+            <nav className="flex gap-6 text-sm text-muted-foreground">
+              <Link href="/terms" className="hover:text-primary transition-colors">Terms</Link>
+              <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+              <Link href="/partner" className="hover:text-primary transition-colors">Partner</Link>
+            </nav>
           </div>
-          <nav className="flex space-x-6 md:space-x-8 text-xs md:text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-            <a className="hover:text-primary transition-colors" href="/terms">Terms</a>
-            <a className="hover:text-primary transition-colors" href="/privacy">Privacy</a>
-            <a className="hover:text-primary transition-colors" href="/partner">Partner</a>
-          </nav>
         </div>
       </footer>
     </div>

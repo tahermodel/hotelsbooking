@@ -21,39 +21,39 @@ export function SearchFilters() {
     }
 
     return (
-        <form onSubmit={handleSearch} className="relative w-full">
-            <div className="flex flex-col gap-2 md:gap-3 p-2 md:p-3 border border-white/10 shadow-2xl md:flex-row md:items-center rounded-2xl md:rounded-[2rem] bg-white/10 backdrop-blur-xl">
-                <div className="relative flex-1 group">
-                    <div className="absolute inset-y-0 left-3 md:left-5 flex items-center pointer-events-none">
-                        <Search className="h-4 md:h-5 w-4 md:w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+        <form onSubmit={handleSearch} className="w-full">
+            <div className="flex flex-col md:flex-row gap-3 p-3 card-section">
+                <div className="relative flex-1">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                        <Search className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <input
                         type="text"
                         placeholder="Where are you going?"
-                        className="h-12 md:h-16 w-full rounded-xl md:rounded-2xl border-none bg-white/5 pl-10 md:pl-14 pr-4 md:pr-6 text-sm md:text-lg placeholder:text-muted-foreground/30 focus:bg-white/10 focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                        className="h-12 w-full rounded-xl border border-border bg-background pl-12 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
                 </div>
 
-                <div className="relative flex-1 md:flex-none md:w-56 group">
-                    <div className="absolute inset-y-0 left-3 md:left-5 flex items-center pointer-events-none">
-                        <Calendar className="h-4 md:h-5 w-4 md:w-5 text-muted-foreground transition-colors" />
+                <div className="relative flex-1 md:flex-none md:w-48">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                        <Calendar className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <input
                         type="text"
                         placeholder="Check-in - Out"
-                        className="h-12 md:h-16 w-full rounded-xl md:rounded-2xl border-none bg-white/5 pl-10 md:pl-14 pr-4 md:pr-6 text-xs md:text-sm cursor-pointer hover:bg-white/10 transition-all font-medium"
+                        className="h-12 w-full rounded-xl border border-border bg-background pl-12 pr-4 text-sm cursor-pointer hover:border-primary/50 transition-all"
                         readOnly
                     />
                 </div>
 
-                <div className="relative flex-1 md:flex-none md:w-44 group">
-                    <div className="absolute inset-y-0 left-3 md:left-5 flex items-center pointer-events-none">
-                        <Users className="h-4 md:h-5 w-4 md:w-5 text-muted-foreground transition-colors" />
+                <div className="relative flex-1 md:flex-none md:w-36">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                        <Users className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <select
-                        className="h-12 md:h-16 w-full appearance-none rounded-xl md:rounded-2xl border-none bg-white/5 pl-10 md:pl-14 pr-4 md:pr-6 text-xs md:text-sm cursor-pointer hover:bg-white/10 transition-all font-medium"
+                        className="h-12 w-full appearance-none rounded-xl border border-border bg-background pl-12 pr-4 text-sm cursor-pointer hover:border-primary/50 transition-all"
                         value={guests}
                         onChange={(e) => setGuests(e.target.value)}
                     >
@@ -64,8 +64,8 @@ export function SearchFilters() {
                     </select>
                 </div>
 
-                <Button type="submit" className="h-12 md:h-16 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-xl liquid-flicker font-black uppercase tracking-widest bg-primary hover:bg-primary/90 text-white text-xs md:text-sm">
-                    Explore
+                <Button type="submit" size="lg" className="h-12 px-8">
+                    Search
                 </Button>
             </div>
         </form>

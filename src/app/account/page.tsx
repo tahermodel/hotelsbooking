@@ -2,7 +2,7 @@ import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { BookOpen, Settings, CreditCard, LogOut, User, ShieldCheck, Bell, HelpCircle } from "lucide-react"
+import { BookOpen, Settings, CreditCard, LogOut, User, ShieldCheck, Bell, HelpCircle, ChevronRight } from "lucide-react"
 import { SignOutButton } from "@/components/auth/sign-out-button"
 
 export const dynamic = 'force-dynamic'
@@ -14,86 +14,141 @@ export default async function AccountPage() {
     const user = session.user
 
     return (
-        <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500/5 via-background to-background">
+        <div className="flex min-h-screen flex-col bg-background">
             <Header />
-            <main className="flex-1 container py-12 max-w-6xl">
-                {/* Profile Header */}
-                <div className="mb-12 p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col md:flex-row items-center gap-8 shadow-2xl">
-                    <div className="h-24 w-24 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary/30 shadow-inner">
-                        <User className="h-12 w-12 text-primary" />
-                    </div>
-                    <div className="text-center md:text-left flex-1">
-                        <h1 className="text-3xl font-black tracking-tight mb-1">{user?.name || "Guest User"}</h1>
-                        <p className="text-muted-foreground font-medium">{user?.email}</p>
-                        <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
-                            <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full border border-primary/20">Verified Member</span>
-                            <span className="px-3 py-1 bg-white/5 text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-full border border-white/10">Joined Jan 2026</span>
-                        </div>
-                    </div>
+            <main className="flex-1 container py-12 max-w-5xl pt-24">
+                <div className="animate-fade-in">
+                    <span className="section-title">Account</span>
+                    <h1 className="text-3xl font-bold mb-8">My Profile</h1>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <Link href="/account/bookings" className="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group shadow-xl">
-                        <div className="h-12 w-12 rounded-2xl bg-sky-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <BookOpen className="w-6 h-6 text-sky-500" />
+                <section className="card-section p-6 mb-8 animate-fade-in-up stagger-1">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <User className="w-10 h-10 text-primary" />
                         </div>
-                        <h3 className="text-xl font-bold mb-2 italic">My Bookings</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">View and manage your current and past reservations.</p>
-                    </Link>
+                        <div className="flex-1">
+                            <h2 className="text-2xl font-bold">{user?.name || "Guest User"}</h2>
+                            <p className="text-muted-foreground">{user?.email}</p>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+                                    Verified Member
+                                </span>
+                                <span className="px-3 py-1 bg-muted text-muted-foreground text-xs font-semibold rounded-full">
+                                    Joined Jan 2026
+                                </span>
+                            </div>
+                        </div>
+                        <Link href="/account/settings" className="hidden sm:flex">
+                            <button className="icon-btn">
+                                <Settings className="w-5 h-5" />
+                            </button>
+                        </Link>
+                    </div>
+                </section>
 
-                    <Link href="/account/settings" className="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group shadow-xl">
-                        <div className="h-12 w-12 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Settings className="w-6 h-6 text-amber-500" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 italic">Personal Info</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">Update your name, email and security preferences.</p>
-                    </Link>
+                <section className="mb-8 animate-fade-in-up stagger-2">
+                    <span className="section-title">Quick Actions</span>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <Link href="/account/bookings" className="card-section card-section-hover p-5 group">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <BookOpen className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold mb-1">My Bookings</h3>
+                                    <p className="text-sm text-muted-foreground">View and manage reservations</p>
+                                </div>
+                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                            </div>
+                        </Link>
 
-                    <Link href="/account/payment" className="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group shadow-xl">
-                        <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <CreditCard className="w-6 h-6 text-emerald-500" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 italic">Payment Methods</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">Securely store and manage your billing information.</p>
-                    </Link>
+                        <Link href="/account/settings" className="card-section card-section-hover p-5 group">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:text-white transition-colors">
+                                    <Settings className="w-6 h-6 text-secondary group-hover:text-white transition-colors" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold mb-1">Personal Info</h3>
+                                    <p className="text-sm text-muted-foreground">Update your details</p>
+                                </div>
+                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all" />
+                            </div>
+                        </Link>
 
-                    <Link href="/account/security" className="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group shadow-xl">
-                        <div className="h-12 w-12 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <ShieldCheck className="w-6 h-6 text-rose-500" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 italic">Login & Security</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">Manage your password and authentication methods.</p>
-                    </Link>
+                        <Link href="/account/payment" className="card-section card-section-hover p-5 group">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <CreditCard className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold mb-1">Payment Methods</h3>
+                                    <p className="text-sm text-muted-foreground">Manage billing info</p>
+                                </div>
+                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                            </div>
+                        </Link>
+                    </div>
+                </section>
 
-                    <Link href="/account/notifications" className="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group shadow-xl">
-                        <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Bell className="w-6 h-6 text-indigo-500" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 italic">Notifications</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">Choose how and when we send you updates.</p>
-                    </Link>
+                <section className="mb-8 animate-fade-in-up stagger-3">
+                    <span className="section-title">Security & Preferences</span>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <Link href="/account/security" className="card-section card-section-hover p-5 group">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:text-white transition-colors">
+                                    <ShieldCheck className="w-6 h-6 text-secondary group-hover:text-white transition-colors" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold mb-1">Login & Security</h3>
+                                    <p className="text-sm text-muted-foreground">Password and authentication</p>
+                                </div>
+                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all" />
+                            </div>
+                        </Link>
 
-                    <div className="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-destructive/5 transition-all group shadow-xl cursor-default">
-                        <div className="h-12 w-12 rounded-2xl bg-destructive/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <LogOut className="w-6 h-6 text-destructive" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 italic">Session</h3>
-                        <div className="flex flex-col items-start gap-2">
-                            <p className="text-sm text-muted-foreground leading-relaxed">End your current session securely.</p>
+                        <Link href="/account/notifications" className="card-section card-section-hover p-5 group">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <Bell className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold mb-1">Notifications</h3>
+                                    <p className="text-sm text-muted-foreground">Email and push preferences</p>
+                                </div>
+                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                            </div>
+                        </Link>
+                    </div>
+                </section>
+
+                <section className="animate-fade-in-up stagger-4">
+                    <span className="section-title">Session</span>
+                    <div className="card-section p-5">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center">
+                                    <LogOut className="w-6 h-6 text-destructive" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold">End Session</h3>
+                                    <p className="text-sm text-muted-foreground">Sign out from this device</p>
+                                </div>
+                            </div>
                             <SignOutButton
                                 variant="outline"
                                 size="sm"
-                                className="mt-2 text-destructive border-destructive/20 hover:bg-destructive hover:text-white rounded-xl px-6 h-10 italic"
+                                className="text-destructive border-destructive/30 hover:bg-destructive hover:text-white hover:border-destructive"
                             >
-                                Confirm Logout
+                                Sign Out
                             </SignOutButton>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div className="mt-12 flex justify-center">
-                    <Link href="/support" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-bold text-sm bg-white/5 px-6 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
-                        <HelpCircle className="h-4 w-4" />
+                <div className="mt-10 flex justify-center animate-fade-in-up stagger-5">
+                    <Link href="/support" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm">
+                        <HelpCircle className="w-4 h-4" />
                         Need help with your account?
                     </Link>
                 </div>
