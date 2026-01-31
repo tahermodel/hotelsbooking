@@ -8,17 +8,17 @@ import { cn } from "@/lib/utils"
 export async function Header() {
     const session = await auth()
 
-    const navBtnClass = "liquid-flicker shadow-2xl rounded-full px-4 md:px-6 h-9 bg-primary hover:bg-primary/90 text-white font-black border-none text-[10px] md:text-[11px] tracking-widest uppercase transition-all hover:scale-105 active:scale-95 flex items-center justify-center min-w-[80px] md:min-w-[100px]"
+    const navBtnClass = "liquid-flicker shadow-2xl rounded-full px-3 md:px-6 h-8 md:h-9 bg-primary hover:bg-primary/90 text-white font-black border-none text-[9px] md:text-[11px] tracking-widest uppercase transition-all hover:scale-105 active:scale-95 flex items-center justify-center min-w-[70px] md:min-w-[100px]"
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 w-full py-2 px-2 sm:px-0 overflow-x-hidden">
+        <header className="fixed top-0 inset-x-0 z-50 py-2 px-2 sm:px-6">
             <div className="w-full max-w-7xl mx-auto">
-                <LiquidGlass animate={false} className="flex h-16 items-center justify-between rounded-full border-white/20 px-3 md:px-6">
+                <LiquidGlass animate={false} className="flex h-14 md:h-16 items-center justify-between rounded-full border-white/20 px-2 md:px-6">
                     {/* Left Section */}
                     <div className="flex-1 flex items-center">
                         <nav className="flex items-center">
                             {!session && (
-                                <Link href="/partner" className="text-xs md:text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
+                                <Link href="/partner" className="text-[10px] md:text-sm font-bold text-muted-foreground hover:text-primary transition-colors pl-2">
                                     Partner
                                 </Link>
                             )}
@@ -26,9 +26,9 @@ export async function Header() {
                     </div>
 
                     {/* Center Logo */}
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center px-1">
                         <Link href="/" className="flex items-center space-x-2 liquid-flicker">
-                            <span className="text-xl md:text-2xl font-black tracking-tight text-primary">StayEase</span>
+                            <span className="text-lg md:text-2xl font-black tracking-tighter text-primary">StayEase</span>
                         </Link>
                     </div>
 
@@ -37,7 +37,7 @@ export async function Header() {
                         {session ? (
                             <>
                                 {session.user.role === "platform_admin" && (
-                                    <Link href="/admin">
+                                    <Link href="/admin/dashboard">
                                         <Button size="sm" className={cn(navBtnClass, "bg-accent hover:bg-accent/90")}>
                                             Admin
                                         </Button>
@@ -46,7 +46,7 @@ export async function Header() {
                                 {session.user.role === "hotel_admin" && (
                                     <Link href="/partner/dashboard">
                                         <Button size="sm" className={cn(navBtnClass, "bg-accent hover:bg-accent/90")}>
-                                            Dashboard
+                                            Dash
                                         </Button>
                                     </Link>
                                 )}

@@ -15,7 +15,7 @@ export default async function Home() {
 
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background relative overflow-x-hidden">
       {/* Ambient Background Elements */}
       <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] rounded-full bg-secondary/20 blur-[130px] pointer-events-none" />
