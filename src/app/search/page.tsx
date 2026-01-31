@@ -34,7 +34,7 @@ export default async function SearchPage({
     return (
         <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500/5 via-background to-background">
             <Header />
-            <main className="flex-1 container py-12">
+            <main className="flex-1 container pt-32 pb-12">
                 <div className="mb-12">
                     <h1 className="text-4xl font-black bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">Available Stays</h1>
                     <p className="text-muted-foreground font-medium lowercase tracking-widest mt-1">Found matching properties for your journey.</p>

@@ -21,7 +21,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
     return (
         <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500/5 via-background to-background">
             <Header />
-            <main className="flex-1 container py-12">
+            <main className="flex-1 container pt-32 pb-12">
                 <div className="grid gap-12 lg:grid-cols-3">
                     <div className="lg:col-span-2 space-y-10">
                         <div className="relative aspect-video overflow-hidden rounded-3xl shadow-2xl group border border-white/20">

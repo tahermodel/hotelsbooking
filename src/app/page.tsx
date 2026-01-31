@@ -15,14 +15,14 @@ export default async function Home() {
 
 
   return (
-    <div className="flex min-h-screen flex-col bg-background relative overflow-hidden">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Ambient Background Elements */}
       <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-15%] w-[600px] h-[600px] rounded-full bg-secondary/20 blur-[130px] pointer-events-none" />
       <div className="absolute top-[40%] right-[5%] w-[300px] h-[300px] rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
 
       <Header />
-      <main className="flex-1 w-full relative z-10">
+      <main className="flex-1 w-full relative z-10 pt-20">
         <section className="relative py-12 md:py-20">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center space-y-6 md:space-y-10 text-center">
@@ -64,7 +64,7 @@ export default async function Home() {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row h-auto md:h-24 items-center justify-between py-6 gap-4">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-black tracking-tighter text-primary">StayEase</span>
-            <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved. This is a demonstration project not a real commercial one</span>
+            <span className="text-xs text-muted-foreground font-medium">© 2026. All rights reserved. This is a demonstration project not a real commercial one.</span>
           </div>
           <nav className="flex space-x-6 md:space-x-8 text-xs md:text-[10px] font-black uppercase tracking-widest text-muted-foreground">
             <a className="hover:text-primary transition-colors" href="/terms">Terms</a>

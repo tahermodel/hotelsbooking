@@ -244,9 +244,9 @@ export function LiquidGlass({
         <motion.div
             ref={containerRef}
             className={cn(
-                "relative overflow-hidden rounded-3xl",
+                "relative overflow-hidden rounded-2xl",
                 "bg-white/5", // Very transparent
-                "backdrop-blur-[3px] backdrop-saturate-150", // Custom micro-blur
+                "backdrop-blur-[4px] backdrop-saturate-150", // Custom micro-blur
                 "border border-white/20", // Subtle border
                 "shadow-sm",
                 className
@@ -259,9 +259,9 @@ export function LiquidGlass({
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 z-[1] pointer-events-none"
+                className="absolute inset-0 z-0 pointer-events-none"
             />
-            <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden rounded-3xl">
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-[inherit]">
                 <div
                     className="absolute top-0 left-[5%] right-[5%] h-[1px]"
                     style={{
@@ -275,9 +275,7 @@ export function LiquidGlass({
                     }}
                 />
             </div>
-            <div className="relative z-10 w-full h-full">
-                {children}
-            </div>
+            {children}
         </motion.div>
     )
 }
