@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 
 export function PartnerApplyForm() {
     const [loading, setLoading] = useState(false)
@@ -69,67 +71,68 @@ export function PartnerApplyForm() {
                     {error}
                 </div>
             )}
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Hotel Name</label>
-                    <input
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Hotel Name</label>
+                    <Input
                         name="hotel_name"
                         value={formData.hotel_name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
+                        placeholder="e.g. Grand Hotel"
                         required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Contact Person</label>
-                    <input
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Contact Person</label>
+                    <Input
                         name="contact_person"
                         value={formData.contact_person}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
+                        placeholder="Your full name"
                         required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Contact Email</label>
-                    <input
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Contact Email</label>
+                    <Input
                         type="email"
                         name="applicant_email"
                         value={formData.applicant_email}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
+                        placeholder="email@example.com"
                         required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Phone Number</label>
-                    <input
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Phone Number</label>
+                    <Input
                         type="tel"
                         name="contact_phone"
                         value={formData.contact_phone}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
+                        placeholder="+1 (555) 000-0000"
                         required
                     />
                 </div>
             </div>
             <div className="space-y-2">
-                <label className="text-sm font-medium">Hotel Address</label>
-                <input
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Hotel Address</label>
+                <Input
                     name="hotel_address"
                     value={formData.hotel_address}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded-md"
+                    placeholder="Full street address, city, country"
                     required
                 />
             </div>
             <div className="space-y-2">
-                <label className="text-sm font-medium">Tell us about your property</label>
-                <textarea
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Tell us about your property</label>
+                <Textarea
                     name="property_description"
                     value={formData.property_description}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded-md h-32"
+                    placeholder="Describe your hotel, amenities, and why you want to partner with us..."
+                    className="min-h-[120px] resize-y"
                     required
                 />
             </div>
@@ -139,3 +142,4 @@ export function PartnerApplyForm() {
         </form>
     )
 }
+

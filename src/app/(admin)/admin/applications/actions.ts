@@ -1,10 +1,16 @@
 "use server"
 
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { HotelApplicationStatus } from "@prisma/client"
 
 export async function updateApplicationStatus(id: string, status: HotelApplicationStatus) {
+    const session = await auth()
+    if (session?.user?.role !== 'platform_admin') {
+        throw new Error("Unauthorized")
+    }
+
     if (status === 'approved') {
         const application = await prisma.hotelApplication.findUnique({
             where: { id }
@@ -18,6 +24,8 @@ export async function updateApplicationStatus(id: string, status: HotelApplicati
             .replace(/^-+|-+$/g, '') + '-' + Math.random().toString(36).substring(2, 7)
 
         await prisma.$transaction([
+            // EXCEPTION: Updating user role programmatically here to allow auto-promotion upon approval.
+            // This overrides the general preference for manual role management in Prisma Studio.
             prisma.user.update({
                 where: { id: application.user_id },
                 data: { role: 'hotel_admin' }

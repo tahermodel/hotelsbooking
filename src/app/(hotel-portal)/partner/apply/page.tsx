@@ -9,12 +9,19 @@ export default async function PartnerApplyPage() {
     if (!session?.user?.id) redirect("/login?callbackUrl=/partner/apply")
 
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-col bg-slate-50">
             <Header />
-            <main className="flex-1 container py-24 max-w-2xl">
-                <h1 className="text-3xl font-bold mb-8">Partner Application</h1>
-                <PartnerApplyForm />
+            <main className="flex-1 container mx-auto py-16 max-w-4xl">
+                <div className="mb-8 text-center space-y-2">
+                    <h1 className="text-3xl font-bold tracking-tight">Partner Application</h1>
+                    <p className="text-muted-foreground">Join our network of premium hotels.</p>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-lg border border-slate-100 p-8">
+                    <PartnerApplyForm />
+                </div>
             </main>
         </div>
     )
 }
+
