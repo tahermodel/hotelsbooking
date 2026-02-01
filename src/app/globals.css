@@ -1,36 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #e8f7ee;
-  --foreground: #4b644a;
+  --background: #ffffff;
+  --background-alt: #f8fafc;
+  --foreground: #4B644A;
 
-  --primary: #5aa9e6;
+  --primary: #5AA9E6;
   --primary-foreground: #ffffff;
 
-  --secondary: #4b644a;
-  --secondary-foreground: #e8f7ee;
+  --secondary: #4B644A;
+  --secondary-foreground: #ffffff;
 
-  --muted: #d4ebe0;
-  --muted-foreground: #5a7a58;
-
-  --accent: #5aa9e6;
+  --accent: #ff9f1c;
   --accent-foreground: #ffffff;
 
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
   --card: #ffffff;
-  --card-foreground: #4b644a;
+  --card-foreground: #4B644A;
 
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --border: rgba(75, 100, 74, 0.15);
-  --input: rgba(75, 100, 74, 0.12);
-  --ring: #5aa9e6;
+  --border: rgba(75, 100, 74, 0.12);
+  --input: rgba(75, 100, 74, 0.08);
+  --ring: #5AA9E6;
 
   --radius: 1rem;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-alt: var(--background-alt);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -93,6 +95,7 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -103,6 +106,7 @@
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -114,6 +118,7 @@
       opacity: 0;
       transform: scale(0.95);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
@@ -125,6 +130,7 @@
       opacity: 0;
       transform: translateX(-20px);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
@@ -136,18 +142,42 @@
       opacity: 0;
       transform: translateX(20px);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
     }
   }
 
-  .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-  .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-  .stagger-3 { animation-delay: 0.3s; opacity: 0; }
-  .stagger-4 { animation-delay: 0.4s; opacity: 0; }
-  .stagger-5 { animation-delay: 0.5s; opacity: 0; }
-  .stagger-6 { animation-delay: 0.6s; opacity: 0; }
+  .stagger-1 {
+    animation-delay: 0.1s;
+    opacity: 0;
+  }
+
+  .stagger-2 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+
+  .stagger-3 {
+    animation-delay: 0.3s;
+    opacity: 0;
+  }
+
+  .stagger-4 {
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+
+  .stagger-5 {
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+
+  .stagger-6 {
+    animation-delay: 0.6s;
+    opacity: 0;
+  }
 
   .icon-btn {
     display: inline-flex;

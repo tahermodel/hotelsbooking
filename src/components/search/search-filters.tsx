@@ -64,7 +64,7 @@ export function SearchFilters() {
                     </select>
                 </div>
 
-                <Button type="submit" size="lg" className="h-12 px-8">
+                <Button type="submit" size="lg" className="h-12 px-8 bg-accent hover:bg-accent/90 text-accent-foreground border-none">
                     Search
                 </Button>
             </div>

@@ -17,7 +17,7 @@ export default async function SettingsPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 container py-12 max-w-2xl pt-24">
                 <div className="mb-8 animate-fade-in">

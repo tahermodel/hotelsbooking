@@ -59,12 +59,12 @@ export function SearchSidebar() {
                             {[5, 4, 3, 2].map(star => (
                                 <label key={star} className="flex items-center space-x-4 cursor-pointer group">
                                     <div
-                                        className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${selectedStars.includes(star) ? 'bg-primary border-primary' : 'bg-white/10 border-white/20'}`}
+                                        className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${selectedStars.includes(star) ? 'bg-accent border-accent' : 'bg-white/10 border-white/20'}`}
                                         onClick={() => toggleStar(star)}
                                     >
                                         {selectedStars.includes(star) && <span className="text-white text-xs">✓</span>}
                                     </div>
-                                    <span className="text-sm font-bold group-hover:text-primary transition-colors">{star} Stars</span>
+                                    <span className="text-sm font-bold group-hover:text-accent transition-colors">{star} Stars</span>
                                 </label>
                             ))}
                         </div>
@@ -76,12 +76,12 @@ export function SearchSidebar() {
                             {amenitiesList.map(amenity => (
                                 <label key={amenity} className="flex items-center space-x-4 cursor-pointer group">
                                     <div
-                                        className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${selectedAmenities.includes(amenity) ? 'bg-primary border-primary' : 'bg-white/10 border-white/20'}`}
+                                        className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${selectedAmenities.includes(amenity) ? 'bg-accent border-accent' : 'bg-white/10 border-white/20'}`}
                                         onClick={() => toggleAmenity(amenity)}
                                     >
                                         {selectedAmenities.includes(amenity) && <span className="text-white text-xs">✓</span>}
                                     </div>
-                                    <span className="text-sm font-bold group-hover:text-primary transition-colors">{amenity}</span>
+                                    <span className="text-sm font-bold group-hover:text-accent transition-colors">{amenity}</span>
                                 </label>
                             ))}
                         </div>

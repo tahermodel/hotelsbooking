@@ -1,6 +1,6 @@
 "use server"
 
-import { signOut as nextAuthSignOut } from "@/lib/auth"
+import { signOut as nextAuthSignOut, signIn } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { sendEmail } from "@/lib/mail"
 import crypto from "crypto"
@@ -255,6 +255,68 @@ export async function verifyCode(email: string, code: string) {
     } catch (error) {
         console.error("Verification error:", error)
         return { error: "Failed to verify email. Please try again." }
+    }
+}
+
+
+export async function loginAction(formData: FormData) {
+    const email = (formData.get("email") as string)?.toLowerCase().trim()
+    const password = formData.get("password") as string
+
+    if (!email || !password) {
+        return { error: "Missing required fields" }
+    }
+
+    try {
+        // 1. Manual User Check to bypass NextAuth masking
+        const user = await prisma.user.findUnique({
+            where: { email }
+        })
+
+        if (!user) {
+            return { error: "user_not_found" }
+        }
+
+        if (user.password === null) {
+            return { error: "login_with_google_required" }
+        }
+
+        if (!user.is_verified) {
+            return { error: "email_not_verified" }
+        }
+
+        const isValid = await bcrypt.compare(password, user.password)
+
+        if (!isValid) {
+            return { error: "invalid_password" }
+        }
+
+        // 2. If all checks pass, actually log them in via NextAuth
+        // Since we are in a Server Action, we can simply call signIn with redirect: false 
+        // effectively to set the cookie. 
+        // However, NextAuth v5 signIn on server usually throws a redirect unless redirect: false is passed.
+
+        try {
+            await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+            })
+            return { success: true }
+        } catch (signInError: any) {
+            if (signInError.type === 'CredentialsSignin') {
+                // Should not happen as we validated
+                return { error: "invalid_password" }
+            }
+            throw signInError // Rethrow other errors (like CallbackRouteError if any)
+        }
+
+    } catch (error: any) {
+        if (error.message?.includes("Redirect") || error.digest?.includes("NEXT_REDIRECT")) {
+            throw error;
+        }
+        console.error("Login action error:", error)
+        return { error: "default" }
     }
 }
 

@@ -31,7 +31,7 @@ export default async function PartnerRoomsPage({ searchParams }: { searchParams:
     return (
         <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1 container py-12 pt-24">
+            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 pt-24">
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-3xl font-bold">Manage Rooms</h1>

@@ -14,7 +14,7 @@ export default async function AccountPage() {
     const user = session.user
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 container py-12 max-w-5xl pt-24">
                 <div className="animate-fade-in">
@@ -24,14 +24,14 @@ export default async function AccountPage() {
 
                 <section className="card-section p-6 mb-8 animate-fade-in-up stagger-1">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <User className="w-10 h-10 text-primary" />
+                        <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                            <User className="w-10 h-10 text-accent" />
                         </div>
                         <div className="flex-1">
                             <h2 className="text-2xl font-bold">{user?.name || "Guest User"}</h2>
                             <p className="text-muted-foreground">{user?.email}</p>
                             <div className="flex flex-wrap gap-2 mt-3">
-                                <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+                                <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full">
                                     Verified Member
                                 </span>
                                 <span className="px-3 py-1 bg-muted text-muted-foreground text-xs font-semibold rounded-full">

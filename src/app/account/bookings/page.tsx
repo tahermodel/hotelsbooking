@@ -21,7 +21,7 @@ export default async function MyBookingsPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 container py-12 max-w-4xl pt-24">
                 <div className="mb-8 animate-fade-in">
@@ -44,15 +44,15 @@ export default async function MyBookingsPage() {
                         >
                             <div className="flex flex-col md:flex-row justify-between gap-4">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <Hotel className="w-6 h-6 text-primary" />
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                                        <Hotel className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-3 mb-1">
                                             <h3 className="font-bold text-lg">{booking.hotel.name}</h3>
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${booking.status === 'confirmed' ? 'bg-secondary/10 text-secondary' :
-                                                    booking.status === 'cancelled' ? 'bg-destructive/10 text-destructive' :
-                                                        'bg-muted text-muted-foreground'
+                                                booking.status === 'cancelled' ? 'bg-destructive/10 text-destructive' :
+                                                    'bg-muted text-muted-foreground'
                                                 }`}>
                                                 {booking.status}
                                             </span>
@@ -79,7 +79,7 @@ export default async function MyBookingsPage() {
                                 </div>
 
                                 <div className="flex flex-col items-end gap-3 md:border-l md:border-border md:pl-6">
-                                    <p className="text-2xl font-bold text-primary">{formatCurrency(booking.total_amount)}</p>
+                                    <p className="text-2xl font-bold text-accent">{formatCurrency(booking.total_amount)}</p>
                                     {booking.status === 'confirmed' && (
                                         <form action={async () => {
                                             "use server"

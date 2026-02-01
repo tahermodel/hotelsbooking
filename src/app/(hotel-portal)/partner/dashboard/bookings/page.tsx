@@ -27,7 +27,7 @@ export default async function PartnerBookingsPage() {
     return (
         <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1 container py-12">
+            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12">
                 <h1 className="text-3xl font-bold mb-8">Manage Bookings</h1>
                 <div className="space-y-4">
                     {bookings?.map(booking => (

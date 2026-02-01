@@ -79,7 +79,7 @@ export default function VerifyEmailClient() {
 
     if (success) {
         return (
-            <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0 bg-background text-foreground">
+            <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0 bg-background-alt text-foreground">
                 <div className="relative hidden h-full flex-col bg-gradient-to-br from-primary to-primary/70 p-10 text-white lg:flex overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/70 opacity-90" />
                     {/* Ambient Background Elements for visual interest */}
@@ -105,7 +105,7 @@ export default function VerifyEmailClient() {
                             </svg>
                         </div>
                         <div className="space-y-2">
-                            <h1 className="text-3xl font-bold tracking-tight text-[var(--primary)] text-primary">Verified!</h1>
+                            <h1 className="text-3xl font-bold tracking-tight text-accent">Verified!</h1>
                             <p className="text-[var(--muted-foreground)] text-muted-foreground">Your email has been successfully verified.</p>
                         </div>
                         <div className="pt-2">
@@ -121,7 +121,7 @@ export default function VerifyEmailClient() {
     }
 
     return (
-        <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0 bg-background text-foreground">
+        <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0 bg-background-alt text-foreground">
             <div className="relative hidden h-full flex-col bg-gradient-to-br from-primary to-primary/70 p-10 text-white lg:flex overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/70 opacity-90" />
                 {/* Ambient Background Elements for visual interest */}
@@ -143,8 +143,8 @@ export default function VerifyEmailClient() {
             <div className="flex items-center justify-center p-4 md:p-8 w-full h-full">
                 <div className="bg-white/5 backdrop-blur-xl p-8 md:p-12 w-full max-w-md rounded-2xl space-y-8 animate-in fade-in zoom-in duration-500 border border-white/40 shadow-2xl relative z-10">
                     <div className="space-y-3 text-center">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--primary)]/10 bg-primary/10 mb-2 border border-[var(--primary)]/20 border-primary/20">
-                            <svg className="w-7 h-7 text-[var(--primary)] text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 mb-2 border border-accent/20">
+                            <svg className="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>

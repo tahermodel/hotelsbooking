@@ -19,13 +19,13 @@ export default async function AdminDashboardPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 container py-12 max-w-6xl pt-24">
                 <div className="mb-8 animate-fade-in">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                            <Shield className="w-5 h-5 text-white" />
+                        <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                            <Shield className="w-5 h-5 text-accent-foreground" />
                         </div>
                         <span className="section-title mb-0">Admin Panel</span>
                     </div>
@@ -38,8 +38,8 @@ export default async function AdminDashboardPage() {
                     <div className="grid gap-4 sm:grid-cols-3">
                         <div className="stat-card animate-fade-in-up stagger-1">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                                    <Building2 className="w-6 h-6 text-primary" />
+                                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                                    <Building2 className="w-6 h-6 text-accent" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground font-medium">Total Hotels</p>
@@ -62,8 +62,8 @@ export default async function AdminDashboardPage() {
 
                         <div className="stat-card animate-fade-in-up stagger-3">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                                    <FileText className="w-6 h-6 text-primary" />
+                                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                                    <FileText className="w-6 h-6 text-accent" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground font-medium">Pending Apps</p>

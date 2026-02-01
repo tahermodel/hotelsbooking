@@ -16,7 +16,7 @@ export default async function Home() {
   })
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background-alt">
       <Header />
       <main className="flex-1 w-full">
         {/* Full Screen Hero Section */}
@@ -35,18 +35,18 @@ export default async function Home() {
             <div className="absolute inset-0 bg-black/30" />
 
             {/* Gradient Blur to Bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background-alt via-background-alt/80 to-transparent" />
           </div>
 
           {/* Hero Content */}
           <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 pt-20">
             <div className="space-y-4 animate-fade-in-up">
-              <span className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md text-white border border-white/30 text-sm font-semibold rounded-full">
+              <span className="inline-block px-4 py-1.5 bg-accent text-accent-foreground text-sm font-semibold rounded-full shadow-lg">
                 Book Now, Pay Later
               </span>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight drop-shadow-md">
                 Find Your Perfect <br className="hidden md:block" />
-                <span className="text-primary-foreground">Escape</span>
+                <span className="text-secondary-foreground">Escape</span>
               </h1>
               <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto drop-shadow-sm font-medium">
                 Experience boutique luxury with our seamless booking system. <br className="hidden md:block" /> Handpicked properties for the discerning traveler.

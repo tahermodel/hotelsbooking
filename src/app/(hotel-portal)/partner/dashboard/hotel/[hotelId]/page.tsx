@@ -23,7 +23,7 @@ export default async function PartnerHotelEditPage({ params }: { params: Promise
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <Header />
-            <main className="flex-1 container py-12 max-w-6xl pt-24 animate-fade-in">
+            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-6xl pt-24 animate-fade-in">
                 <HotelEditor hotel={hotel} />
             </main>
         </div>

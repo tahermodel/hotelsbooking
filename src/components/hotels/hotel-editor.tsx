@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Save, Globe, X, Plus, Image as ImageIcon } from "lucide-react"
+import { Loader2, Save, Globe, X, Plus, Image as ImageIcon, Star, UploadCloud } from "lucide-react"
 import { updateHotel, toggleHotelStatus } from "@/app/actions/hotel"
+import { cn } from "@/lib/utils"
 
 interface HotelEditorProps {
     hotel: any
@@ -15,7 +16,9 @@ interface HotelEditorProps {
 
 export function HotelEditor({ hotel }: HotelEditorProps) {
     const router = useRouter()
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const [loading, setLoading] = useState(false)
+    const [showConfirm, setShowConfirm] = useState(false)
     const [formData, setFormData] = useState({
         name: hotel.name,
         description: hotel.description || "",
@@ -41,7 +44,6 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         setLoading(true)
         try {
             await updateHotel(hotel.id, formData)
-            // Show toast success (mocking)
         } catch (error) {
             console.error(error)
         } finally {
@@ -53,12 +55,27 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         setLoading(true)
         try {
             await toggleHotelStatus(hotel.id, !hotel.is_active)
+            setShowConfirm(false)
             router.refresh()
         } catch (error) {
             console.error(error)
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+        if (!files) return
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                const base64String = reader.result as string
+                handleChange("images", [...formData.images, base64String])
+            }
+            reader.readAsDataURL(file)
+        })
     }
 
     return (
@@ -73,14 +90,29 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                         Save Changes
                     </Button>
-                    <Button
-                        variant={hotel.is_active ? "destructive" : "default"}
-                        onClick={handlePublishToggle}
-                        disabled={loading}
-                    >
-                        <Globe className="w-4 h-4 mr-2" />
-                        {hotel.is_active ? "Unpublish" : "Publish Now"}
-                    </Button>
+                    {!showConfirm ? (
+                        <Button
+                            variant={hotel.is_active ? "destructive" : "default"}
+                            onClick={() => setShowConfirm(true)}
+                            disabled={loading}
+                        >
+                            <Globe className="w-4 h-4 mr-2" />
+                            {hotel.is_active ? "Unpublish" : "Publish Now"}
+                        </Button>
+                    ) : (
+                        <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2">
+                            <span className="text-xs font-medium text-muted-foreground">Are you sure?</span>
+                            <Button size="sm" variant="ghost" onClick={() => setShowConfirm(false)}>Cancel</Button>
+                            <Button
+                                size="sm"
+                                variant={hotel.is_active ? "destructive" : "default"}
+                                onClick={handlePublishToggle}
+                                disabled={loading}
+                            >
+                                Confirm
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -105,14 +137,29 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <label className="text-sm font-medium">Star Rating</label>
-                                <Input
-                                    type="number" min="1" max="5"
-                                    value={formData.star_rating}
-                                    onChange={(e) => handleChange("star_rating", parseFloat(e.target.value))}
-                                />
+                        <div className="grid gap-2">
+                            <label className="text-sm font-medium">Star Rating</label>
+                            <div className="flex gap-1">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => handleChange("star_rating", star)}
+                                        className="transition-transform active:scale-95"
+                                    >
+                                        <Star
+                                            className={cn(
+                                                "w-8 h-8",
+                                                star <= formData.star_rating
+                                                    ? "fill-yellow-400 text-yellow-400"
+                                                    : "text-muted border-muted"
+                                            )}
+                                        />
+                                    </button>
+                                ))}
+                                <span className="ml-2 py-1 text-sm font-medium text-muted-foreground">
+                                    {formData.star_rating} / 5 stars
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -163,9 +210,9 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {formData.amenities.map((item: string, idx: number) => (
-                                <Badge key={idx} variant="secondary" className="px-3 py-1 text-sm bg-secondary/20">
+                                <Badge key={idx} variant="secondary" className="px-3 py-1.5 text-sm bg-secondary text-secondary-foreground border border-border/50">
                                     {item}
-                                    <button onClick={() => handleChange("amenities", formData.amenities.filter((_: any, i: number) => i !== idx))} className="ml-2 hover:text-destructive">
+                                    <button onClick={() => handleChange("amenities", formData.amenities.filter((_: any, i: number) => i !== idx))} className="ml-2 hover:text-destructive transition-colors">
                                         <X className="w-3 h-3" />
                                     </button>
                                 </Badge>
@@ -175,26 +222,57 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
 
                     <div className="card-section p-6 space-y-6">
                         <h3 className="section-title text-lg border-b border-border pb-2">Images</h3>
-                        <div className="flex gap-2">
-                            <Input
-                                value={imageInput}
-                                onChange={(e) => setImageInput(e.target.value)}
-                                placeholder="Image URL..."
+                        <div className="flex flex-col gap-4">
+                            <div className="flex gap-2">
+                                <Input
+                                    value={imageInput}
+                                    onChange={(e) => setImageInput(e.target.value)}
+                                    placeholder="Paste Image URL..."
+                                    className="flex-1"
+                                />
+                                <Button type="button" onClick={() => {
+                                    if (imageInput) {
+                                        handleChange("images", [...formData.images, imageInput]);
+                                        setImageInput("");
+                                    }
+                                }}><Plus className="w-4 h-4 mr-2" /> Add URL</Button>
+                            </div>
+
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <span className="w-full border-t border-border" />
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-card px-2 text-muted-foreground">Or upload from device</span>
+                                </div>
+                            </div>
+
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                className="hidden"
+                                accept="image/*"
+                                multiple
                             />
-                            <Button type="button" onClick={() => {
-                                if (imageInput) {
-                                    handleChange("images", [...formData.images, imageInput]);
-                                    setImageInput("");
-                                }
-                            }}><ImageIcon className="w-4 h-4" /></Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full border-dashed border-2 py-8 h-auto flex-col gap-2"
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                <UploadCloud className="w-8 h-8 text-muted-foreground" />
+                                <span>Click to upload images</span>
+                            </Button>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
                             {formData.images.map((img: string, idx: number) => (
-                                <div key={idx} className="relative aspect-video rounded-lg overflow-hidden group border border-border">
-                                    <img src={img} alt="Hotel" className="object-cover w-full h-full" />
+                                <div key={idx} className="relative aspect-video rounded-lg overflow-hidden group border border-border shadow-sm">
+                                    <img src={img} alt="Hotel" className="object-cover w-full h-full transition-transform group-hover:scale-105" />
                                     <button
                                         onClick={() => handleChange("images", formData.images.filter((_: any, i: number) => i !== idx))}
-                                        className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>

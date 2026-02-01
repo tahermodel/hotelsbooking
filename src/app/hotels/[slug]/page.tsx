@@ -47,7 +47,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
     if (!hotel) return <div>Hotel not found</div>
 
     return (
-        <div className="flex min-h-screen flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500/5 via-background to-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 container pt-32 pb-12">
                 <div className="grid gap-12 lg:grid-cols-3">
@@ -67,27 +67,27 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                 <div className="space-y-2">
                                     <h1 className="text-4xl font-black tracking-tight bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">{hotel.name}</h1>
                                     <div className="flex items-center text-muted-foreground font-medium">
-                                        <MapPin className="mr-2 h-4 w-4 text-primary" />
+                                        <MapPin className="mr-2 h-4 w-4 text-accent" />
                                         <span>{hotel.address}, {hotel.city}, {hotel.country}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20">
-                                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                                    <Star className="h-5 w-5 fill-accent text-accent" />
                                     <span className="text-xl font-black">{hotel.star_rating}</span>
                                 </div>
                             </div>
 
-                            <div className="pt-10 border-t border-white/10">
+                            <div className="pt-10 border-t border-border/50">
                                 <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">World Class Amenities</h2>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                    <div className="flex items-center space-x-3 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10"><Wifi className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Free WiFi</span></div>
-                                    <div className="flex items-center space-x-3 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10"><Car className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Secure Parking</span></div>
-                                    <div className="flex items-center space-x-3 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10"><Coffee className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Gourmet Breakfast</span></div>
-                                    <div className="flex items-center space-x-3 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10"><Tv className="h-5 w-5 text-primary" /> <span className="text-sm font-bold">Smart Entertainment</span></div>
+                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Wifi className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Free WiFi</span></div>
+                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Car className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Secure Parking</span></div>
+                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Coffee className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Gourmet Breakfast</span></div>
+                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Tv className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Smart Entertainment</span></div>
                                 </div>
                             </div>
 
-                            <div className="pt-10 border-t border-white/10">
+                            <div className="pt-10 border-t border-border/50">
                                 <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">About the Property</h2>
                                 <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                                     {hotel.description || "Experience unprecedented luxury and comfort in our meticulously designed hotel, located in the vibrant heart of the city's most prestigious district."}
@@ -96,15 +96,15 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                         </div>
 
                         {/* Premium Reviews Section */}
-                        <div className="pt-10 border-t border-white/10">
+                        <div className="pt-10 border-t border-border/50">
                             <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-8">Guest Experiences</h2>
                             <div className="grid gap-6">
                                 {hotel.reviews && hotel.reviews.length > 0 ? (
                                     hotel.reviews.map((review: any) => (
-                                        <div key={review.id} className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                                        <div key={review.id} className="bg-white p-6 rounded-2xl border border-border shadow-sm">
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold">
                                                         {review.user?.name?.[0] || 'G'}
                                                     </div>
                                                     <div>
@@ -113,7 +113,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                                             {Array.from({ length: 5 }).map((_, i) => (
                                                                 <Star
                                                                     key={i}
-                                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
+                                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-accent text-accent' : 'text-muted-foreground/30'}`}
                                                                 />
                                                             ))}
                                                         </div>
@@ -137,11 +137,11 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                     </div>
 
                     <div className="space-y-6">
-                        <div className="rounded-3xl border border-white/20 p-8 sticky top-24 shadow-2xl bg-white/5 backdrop-blur-2xl">
+                        <div className="rounded-3xl border border-border p-8 sticky top-24 shadow-2xl bg-white">
                             <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Available Curated Rooms</h3>
                             <div className="space-y-6">
                                 {hotel.rooms?.map((room: any) => (
-                                    <div key={room.id} className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl transition-all hover:bg-white/10 group">
+                                    <div key={room.id} className="p-6 bg-background-alt border border-border rounded-2xl transition-all hover:bg-white/50 group">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
                                                 <h4 className="font-black text-lg group-hover:text-primary transition-colors">{room.name}</h4>
@@ -153,7 +153,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                             </div>
                                         </div>
                                         <Link href={`/booking/${hotel.id}?roomType=${room.id}`}>
-                                            <Button className="w-full h-12 rounded-xl font-black liquid-flicker shadow-lg">Select Experience</Button>
+                                            <Button className="w-full h-12 rounded-xl font-black bg-accent hover:bg-accent/90 text-accent-foreground border-none shadow-lg">Select Experience</Button>
                                         </Link>
                                     </div>
                                 ))}

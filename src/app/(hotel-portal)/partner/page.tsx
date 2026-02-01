@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function PartnerPage() {
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 pt-20">
                 <section className="py-20 bg-secondary text-secondary-foreground">
@@ -40,8 +40,8 @@ export default async function PartnerPage() {
                         </div>
                         <div className="grid md:grid-cols-3 gap-8">
                             <div className="card-section card-section-hover p-8 text-center animate-fade-in-up stagger-1">
-                                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                                    <TrendingUp className="w-8 h-8 text-primary" />
+                                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                                    <TrendingUp className="w-8 h-8 text-accent" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-3">Increase Revenue</h3>
                                 <p className="text-muted-foreground">
@@ -60,8 +60,8 @@ export default async function PartnerPage() {
                             </div>
 
                             <div className="card-section card-section-hover p-8 text-center animate-fade-in-up stagger-3">
-                                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                                    <ShieldCheck className="w-8 h-8 text-primary" />
+                                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                                    <ShieldCheck className="w-8 h-8 text-accent" />
                                 </div>
                                 <h3 className="text-xl font-bold mb-3">Secure Payments</h3>
                                 <p className="text-muted-foreground">
@@ -80,8 +80,8 @@ export default async function PartnerPage() {
                                 <h2 className="text-3xl font-bold mb-8">Rules and Policies</h2>
                                 <div className="space-y-4">
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <CheckCircle2 className="w-4 h-4 text-white" />
+                                        <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <CheckCircle2 className="w-4 h-4 text-accent-foreground" />
                                         </div>
                                         <div>
                                             <p className="font-semibold">Commission</p>
@@ -107,8 +107,8 @@ export default async function PartnerPage() {
                                         </div>
                                     </div>
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <CheckCircle2 className="w-4 h-4 text-white" />
+                                        <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <CheckCircle2 className="w-4 h-4 text-accent-foreground" />
                                         </div>
                                         <div>
                                             <p className="font-semibold">Cancellations</p>
@@ -140,12 +140,12 @@ export default async function PartnerPage() {
                     </div>
                 </section>
 
-                <section className="py-16 bg-primary text-primary-foreground">
+                <section className="py-16 bg-accent text-accent-foreground">
                     <div className="container px-4 max-w-4xl mx-auto text-center">
                         <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
                         <p className="text-primary-foreground/80 mb-8">Join hundreds of hotels already growing with StayEase</p>
                         <Link href="/partner/apply">
-                            <Button size="lg" className="bg-white text-primary hover:bg-white/90">
+                            <Button size="lg" className="bg-white text-accent hover:bg-white/90">
                                 Apply Now
                             </Button>
                         </Link>

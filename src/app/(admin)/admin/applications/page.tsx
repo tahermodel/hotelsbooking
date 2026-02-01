@@ -13,7 +13,7 @@ export default async function AdminApplicationsPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
             <main className="flex-1 container py-12 max-w-5xl pt-24">
                 <div className="mb-8 animate-fade-in">
@@ -36,17 +36,17 @@ export default async function AdminApplicationsPage() {
                         >
                             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <Building2 className="w-6 h-6 text-primary" />
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                                        <Building2 className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold">{app.hotel_name}</h3>
                                         <p className="text-sm text-muted-foreground">{app.hotel_address}</p>
                                     </div>
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${app.status === 'pending' ? 'bg-primary/10 text-primary' :
-                                        app.status === 'approved' ? 'bg-secondary/10 text-secondary' :
-                                            'bg-destructive/10 text-destructive'
+                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${app.status === 'pending' ? 'bg-accent/10 text-accent' :
+                                    app.status === 'approved' ? 'bg-secondary/10 text-secondary' :
+                                        'bg-destructive/10 text-destructive'
                                     }`}>
                                     {app.status.toUpperCase()}
                                 </span>
@@ -86,7 +86,7 @@ export default async function AdminApplicationsPage() {
                             {app.status === 'pending' && (
                                 <div className="flex gap-2 pt-4 border-t border-border">
                                     <form action={updateApplicationStatus.bind(null, app.id, "approved")}>
-                                        <Button size="sm" type="submit">
+                                        <Button size="sm" type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground border-none">
                                             Approve
                                         </Button>
                                     </form>

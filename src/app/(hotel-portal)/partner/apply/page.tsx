@@ -11,7 +11,7 @@ export default async function PartnerApplyPage() {
     return (
         <div className="flex min-h-screen flex-col bg-slate-50">
             <Header />
-            <main className="flex-1 container mx-auto py-16 max-w-4xl px-6 lg:px-0">
+            <main className="flex-1 container mx-auto py-16 max-w-4xl px-4 sm:px-6 lg:px-8">
                 <div className="mb-8 text-center space-y-2">
                     <h1 className="text-3xl font-bold tracking-tight">Partner Application</h1>
                     <p className="text-muted-foreground">Join our network of premium hotels.</p>

@@ -16,7 +16,7 @@ export default function AuthLayout({
                     priority
                 />
 
-                <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-r from-transparent to-background z-10" />
+                <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-r from-transparent via-background/20 to-background z-10" />
 
                 <div className="relative z-20 p-10 flex items-center text-lg font-medium">
                     <span className="text-2xl font-bold text-white drop-shadow-md">StayEase</span>

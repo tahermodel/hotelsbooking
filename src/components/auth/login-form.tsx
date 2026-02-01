@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Chrome, Eye, EyeOff } from "lucide-react"
+import { loginAction } from "@/actions/auth"
 
 interface LoginFormProps {
     message?: string
@@ -35,24 +36,23 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
         setLoading(true)
         setError("")
 
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-        })
+        const formData = new FormData()
+        formData.append("email", email)
+        formData.append("password", password)
+
+        // Using Server Action to bypass NextAuth masking
+        const result = await loginAction(formData)
 
         setLoading(false)
 
         if (result?.error) {
-            const errorCode = result.error.includes(":") ? result.error.split(":")[1].trim() : result.error
-
-            if (errorCode === "email_not_verified") {
+            if (result.error === "email_not_verified") {
                 router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
                 return
             }
 
-            setError(ERROR_MESSAGES[errorCode] || ERROR_MESSAGES.CredentialsSignin)
-        } else if (result?.ok) {
+            setError(ERROR_MESSAGES[result.error] || ERROR_MESSAGES.default)
+        } else if (result?.success) {
             router.push("/")
             router.refresh()
         }

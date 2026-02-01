@@ -15,7 +15,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-card/90 backdrop-blur-sm">
-                        <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                        <Star className="h-3.5 w-3.5 fill-accent text-accent" />
                         <span className="text-xs font-bold">{hotel.star_rating}</span>
                     </div>
                 </div>
