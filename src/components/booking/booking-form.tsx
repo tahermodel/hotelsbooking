@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { CreditCard } from "lucide-react"
 import { lockRoom, releaseRoomLock } from "@/actions/availability"
-import { createPaymentIntent } from "@/actions/payments"
+import { createPaymentIntent, createCheckoutSession } from "@/actions/payments"
 import { createBooking } from "@/actions/bookings"
 import { formatCurrency } from "@/lib/utils"
 
@@ -52,18 +52,6 @@ export function BookingForm({
 
         setLoading(true)
         try {
-            // Create Payment Intent with Metadata for Stripe Dashboard
-            const { clientSecret, id: paymentIntentId } = await createPaymentIntent(roomType.base_price, "usd", {
-                hotelId: hotel.id,
-                hotelName: hotel.name,
-                roomId: roomType.id,
-                roomName: roomType.name,
-                guestEmail: session?.user?.email,
-                checkIn,
-                checkOut
-            })
-
-            // Attempt to create the booking
             const result = await createBooking({
                 hotelId: hotel.id,
                 roomId: roomType.id,
@@ -73,11 +61,25 @@ export function BookingForm({
                 totalAmount: roomType.base_price,
                 guestName: session?.user?.name || "Guest",
                 guestEmail: session?.user?.email || "",
-                paymentIntentId: paymentIntentId
+                paymentIntentId: "pending"
             })
 
-            if (result && result.success) {
-                router.push(`/booking/confirmation?id=${result.bookingId}`)
+            if (result && result.success && result.bookingId) {
+                const baseUrl = window.location.origin
+                const checkoutSession = await createCheckoutSession({
+                    hotelName: hotel.name,
+                    roomName: roomType.name,
+                    amount: roomType.base_price,
+                    bookingId: result.bookingId,
+                    successUrl: `${baseUrl}/booking/confirmation?id=${result.bookingId}`,
+                    cancelUrl: `${baseUrl}/booking/${hotel.id}?roomType=${roomType.id}`
+                })
+
+                if (checkoutSession.url) {
+                    window.location.href = checkoutSession.url
+                } else {
+                    throw new Error("Failed to create checkout session")
+                }
             } else {
                 throw new Error("Booking creation failed")
             }
@@ -108,9 +110,12 @@ export function BookingForm({
 
                     <div className="pt-6 border-t">
                         <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-                        <div className="p-4 border-2 border-sky-500 rounded-lg bg-sky-500/5">
-                            <p className="font-semibold">Pay Later</p>
-                            <p className="text-sm text-muted-foreground">Your card will be authorized now, but you won&apos;t be charged until you arrive at the hotel.</p>
+                        <div className="p-4 border-2 border-primary/30 rounded-lg bg-primary/5">
+                            <div className="flex items-center gap-2 mb-2">
+                                <CreditCard className="h-5 w-5 text-primary" />
+                                <p className="font-semibold text-foreground">Secure Payment via Stripe</p>
+                            </div>
+                            <p className="text-sm text-muted-foreground">You'll be redirected to Stripe's secure payment page to complete your booking.</p>
                         </div>
                     </div>
 

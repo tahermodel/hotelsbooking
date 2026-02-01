@@ -17,6 +17,40 @@ export async function createPaymentIntent(amount: number, currency: string = "us
     return { clientSecret: paymentIntent.client_secret, id: paymentIntent.id }
 }
 
+export async function createCheckoutSession(params: {
+    hotelName: string
+    roomName: string
+    amount: number
+    bookingId: string
+    successUrl: string
+    cancelUrl: string
+}) {
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+            {
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: `${params.roomName} at ${params.hotelName}`,
+                        description: 'Hotel Room Booking',
+                    },
+                    unit_amount: Math.round(params.amount * 100),
+                },
+                quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: params.successUrl,
+        cancel_url: params.cancelUrl,
+        metadata: {
+            bookingId: params.bookingId,
+        },
+    })
+
+    return { url: session.url, sessionId: session.id }
+}
+
 export async function capturePayment(paymentIntentId: string) {
     const intent = await stripe.paymentIntents.capture(paymentIntentId)
     // database update logic should be in booking flow or webhook

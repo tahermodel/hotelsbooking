@@ -9,11 +9,44 @@ import Image from "next/image"
 
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
-  const featuredHotels = await prisma.hotel.findMany({
-    where: { is_active: true },
-    take: 6
-  })
+type PageProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function Home({ searchParams }: PageProps) {
+  const params = await searchParams
+  const query = typeof params.q === 'string' ? params.q : undefined
+
+  let hotels = []
+  const isSearch = !!query
+
+  if (isSearch) {
+    hotels = await prisma.hotel.findMany({
+      where: {
+        is_active: true,
+        OR: [
+          { name: { contains: query, mode: 'insensitive' } },
+          { city: { contains: query, mode: 'insensitive' } },
+          { country: { contains: query, mode: 'insensitive' } }
+        ]
+      },
+      include: {
+        rooms: {
+          select: { base_price: true }
+        }
+      }
+    })
+  } else {
+    hotels = await prisma.hotel.findMany({
+      where: { is_active: true },
+      take: 6,
+      include: {
+        rooms: {
+          select: { base_price: true }
+        }
+      }
+    })
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background-alt">
@@ -57,56 +90,52 @@ export default async function Home() {
 
         {/* Search Section - Overlapping or just below with smooth transition */}
         <section className="relative z-20 -mt-24 pb-16">
-          <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-fade-in-up stagger-2">
               <SearchFilters />
             </div>
           </div>
         </section>
 
-        <section className="py-16 md:py-24">
+        <section className="py-16 md:py-24" id="results">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 animate-fade-in">
               <div>
-                <span className="section-title">Explore</span>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground">Featured Destinations</h2>
-                <p className="text-muted-foreground mt-2">Handpicked properties for your next adventure</p>
+                <span className="section-title">{isSearch ? "Search Results" : "Explore"}</span>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                  {isSearch ? `Found ${hotels.length} properties for "${query}"` : "Featured Destinations"}
+                </h2>
+                <p className="text-muted-foreground mt-2">
+                  {isSearch ? "Best matches for your search" : "Handpicked properties for your next adventure"}
+                </p>
               </div>
-              <Link href="/search">
-                <Button variant="outline" className="group">
-                  View All
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
+              {!isSearch && (
+                <Link href="/search">
+                  <Button variant="outline" className="group">
+                    View All
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              )}
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredHotels?.map((hotel, index) => (
-                <div key={hotel.id} className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}>
-                  <HotelCard hotel={hotel} />
-                </div>
-              ))}
-            </div>
+
+            {hotels.length > 0 ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {hotels.map((hotel, index) => (
+                  <div key={hotel.id} className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}>
+                    <HotelCard hotel={hotel} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-card rounded-2xl border border-border">
+                <h3 className="text-xl font-semibold mb-2">No hotels found</h3>
+                <p className="text-muted-foreground">Try adjusting your search terms</p>
+              </div>
+            )}
           </div>
         </section>
 
-        <section className="py-16 bg-secondary text-secondary-foreground">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div className="animate-fade-in-up stagger-1">
-                <div className="text-4xl font-bold mb-2">500+</div>
-                <div className="text-secondary-foreground/80">Premium Hotels</div>
-              </div>
-              <div className="animate-fade-in-up stagger-2">
-                <div className="text-4xl font-bold mb-2">5K+</div>
-                <div className="text-secondary-foreground/80">Happy Travelers</div>
-              </div>
-              <div className="animate-fade-in-up stagger-3">
-                <div className="text-4xl font-bold mb-2">4.9</div>
-                <div className="text-secondary-foreground/80">Average Rating</div>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer className="bg-card border-t border-border">
@@ -127,3 +156,4 @@ export default async function Home() {
     </div>
   )
 }
+

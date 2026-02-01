@@ -4,6 +4,9 @@ import { Star, MapPin, ArrowRight } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 
 export function HotelCard({ hotel }: { hotel: any }) {
+    const prices = hotel.rooms?.map((r: any) => r.base_price) || []
+    const lowestPrice = prices.length > 0 ? Math.min(...prices) : null
+
     return (
         <div className="card-section card-section-hover overflow-hidden group">
             <Link href={`/hotels/${hotel.slug}`} className="block">
@@ -30,8 +33,10 @@ export function HotelCard({ hotel }: { hotel: any }) {
 
                     <div className="flex items-center justify-between pt-4 border-t border-border">
                         <div>
-                            <span className="text-xl font-bold">{formatCurrency(199)}</span>
-                            <span className="text-xs text-muted-foreground ml-1">/ night</span>
+                            <span className="text-xl font-bold">
+                                {lowestPrice !== null ? formatCurrency(lowestPrice) : "View"}
+                            </span>
+                            {lowestPrice !== null && <span className="text-xs text-muted-foreground ml-1">/ night</span>}
                         </div>
                         <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center group-hover:bg-primary transition-colors">
                             <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-white transition-colors" />

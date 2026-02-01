@@ -20,7 +20,17 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
     const hotel = await prisma.hotel.findUnique({
         where: { slug: slug },
         include: {
-            rooms: true,
+            rooms: {
+                include: {
+                    bookings: {
+                        where: {
+                            status: { in: ['pending', 'confirmed'] },
+                            check_in_date: { lte: new Date() },
+                            check_out_date: { gte: new Date() }
+                        }
+                    }
+                }
+            },
             reviews: {
                 include: { user: true },
                 orderBy: { created_at: 'desc' },
@@ -49,17 +59,22 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
 
     // Check availability for review
     let bookingToReview = null;
+    let existingReview = null;
     if (session?.user?.id) {
         bookingToReview = await prisma.booking.findFirst({
             where: {
                 user_id: session.user.id,
                 hotel_id: hotel.id,
-                // Allow reviewing confirmed bookings for testing if needed, but normally completed
-                // updating to allow confirmed as "completed" flow might be tricky to test otherwise
                 status: { in: ['completed', 'confirmed'] },
-                review: null
+            },
+            include: {
+                review: true
             }
         })
+
+        if (bookingToReview?.review) {
+            existingReview = bookingToReview.review
+        }
     }
 
     // Dynamic Icon mapping for amenities (simple fallback)
@@ -84,7 +99,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                         <div className="rounded-3xl border bg-card p-2 shadow-sm overflow-hidden">
                             <div className="relative aspect-video overflow-hidden rounded-2xl group">
                                 <Image
-                                    src={hotel.main_image || hotel.images?.[0] || "/placeholder.jpg"}
+                                    src={(hotel as any).main_image || (hotel as any).images?.[0] || "/placeholder.jpg"}
                                     alt={hotel.name}
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -94,9 +109,9 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                         </div>
 
                         {/* Gallery Grid */}
-                        {hotel.images && hotel.images.length > 0 && (
+                        {(hotel as any).images && (hotel as any).images.length > 0 && (
                             <div className="grid grid-cols-4 gap-4">
-                                {hotel.images.slice(0, 4).map((img: string, idx: number) => (
+                                {(hotel as any).images.slice(0, 4).map((img: string, idx: number) => (
                                     <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border bg-muted shadow-sm group">
                                         <Image
                                             src={img}
@@ -140,7 +155,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                         hotel.amenities.map((amenity, idx) => (
                                             <div key={idx} className="flex items-center space-x-3 bg-muted/50 p-4 rounded-2xl border border-border/50">
                                                 {getAmenityIcon(amenity)}
-                                                <span className="text-sm font-bold">{amenity}</span>
+                                                <span className="text-sm font-bold text-foreground">{amenity}</span>
                                             </div>
                                         ))
                                     ) : (
@@ -162,7 +177,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                             {/* Review Form */}
                             {bookingToReview && (
                                 <div className="bg-accent/5 rounded-2xl p-4 border border-accent/20">
-                                    <ReviewForm bookingId={bookingToReview.id} hotelId={hotel.id} />
+                                    <ReviewForm bookingId={bookingToReview.id} hotelId={hotel.id} existingReview={existingReview} />
                                 </div>
                             )}
 
@@ -207,25 +222,34 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                         <div className="rounded-3xl border bg-card p-8 sticky top-24 shadow-xl">
                             <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Select Your Room</h3>
                             <div className="space-y-6">
-                                {hotel.rooms?.map((room: any) => (
-                                    <div key={room.id} className="p-5 bg-background border border-dashed rounded-2xl group hover:border-accent transition-all">
-                                        <div className="mb-4">
-                                            <h4 className="font-black text-lg">{room.name}</h4>
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{room.max_guests} Guests</p>
-                                        </div>
-                                        <div className="flex justify-between items-end">
-                                            <div className="flex flex-col">
-                                                <span className="text-sm text-muted-foreground line-through opacity-50">${Math.round(room.base_price * 1.2)}</span>
-                                                <span className="font-black text-2xl text-primary">${room.base_price}</span>
+                                {hotel.rooms?.map((room: any) => {
+                                    const isBooked = room.bookings && room.bookings.length > 0
+                                    return (
+                                        <div key={room.id} className="p-5 bg-background border border-dashed rounded-2xl group hover:border-accent transition-all">
+                                            <div className="mb-4">
+                                                <h4 className="font-black text-lg text-foreground">{room.name}</h4>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{room.max_guests} Guests</p>
                                             </div>
-                                            <Link href={`/booking/${hotel.id}?roomType=${room.id}`}>
-                                                <Button size="sm" className="rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90">
-                                                    Book Now
-                                                </Button>
-                                            </Link>
+                                            <div className="flex justify-between items-end">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm text-muted-foreground line-through opacity-50">${Math.round(room.base_price * 1.2)}</span>
+                                                    <span className="font-black text-2xl text-primary">${room.base_price}</span>
+                                                </div>
+                                                {isBooked ? (
+                                                    <div className="px-4 py-2 bg-destructive/10 border border-destructive/30 rounded-xl">
+                                                        <span className="text-sm font-bold text-destructive">Booked</span>
+                                                    </div>
+                                                ) : (
+                                                    <Link href={`/rooms/${room.id}`}>
+                                                        <Button size="sm" className="rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90">
+                                                            More Info
+                                                        </Button>
+                                                    </Link>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
                     </div>
