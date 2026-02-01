@@ -24,11 +24,12 @@ export default async function Home() {
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <Image
-              src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=3270&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1596436889106-be35e843f974?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Luxury Hotel"
               fill
               className="object-cover"
               priority
+              unoptimized
             />
             {/* Dark overlay for text readability */}
             <div className="absolute inset-0 bg-black/30" />

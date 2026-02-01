@@ -207,7 +207,7 @@ export function LiquidGlass({
             className={cn(
                 "relative overflow-hidden rounded-2xl",
                 "bg-white/40", // Stronger frosted glass
-                "backdrop-blur-md backdrop-saturate-150", // smooth blur
+                "backdrop-blur-[3xp] backdrop-saturate-150", // smooth blur
                 "border border-white/60", // Definite border
                 className
             )}
