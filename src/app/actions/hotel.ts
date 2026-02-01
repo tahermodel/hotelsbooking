@@ -14,6 +14,7 @@ const hotelSchema = z.object({
     star_rating: z.coerce.number().min(1).max(5),
     amenities: z.array(z.string()),
     images: z.array(z.string()),
+    main_image: z.string().optional().nullable(),
     contact_email: z.string().email(),
     contact_phone: z.string().optional(),
     check_in_time: z.string(),
@@ -32,7 +33,8 @@ export async function updateHotel(hotelId: string, data: z.infer<typeof hotelSch
         data: {
             ...data,
             amenities: { set: data.amenities },
-            images: { set: data.images }
+            images: { set: data.images },
+            main_image: data.main_image
         }
     })
 

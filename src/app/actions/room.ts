@@ -14,6 +14,7 @@ const roomSchema = z.object({
     size_sqm: z.coerce.number().optional(),
     amenities: z.array(z.string()),
     images: z.array(z.string()),
+    main_image: z.string().optional().nullable(),
     base_price: z.coerce.number().min(0),
     hotel_id: z.string() // Ensure room is linked to a hotel
 })
@@ -33,7 +34,8 @@ export async function createRoom(data: z.infer<typeof roomSchema>) {
         data: {
             ...data,
             amenities: { set: data.amenities },
-            images: { set: data.images }
+            images: { set: data.images },
+            main_image: data.main_image
         }
     })
 
@@ -59,7 +61,8 @@ export async function updateRoom(roomId: string, data: Omit<z.infer<typeof roomS
         data: {
             ...data,
             amenities: { set: data.amenities },
-            images: { set: data.images }
+            images: { set: data.images },
+            main_image: (data as any).main_image
         }
     })
 

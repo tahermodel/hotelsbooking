@@ -9,7 +9,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
             <Link href={`/hotels/${hotel.slug}`} className="block">
                 <div className="relative aspect-video overflow-hidden">
                     <Image
-                        src={hotel.images?.[0] || "/placeholder.jpg"}
+                        src={hotel.main_image || hotel.images?.[0] || "/placeholder.jpg"}
                         alt={hotel.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"

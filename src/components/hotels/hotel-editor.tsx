@@ -28,6 +28,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         star_rating: hotel.star_rating || 5,
         amenities: hotel.amenities || [],
         images: hotel.images || [],
+        main_image: hotel.main_image || "",
         contact_email: hotel.contact_email || "",
         contact_phone: hotel.contact_phone || "",
         check_in_time: hotel.check_in_time || "14:00",
@@ -35,6 +36,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
     })
     const [amenityInput, setAmenityInput] = useState("")
     const [imageInput, setImageInput] = useState("")
+    const [mainImageInput, setMainImageInput] = useState("")
 
     const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }))
@@ -44,6 +46,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         setLoading(true)
         try {
             await updateHotel(hotel.id, formData)
+            router.refresh()
         } catch (error) {
             console.error(error)
         } finally {
@@ -72,10 +75,22 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
             const reader = new FileReader()
             reader.onloadend = () => {
                 const base64String = reader.result as string
-                handleChange("images", [...formData.images, base64String])
+                setFormData(prev => ({ ...prev, images: [...prev.images, base64String] }))
             }
             reader.readAsDataURL(file)
         })
+    }
+
+    const handleMainImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onloadend = () => {
+            const base64String = reader.result as string
+            handleChange("main_image", base64String)
+        }
+        reader.readAsDataURL(file)
     }
 
     return (
@@ -221,7 +236,65 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                     </div>
 
                     <div className="card-section p-6 space-y-6">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Images</h3>
+                        <h3 className="section-title text-lg border-b border-border pb-2">Main Image (Card Display)</h3>
+                        <div className="flex flex-col gap-4">
+                            <div className="flex gap-2">
+                                <Input
+                                    value={mainImageInput}
+                                    onChange={(e) => setMainImageInput(e.target.value)}
+                                    placeholder="Paste Main Image URL..."
+                                    className="flex-1"
+                                />
+                                <Button type="button" onClick={() => {
+                                    if (mainImageInput) {
+                                        handleChange("main_image", mainImageInput);
+                                        setMainImageInput("");
+                                    }
+                                }}><Plus className="w-4 h-4 mr-2" /> Set URL</Button>
+                            </div>
+
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <span className="w-full border-t border-border" />
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-card px-2 text-muted-foreground">Or upload main image</span>
+                                </div>
+                            </div>
+
+                            <input
+                                type="file"
+                                onChange={handleMainImageUpload}
+                                className="hidden"
+                                id="main-image-upload"
+                                accept="image/*"
+                            />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full border-dashed border-2 py-8 h-auto flex-col gap-2"
+                                onClick={() => document.getElementById('main-image-upload')?.click()}
+                            >
+                                <UploadCloud className="w-8 h-8 text-muted-foreground" />
+                                <span>Click to upload main image</span>
+                            </Button>
+
+                            {formData.main_image && (
+                                <div className="relative aspect-video rounded-lg overflow-hidden border border-border mt-4 group">
+                                    <img src={formData.main_image} alt="Main" className="object-cover w-full h-full" />
+                                    <button
+                                        onClick={() => handleChange("main_image", "")}
+                                        className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="card-section p-6 space-y-6">
+                        <h3 className="section-title text-lg border-b border-border pb-2">Gallery Images (Hotel Page)</h3>
                         <div className="flex flex-col gap-4">
                             <div className="flex gap-2">
                                 <Input
@@ -235,7 +308,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                         handleChange("images", [...formData.images, imageInput]);
                                         setImageInput("");
                                     }
-                                }}><Plus className="w-4 h-4 mr-2" /> Add URL</Button>
+                                }}><Plus className="w-4 h-4 mr-2" /> Add to Gallery</Button>
                             </div>
 
                             <div className="relative">
@@ -243,7 +316,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                     <span className="w-full border-t border-border" />
                                 </div>
                                 <div className="relative flex justify-center text-xs uppercase">
-                                    <span className="bg-card px-2 text-muted-foreground">Or upload from device</span>
+                                    <span className="bg-card px-2 text-muted-foreground">Or upload to gallery</span>
                                 </div>
                             </div>
 
@@ -262,14 +335,14 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 <UploadCloud className="w-8 h-8 text-muted-foreground" />
-                                <span>Click to upload images</span>
+                                <span>Click to upload gallery images</span>
                             </Button>
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
                             {formData.images.map((img: string, idx: number) => (
                                 <div key={idx} className="relative aspect-video rounded-lg overflow-hidden group border border-border shadow-sm">
-                                    <img src={img} alt="Hotel" className="object-cover w-full h-full transition-transform group-hover:scale-105" />
+                                    <img src={img} alt="Gallery" className="object-cover w-full h-full transition-transform group-hover:scale-105" />
                                     <button
                                         onClick={() => handleChange("images", formData.images.filter((_: any, i: number) => i !== idx))}
                                         className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive"

@@ -54,13 +54,28 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                     <div className="lg:col-span-2 space-y-10">
                         <div className="relative aspect-video overflow-hidden rounded-3xl shadow-2xl group border border-white/20">
                             <Image
-                                src={hotel.images?.[0] || "/placeholder.jpg"}
+                                src={hotel.main_image || hotel.images?.[0] || "/placeholder.jpg"}
                                 alt={hotel.name}
                                 fill
                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                         </div>
+
+                        {hotel.images && hotel.images.length > 0 && (
+                            <div className="grid grid-cols-4 gap-4 mt-6">
+                                {hotel.images.map((img: string, idx: number) => (
+                                    <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-border shadow-md group">
+                                        <Image
+                                            src={img}
+                                            alt={`${hotel.name} gallery ${idx + 1}`}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="space-y-8 px-2">
                             <div className="flex items-start justify-between">

@@ -113,6 +113,7 @@ model Hotel {
   star_rating   Float    @map("star_rating")
   amenities     String[]
   images        String[]
+  main_image    String?  @map("main_image")
   contact_email String   @map("contact_email")
   contact_phone String?  @map("contact_phone")
   check_in_time String   @map("check_in_time")
@@ -143,6 +144,7 @@ model RoomType {
   size_sqm          Float?   @map("size_sqm")
   amenities         String[]
   images            String[]
+  main_image        String?  @map("main_image")
   base_price        Float    @map("base_price")
   
   created_at        DateTime @default(now()) @map("created_at")
