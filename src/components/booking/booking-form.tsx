@@ -52,9 +52,19 @@ export function BookingForm({
 
         setLoading(true)
         try {
-            const { clientSecret } = await createPaymentIntent(roomType.base_price, "usd", hotel.id)
+            // Create Payment Intent with Metadata for Stripe Dashboard
+            const { clientSecret, id: paymentIntentId } = await createPaymentIntent(roomType.base_price, "usd", {
+                hotelId: hotel.id,
+                hotelName: hotel.name,
+                roomId: roomType.id,
+                roomName: roomType.name,
+                guestEmail: session?.user?.email,
+                checkIn,
+                checkOut
+            })
 
-            await createBooking({
+            // Attempt to create the booking
+            const result = await createBooking({
                 hotelId: hotel.id,
                 roomId: roomType.id,
                 checkInDate: checkIn,
@@ -63,11 +73,18 @@ export function BookingForm({
                 totalAmount: roomType.base_price,
                 guestName: session?.user?.name || "Guest",
                 guestEmail: session?.user?.email || "",
-                paymentIntentId: "pi_mock_123"
+                paymentIntentId: paymentIntentId
             })
-        } catch (error) {
+
+            if (result && result.success) {
+                router.push(`/booking/confirmation?id=${result.bookingId}`)
+            } else {
+                throw new Error("Booking creation failed")
+            }
+
+        } catch (error: any) {
             console.error(error)
-            alert("Booking failed")
+            alert(error.message || "Booking failed")
         } finally {
             setLoading(false)
         }

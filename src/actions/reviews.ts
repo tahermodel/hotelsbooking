@@ -13,6 +13,12 @@ export async function submitReview(data: {
     const session = await auth()
     if (!session?.user?.id) throw new Error("Unauthorized")
 
+    const existing = await prisma.review.findUnique({
+        where: { booking_id: data.bookingId }
+    })
+
+    if (existing) throw new Error("You have already reviewed this stay")
+
     await prisma.review.create({
         data: {
             booking_id: data.bookingId,
@@ -23,6 +29,8 @@ export async function submitReview(data: {
             user_id: session.user.id
         }
     })
+
+    return { success: true }
 }
 
 export async function getHotelReviews(hotelId: string) {

@@ -29,14 +29,17 @@ export default async function BookingPage({
     if (!hotel || !roomTypeData) return <div>Invalid booking details</div>
 
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container py-12">
-                <h1 className="text-3xl font-bold mb-8">Confirm Your Booking</h1>
-                <div className="mb-8 p-4 bg-primary/5 rounded-xl border border-primary/20 text-sm text-primary flex items-center gap-2">
-                    <span>We&apos;ve locked this room for you. Complete your reservation in the next 10 minutes.</span>
+            <main className="flex-1 container mx-auto px-4 pt-32 pb-12">
+                <div className="max-w-5xl mx-auto space-y-8">
+                    <h1 className="text-4xl font-black tracking-tight">Confirm Your Booking</h1>
+                    <div className="p-6 bg-accent/5 rounded-2xl border border-accent/20 text-sm text-accent-foreground flex items-center gap-3 shadow-md animate-in fade-in slide-in-from-top-2">
+                        <span className="text-xl">⏱️</span>
+                        <span className="font-medium">We&apos;ve locked this room for you. Complete your reservation in the next 10 minutes.</span>
+                    </div>
+                    <BookingForm hotel={hotel} roomType={roomTypeData} searchParams={{ roomType, checkIn, checkOut }} />
                 </div>
-                <BookingForm hotel={hotel} roomType={roomTypeData} searchParams={{ roomType, checkIn, checkOut }} />
             </main>
         </div>
     )

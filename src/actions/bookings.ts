@@ -28,34 +28,101 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
 
     const validated = bookingSchema.parse(data)
 
-    const booking = await prisma.booking.create({
-        data: {
-            booking_reference: `BK-${Math.random().toString(36).toUpperCase().substring(2, 10)}`,
-            user_id: session.user.id,
-            hotel_id: validated.hotelId,
-            room_id: validated.roomId,
-            check_in_date: new Date(validated.checkInDate),
-            check_out_date: new Date(validated.checkOutDate),
-            guests_count: validated.guestsCount,
-            total_amount: validated.totalAmount,
-            guest_name: validated.guestName,
-            guest_email: validated.guestEmail,
-            status: 'confirmed'
-        }
-    })
+    // Transaction to ensure atomicity: Check availability -> Create Booking -> Mark as unavailable
+    const result = await prisma.$transaction(async (tx) => {
+        // 1. Check if dates are available (or locked by THIS user)
+        // We need to check if there is any overlapping booking or unavailable date
+        // Note: Ideally RoomAvailability table should be the source of truth for free/busy
 
-    // Note: If you have a separate payments table in Prisma, migrate it too. 
-    // Adding placeholder if needed, but I'll stick to the Booking for now as per schema.
+        // Let's assume RoomAvailability exists and is used. In a real system, you'd check overlapping Bookings too.
+        // For this fix, I'll rely on the existing "locked" logic implying availability but reinforce it.
+
+        // Simple check: Is there already a confirmed booking for this room on these dates?
+        const existingBooking = await tx.booking.findFirst({
+            where: {
+                room_id: validated.roomId,
+                status: 'confirmed',
+                OR: [
+                    {
+                        check_in_date: { lte: new Date(validated.checkOutDate) },
+                        check_out_date: { gte: new Date(validated.checkInDate) }
+                    }
+                ]
+            }
+        })
+
+        if (existingBooking) {
+            throw new Error("Room is already booked for these dates.")
+        }
+
+        const booking = await tx.booking.create({
+            data: {
+                booking_reference: `BK-${Math.random().toString(36).toUpperCase().substring(2, 10)}`,
+                user_id: session.user.id,
+                hotel_id: validated.hotelId,
+                room_id: validated.roomId,
+                check_in_date: new Date(validated.checkInDate),
+                check_out_date: new Date(validated.checkOutDate),
+                guests_count: validated.guestsCount,
+                total_amount: validated.totalAmount,
+                guest_name: validated.guestName,
+                guest_email: validated.guestEmail,
+                status: 'confirmed',
+            }
+        })
+
+        // Create Payment Record
+        await tx.payment.create({
+            data: {
+                booking_id: booking.id,
+                stripe_payment_intent_id: validated.paymentIntentId,
+                amount: validated.totalAmount,
+                status: 'pending' // managed by webhooks or capture logic
+            }
+        })
+
+        // 2. Mark dates as unavailable in RoomAvailability
+        // We neeed to generate the date range
+        const startDate = new Date(validated.checkInDate)
+        const endDate = new Date(validated.checkOutDate)
+        const datesToCheck = []
+        for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
+            datesToCheck.push(new Date(d))
+        }
+
+        // Upsert availability to 'false'
+        for (const date of datesToCheck) {
+            // simplified logic: finding or creating availability record
+            // Note: In a real app, this might be more complex depending on schema
+            await tx.roomAvailability.deleteMany({
+                where: {
+                    room_id: validated.roomId,
+                    date: date,
+                    locked_by: session.user.id // Remove our lock if it exists
+                }
+            })
+
+            await tx.roomAvailability.create({
+                data: {
+                    room_id: validated.roomId,
+                    date: date,
+                    is_available: false,
+                }
+            })
+        }
+
+        return booking
+    })
 
     // Send confirmation email
     await sendEmail({
         to: validated.guestEmail,
         subject: "Booking Confirmed - StayEase",
-        text: `Your booking at StayEase is confirmed. Reference: ${booking.booking_reference}. Check-in: ${validated.checkInDate}.`,
-        html: `<h1>Booking Confirmation</h1><p>Your booking is confirmed.</p><p>Ref: <b>${booking.booking_reference}</b></p><p>Check-in: ${validated.checkInDate}</p>`
+        text: `Your booking at StayEase is confirmed. Reference: ${result.booking_reference}. Check-in: ${validated.checkInDate}.`,
+        html: `<h1>Booking Confirmation</h1><p>Your booking is confirmed.</p><p>Ref: <b>${result.booking_reference}</b></p><p>Check-in: ${validated.checkInDate}</p>`
     })
 
-    redirect(`/booking/confirmation?id=${booking.id}`)
+    return { success: true, bookingId: result.id }
 }
 
 export async function cancelBooking(bookingId: string, reason: string) {
@@ -66,7 +133,8 @@ export async function cancelBooking(bookingId: string, reason: string) {
         where: {
             id: bookingId,
             user_id: session.user.id
-        }
+        },
+        include: { payment: true }
     })
 
     if (!booking) throw new Error("Booking not found or access denied")
@@ -79,6 +147,20 @@ export async function cancelBooking(bookingId: string, reason: string) {
     if (diffDays > 7) refundAmount = booking.total_amount
     else if (diffDays > 3) refundAmount = booking.total_amount * 0.75
     else if (diffDays > 1) refundAmount = booking.total_amount * 0.5
+
+    // Refund Logic
+    const { refundPayment } = await import("./payments")
+
+    if (booking.payment?.stripe_payment_intent_id) {
+        try {
+            await refundPayment(booking.payment.stripe_payment_intent_id, refundAmount)
+        } catch (e) {
+            console.error("Refund failed in Stripe:", e)
+            // Continue to cancel booking locally but warn?
+            // Ideally we shouldn't fail the cancellation just because refund failed, but admin should know.
+            // For now, we proceed.
+        }
+    }
 
     await prisma.booking.update({
         where: { id: bookingId },

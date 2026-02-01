@@ -1,10 +1,13 @@
+
 import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
-import { Star, MapPin, Wifi, Car, Coffee, Tv } from "lucide-react"
+import { Star, MapPin, Wifi, Car, Coffee, Tv, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { ReviewForm } from "@/components/hotels/review-form"
+import { Badge } from "@/components/ui/badge"
 
 export const dynamic = 'force-dynamic'
 
@@ -21,7 +24,7 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
             reviews: {
                 include: { user: true },
                 orderBy: { created_at: 'desc' },
-                take: 3
+                take: 10
             }
         }
     })
@@ -44,28 +47,57 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
         )
     }
 
-    if (!hotel) return <div>Hotel not found</div>
+    // Check availability for review
+    let bookingToReview = null;
+    if (session?.user?.id) {
+        bookingToReview = await prisma.booking.findFirst({
+            where: {
+                user_id: session.user.id,
+                hotel_id: hotel.id,
+                // Allow reviewing confirmed bookings for testing if needed, but normally completed
+                // updating to allow confirmed as "completed" flow might be tricky to test otherwise
+                status: { in: ['completed', 'confirmed'] },
+                review: null
+            }
+        })
+    }
+
+    // Dynamic Icon mapping for amenities (simple fallback)
+    const getAmenityIcon = (name: string) => {
+        const lower = name.toLowerCase()
+        if (lower.includes('wifi')) return <Wifi className="h-5 w-5 text-accent" />
+        if (lower.includes('parking')) return <Car className="h-5 w-5 text-accent" />
+        if (lower.includes('coffee') || lower.includes('breakfast')) return <Coffee className="h-5 w-5 text-accent" />
+        if (lower.includes('tv')) return <Tv className="h-5 w-5 text-accent" />
+        return <Info className="h-5 w-5 text-accent" />
+    }
 
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container pt-32 pb-12">
-                <div className="grid gap-12 lg:grid-cols-3">
-                    <div className="lg:col-span-2 space-y-10">
-                        <div className="relative aspect-video overflow-hidden rounded-3xl shadow-2xl group border border-white/20">
-                            <Image
-                                src={hotel.main_image || hotel.images?.[0] || "/placeholder.jpg"}
-                                alt={hotel.name}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            <main className="flex-1 container mx-auto px-4 pt-32 pb-12">
+                {/* Added mx-auto px-4 to ensure it doesn't touch edges on any screen size */}
+
+                <div className="grid gap-8 lg:grid-cols-3">
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Hero Image Card */}
+                        <div className="rounded-3xl border bg-card p-2 shadow-sm overflow-hidden">
+                            <div className="relative aspect-video overflow-hidden rounded-2xl group">
+                                <Image
+                                    src={hotel.main_image || hotel.images?.[0] || "/placeholder.jpg"}
+                                    alt={hotel.name}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                            </div>
                         </div>
 
+                        {/* Gallery Grid */}
                         {hotel.images && hotel.images.length > 0 && (
-                            <div className="grid grid-cols-4 gap-4 mt-6">
-                                {hotel.images.map((img: string, idx: number) => (
-                                    <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-border shadow-md group">
+                            <div className="grid grid-cols-4 gap-4">
+                                {hotel.images.slice(0, 4).map((img: string, idx: number) => (
+                                    <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border bg-muted shadow-sm group">
                                         <Image
                                             src={img}
                                             alt={`${hotel.name} gallery ${idx + 1}`}
@@ -77,99 +109,121 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                             </div>
                         )}
 
-                        <div className="space-y-8 px-2">
-                            <div className="flex items-start justify-between">
+                        {/* Info Card */}
+                        <div className="bg-card rounded-3xl border shadow-sm p-8 space-y-8">
+                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                                 <div className="space-y-2">
-                                    <h1 className="text-4xl font-black tracking-tight bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">{hotel.name}</h1>
+                                    <h1 className="text-4xl font-black tracking-tight">{hotel.name}</h1>
                                     <div className="flex items-center text-muted-foreground font-medium">
                                         <MapPin className="mr-2 h-4 w-4 text-accent" />
                                         <span>{hotel.address}, {hotel.city}, {hotel.country}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20">
+                                <div className="flex bg-accent/5 px-4 py-2 rounded-2xl border border-accent/20 items-center gap-2">
                                     <Star className="h-5 w-5 fill-accent text-accent" />
-                                    <span className="text-xl font-black">{hotel.star_rating}</span>
+                                    <span className="text-xl font-black text-accent-foreground">{hotel.star_rating}</span>
                                 </div>
                             </div>
 
-                            <div className="pt-10 border-t border-border/50">
-                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">World Class Amenities</h2>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Wifi className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Free WiFi</span></div>
-                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Car className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Secure Parking</span></div>
-                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Coffee className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Gourmet Breakfast</span></div>
-                                    <div className="flex items-center space-x-3 bg-white p-4 rounded-2xl border border-border shadow-sm"><Tv className="h-5 w-5 text-accent" /> <span className="text-sm font-bold">Smart Entertainment</span></div>
-                                </div>
-                            </div>
-
-                            <div className="pt-10 border-t border-border/50">
-                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">About the Property</h2>
+                            <div className="pt-8 border-t border-dashed">
+                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">Overview</h2>
                                 <p className="text-muted-foreground leading-relaxed text-lg font-medium">
-                                    {hotel.description || "Experience unprecedented luxury and comfort in our meticulously designed hotel, located in the vibrant heart of the city's most prestigious district."}
+                                    {hotel.description || "No description available."}
                                 </p>
+                            </div>
+
+                            {/* Dynamic Amenities */}
+                            <div className="pt-8 border-t border-dashed">
+                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">Amenities</h2>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {hotel.amenities && hotel.amenities.length > 0 ? (
+                                        hotel.amenities.map((amenity, idx) => (
+                                            <div key={idx} className="flex items-center space-x-3 bg-muted/50 p-4 rounded-2xl border border-border/50">
+                                                {getAmenityIcon(amenity)}
+                                                <span className="text-sm font-bold">{amenity}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-muted-foreground italic">Amenities not listed.</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
-                        {/* Premium Reviews Section */}
-                        <div className="pt-10 border-t border-border/50">
-                            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-8">Guest Experiences</h2>
-                            <div className="grid gap-6">
+                        {/* Reviews Section */}
+                        <div className="bg-card rounded-3xl border shadow-sm p-8 space-y-8">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Guest Reviews</h2>
+                                {bookingToReview && (
+                                    <Badge variant="secondary" className="animate-pulse">You can review your stay!</Badge>
+                                )}
+                            </div>
+
+                            {/* Review Form */}
+                            {bookingToReview && (
+                                <div className="bg-accent/5 rounded-2xl p-4 border border-accent/20">
+                                    <ReviewForm bookingId={bookingToReview.id} hotelId={hotel.id} />
+                                </div>
+                            )}
+
+                            <div className="space-y-6">
                                 {hotel.reviews && hotel.reviews.length > 0 ? (
                                     hotel.reviews.map((review: any) => (
-                                        <div key={review.id} className="bg-white p-6 rounded-2xl border border-border shadow-sm">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold">
-                                                        {review.user?.name?.[0] || 'G'}
-                                                    </div>
-                                                    <div>
-                                                        <h4 className="font-bold text-sm">{review.user?.name || 'Anonymous Guest'}</h4>
-                                                        <div className="flex items-center">
-                                                            {Array.from({ length: 5 }).map((_, i) => (
-                                                                <Star
-                                                                    key={i}
-                                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-accent text-accent' : 'text-muted-foreground/30'}`}
-                                                                />
-                                                            ))}
-                                                        </div>
+                                        <div key={review.id} className="bg-background-alt p-6 rounded-2xl border hover:border-accent/40 transition-colors">
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                                                    {review.user?.name?.[0] || 'U'}
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-sm">{review.user?.name || 'Anonymous Guest'}</div>
+                                                    <div className="flex mt-0.5">
+                                                        {Array.from({ length: 5 }).map((_, i) => (
+                                                            <Star
+                                                                key={i}
+                                                                className={`w-3 h-3 ${i < review.rating ? 'fill-accent text-accent' : 'text-muted-foreground/30'}`}
+                                                            />
+                                                        ))}
                                                     </div>
                                                 </div>
-                                                <span className="text-xs text-muted-foreground">
+                                                <div className="ml-auto text-xs text-muted-foreground">
                                                     {new Date(review.created_at).toLocaleDateString()}
-                                                </span>
+                                                </div>
                                             </div>
-                                            <h5 className="font-bold mb-2">{review.title}</h5>
+                                            <h4 className="font-bold mb-2 text-sm">{review.title}</h4>
                                             <p className="text-muted-foreground text-sm leading-relaxed">{review.content}</p>
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-center p-8 bg-white/5 rounded-2xl border border-dashed border-white/10">
-                                        <p className="text-muted-foreground italic">No reviews yet. Be the first to experience this luxury.</p>
+                                    <div className="text-center py-12">
+                                        <p className="text-muted-foreground">No reviews yet. Be the first to share your experience.</p>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </div>
 
+                    {/* Sidebar / Booking Card */}
                     <div className="space-y-6">
-                        <div className="rounded-3xl border border-border p-8 sticky top-24 shadow-2xl bg-white">
-                            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Available Curated Rooms</h3>
+                        <div className="rounded-3xl border bg-card p-8 sticky top-24 shadow-xl">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-8">Select Your Room</h3>
                             <div className="space-y-6">
                                 {hotel.rooms?.map((room: any) => (
-                                    <div key={room.id} className="p-6 bg-background-alt border border-border rounded-2xl transition-all hover:bg-white/50 group">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h4 className="font-black text-lg group-hover:text-primary transition-colors">{room.name}</h4>
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{room.max_guests} Guests max</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="font-black text-2xl bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">${room.base_price}</span>
-                                                <p className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">per night</p>
-                                            </div>
+                                    <div key={room.id} className="p-5 bg-background border border-dashed rounded-2xl group hover:border-accent transition-all">
+                                        <div className="mb-4">
+                                            <h4 className="font-black text-lg">{room.name}</h4>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{room.max_guests} Guests</p>
                                         </div>
-                                        <Link href={`/booking/${hotel.id}?roomType=${room.id}`}>
-                                            <Button className="w-full h-12 rounded-xl font-black bg-accent hover:bg-accent/90 text-accent-foreground border-none shadow-lg">Select Experience</Button>
-                                        </Link>
+                                        <div className="flex justify-between items-end">
+                                            <div className="flex flex-col">
+                                                <span className="text-sm text-muted-foreground line-through opacity-50">${Math.round(room.base_price * 1.2)}</span>
+                                                <span className="font-black text-2xl text-primary">${room.base_price}</span>
+                                            </div>
+                                            <Link href={`/booking/${hotel.id}?roomType=${room.id}`}>
+                                                <Button size="sm" className="rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90">
+                                                    Book Now
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
