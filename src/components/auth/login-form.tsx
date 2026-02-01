@@ -9,15 +9,26 @@ import { Chrome, Eye, EyeOff } from "lucide-react"
 
 interface LoginFormProps {
     message?: string
+    error?: string
 }
 
-export function LoginForm({ message }: LoginFormProps) {
+const ERROR_MESSAGES: Record<string, string> = {
+    "user_not_found": "This email is not registered with us.",
+    "invalid_password": "The password you entered is incorrect.",
+    "email_not_verified": "Your email is not verified yet.",
+    "login_with_google_required": "This account uses Google Sign-In. Please use the Google button.",
+    "CredentialsSignin": "Invalid email or password. Please try again.",
+    "OAuthAccountNotLinked": "Email already in use with another provider.",
+    "default": "An unexpected error occurred. Please try again."
+}
+
+export function LoginForm({ message, error: urlError }: LoginFormProps) {
     const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState(urlError ? (ERROR_MESSAGES[urlError] || ERROR_MESSAGES.default) : "")
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -33,17 +44,14 @@ export function LoginForm({ message }: LoginFormProps) {
         setLoading(false)
 
         if (result?.error) {
-            if (result.error === "user_not_found") {
-                setError("This email is invalid")
-            } else if (result.error === "invalid_password") {
-                setError("Wrong password")
-            } else if (result.error === "email_not_verified") {
+            const errorCode = result.error.includes(":") ? result.error.split(":")[1].trim() : result.error
+
+            if (errorCode === "email_not_verified") {
                 router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
-            } else if (result.error === "login_with_google_required") {
-                setError("This user is signed in with Google. Please use Google to sign in.")
-            } else {
-                setError("Invalid email or password")
+                return
             }
+
+            setError(ERROR_MESSAGES[errorCode] || ERROR_MESSAGES.CredentialsSignin)
         } else if (result?.ok) {
             router.push("/")
             router.refresh()
@@ -92,8 +100,10 @@ export function LoginForm({ message }: LoginFormProps) {
                             </button>
                         </div>
                         {error && (
-                            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
-                                <p className="text-sm font-bold text-red-600 tracking-tight">{error}</p>
+                            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-center animate-in fade-in slide-in-from-top-2">
+                                <p className="text-sm font-semibold text-destructive tracking-tight leading-relaxed">
+                                    {error}
+                                </p>
                             </div>
                         )}
                         <Button disabled={loading}>

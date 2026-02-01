@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/header"
 import { SearchFilters } from "@/components/search/search-filters"
+import { SearchSidebar } from "@/components/search/search-sidebar"
 import { HotelCard } from "@/components/hotels/hotel-card"
 import { prisma } from "@/lib/prisma"
 
@@ -8,11 +9,12 @@ export const dynamic = 'force-dynamic'
 export default async function SearchPage({
     searchParams
 }: {
-    searchParams: Promise<{ q?: string, guests?: string, stars?: string, minPrice?: string, maxPrice?: string }>
+    searchParams: Promise<{ q?: string, guests?: string, stars?: string, minPrice?: string, maxPrice?: string, amenities?: string }>
 }) {
     const searchParamsObj = await searchParams
 
     const starRatings = searchParamsObj.stars ? searchParamsObj.stars.split(',').map(Number) : undefined
+    const amenities = searchParamsObj.amenities ? searchParamsObj.amenities.split(',') : undefined
 
     const hotels = await prisma.hotel.findMany({
         where: {
@@ -26,6 +28,11 @@ export default async function SearchPage({
                 } : {},
                 starRatings ? {
                     star_rating: { in: starRatings }
+                } : {},
+                amenities ? {
+                    amenities: { hasSome: amenities } // or hasEvery depending on requirement. hasMy usually implies looking for hotels that have AT LEAST one of these. 
+                    // If user selects multiple, they might expect ALL. "hasEvery" is better for strict filtering.
+                    // Let's use hasEvery to narrow down.
                 } : {}
             ]
         }
@@ -41,23 +48,7 @@ export default async function SearchPage({
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-12">
-                    <aside className="md:w-72 space-y-8">
-                        <div className="p-8 rounded-3xl border border-white/20 shadow-2xl bg-white/5 backdrop-blur-md">
-                            <div className="space-y-10">
-                                <div>
-                                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-6">Star Rating</h3>
-                                    <div className="space-y-4">
-                                        {[5, 4, 3, 2].map(star => (
-                                            <label key={star} className="flex items-center space-x-4 cursor-pointer group">
-                                                <input type="checkbox" className="w-5 h-5 rounded bg-white/10 backdrop-blur-md border border-white/20 text-primary transition-all" />
-                                                <span className="text-sm font-bold group-hover:text-primary transition-colors">{star} Stars</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
+                    <SearchSidebar />
 
                     <div className="flex-1 space-y-10">
                         <div className="p-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">

@@ -73,22 +73,34 @@ export default async function PartnerDashboardPage() {
                                                 <Hotel className="w-6 h-6 text-primary" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold truncate">{hotel.name}</h3>
+                                                <div className="flex justify-between items-start">
+                                                    <h3 className="font-semibold truncate">{hotel.name}</h3>
+                                                    <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full border ${hotel.is_active ? 'bg-primary/10 text-primary border-primary/20' : 'bg-muted text-muted-foreground border-border'}`}>
+                                                        {hotel.is_active ? 'Published' : 'Draft'}
+                                                    </span>
+                                                </div>
                                                 <p className="text-sm text-muted-foreground">{hotel.city}, {hotel.country}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex gap-2 pt-4 border-t border-border">
-                                            <Link href={`/partner/dashboard/rooms?hotel=${hotel.id}`} className="flex-1">
-                                                <Button variant="outline" size="sm" className="w-full">
-                                                    Rooms
+                                        <div className="flex flex-col gap-2 pt-4 border-t border-border">
+                                            <Link href={`/partner/dashboard/hotel/${hotel.id}`} className="w-full">
+                                                <Button variant="default" size="sm" className="w-full mb-1">
+                                                    Edit Info
                                                 </Button>
                                             </Link>
-                                            <Link href={`/partner/dashboard/bookings?hotel=${hotel.id}`} className="flex-1">
-                                                <Button variant="outline" size="sm" className="w-full">
-                                                    Bookings
-                                                </Button>
-                                            </Link>
+                                            <div className="flex gap-2">
+                                                <Link href={`/partner/dashboard/rooms?hotel=${hotel.id}`} className="flex-1">
+                                                    <Button variant="outline" size="sm" className="w-full">
+                                                        Rooms
+                                                    </Button>
+                                                </Link>
+                                                <Link href={`/partner/dashboard/bookings?hotel=${hotel.id}`} className="flex-1">
+                                                    <Button variant="outline" size="sm" className="w-full">
+                                                        Bookings
+                                                    </Button>
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

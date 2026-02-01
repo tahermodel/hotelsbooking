@@ -3,40 +3,28 @@ import { Suspense } from "react"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
-async function LoginPageContent({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
+async function LoginPageContent({
+    searchParams
+}: {
+    searchParams: Promise<{ message?: string; error?: string }>
+}) {
     const session = await auth()
 
     if (session) {
         redirect("/")
     }
 
-    const params = await searchParams
-    return (
-        <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-gradient-to-br from-secondary to-primary p-10 text-white lg:flex">
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary to-primary" />
-                <div className="relative z-20 flex items-center text-lg font-medium">
-                    <span className="text-2xl font-bold">StayEase</span>
-                </div>
-                <div className="relative z-20 mt-auto">
-                    <blockquote className="space-y-2">
-                        <p className="text-lg">
-                            &quot;This platform has transformed how our hotel manages bookings. The pay-later system is a game changer for guest trust.&quot;
-                        </p>
-                        <footer className="text-sm">Sofia Davis, General Manager</footer>
-                    </blockquote>
-                </div>
-            </div>
-            <div className="lg:p-8">
-                <LoginForm message={params?.message} />
-            </div>
-        </div>
-    )
+    const { message, error } = await searchParams
+    return <LoginForm message={message} error={error} />
 }
 
-export default function LoginPage({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
+export default function LoginPage({
+    searchParams
+}: {
+    searchParams: Promise<{ message?: string; error?: string }>
+}) {
     return (
-        <Suspense fallback={<div className="container relative h-screen flex-col items-center justify-center grid" />}>
+        <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading...</div>}>
             <LoginPageContent searchParams={searchParams} />
         </Suspense>
     )

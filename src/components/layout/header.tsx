@@ -8,9 +8,9 @@ export async function Header() {
     const session = await auth()
 
     return (
-        <header className="fixed top-0 inset-x-0 z-50 py-3 px-4 sm:px-6">
-            <div className="w-full max-w-7xl mx-auto">
-                <LiquidGlass animate={false} className="flex h-14 items-center justify-between px-4 sm:px-6">
+        <header className="fixed top-0 inset-x-0 z-50 py-4 px-4 sm:px-6 pointer-events-none">
+            <div className="w-full max-w-5xl mx-auto pointer-events-auto">
+                <LiquidGlass animate={false} className="flex h-14 items-center justify-between px-6 rounded-full shadow-lg">
                     <div className="relative z-10 flex-1 flex items-center gap-4">
                         {(!session || session.user.role === "customer") && (
                             <Link

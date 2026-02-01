@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/header"
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
 import { Star, MapPin, Wifi, Car, Coffee, Tv } from "lucide-react"
@@ -10,11 +11,38 @@ export const dynamic = 'force-dynamic'
 export default async function HotelPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
 
-    // Fetch hotel with rooms
+    const session = await auth()
+
+    // Fetch hotel with rooms and reviews
     const hotel = await prisma.hotel.findUnique({
         where: { slug: slug },
-        include: { rooms: true }
+        include: {
+            rooms: true,
+            reviews: {
+                include: { user: true },
+                orderBy: { created_at: 'desc' },
+                take: 3
+            }
+        }
     })
+
+    if (!hotel) return <div>Hotel not found</div>
+
+    // Access Control
+    if (!hotel.is_active && hotel.owner_id !== session?.user?.id) {
+        return (
+            <div className="flex min-h-screen flex-col bg-background items-center justify-center">
+                <Header />
+                <div className="text-center space-y-4">
+                    <h1 className="text-4xl font-bold">Property Not Published</h1>
+                    <p className="text-muted-foreground">This property is currently not available to the public.</p>
+                    <Link href="/">
+                        <Button>Return Home</Button>
+                    </Link>
+                </div>
+            </div>
+        )
+    }
 
     if (!hotel) return <div>Hotel not found</div>
 
@@ -64,6 +92,46 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                                 <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                                     {hotel.description || "Experience unprecedented luxury and comfort in our meticulously designed hotel, located in the vibrant heart of the city's most prestigious district."}
                                 </p>
+                            </div>
+                        </div>
+
+                        {/* Premium Reviews Section */}
+                        <div className="pt-10 border-t border-white/10">
+                            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-8">Guest Experiences</h2>
+                            <div className="grid gap-6">
+                                {hotel.reviews && hotel.reviews.length > 0 ? (
+                                    hotel.reviews.map((review: any) => (
+                                        <div key={review.id} className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                                        {review.user?.name?.[0] || 'G'}
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-sm">{review.user?.name || 'Anonymous Guest'}</h4>
+                                                        <div className="flex items-center">
+                                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                                <Star
+                                                                    key={i}
+                                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {new Date(review.created_at).toLocaleDateString()}
+                                                </span>
+                                            </div>
+                                            <h5 className="font-bold mb-2">{review.title}</h5>
+                                            <p className="text-muted-foreground text-sm leading-relaxed">{review.content}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center p-8 bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                        <p className="text-muted-foreground italic">No reviews yet. Be the first to experience this luxury.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

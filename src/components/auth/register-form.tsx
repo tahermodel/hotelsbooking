@@ -77,8 +77,10 @@ export function RegisterForm() {
                     </div>
                 </div>
                 {error && (
-                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center animate-in fade-in slide-in-from-top-2">
-                        <p className="text-sm font-bold text-red-600 tracking-tight">{error}</p>
+                    <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-center animate-in fade-in slide-in-from-top-2">
+                        <p className="text-sm font-semibold text-destructive tracking-tight leading-relaxed">
+                            {error}
+                        </p>
                     </div>
                 )}
                 <Button disabled={loading}>
