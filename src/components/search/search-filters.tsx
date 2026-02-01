@@ -22,7 +22,7 @@ export function SearchFilters() {
 
     return (
         <form onSubmit={handleSearch} className="w-full">
-            <div className="flex flex-col md:flex-row gap-3 p-3 card-section">
+            <div className="flex flex-col md:flex-row gap-3 p-2 bg-white/40 backdrop-blur-md rounded-2xl border border-white/40 shadow-xl">
                 <div className="relative flex-1">
                     <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                         <Search className="h-5 w-5 text-muted-foreground" />
@@ -30,7 +30,7 @@ export function SearchFilters() {
                     <input
                         type="text"
                         placeholder="Where are you going?"
-                        className="h-12 w-full rounded-xl border border-border bg-background pl-12 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                        className="h-12 w-full rounded-xl border border-border bg-white pl-12 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -43,7 +43,7 @@ export function SearchFilters() {
                     <input
                         type="text"
                         placeholder="Check-in - Out"
-                        className="h-12 w-full rounded-xl border border-border bg-background pl-12 pr-4 text-sm cursor-pointer hover:border-primary/50 transition-all"
+                        className="h-12 w-full rounded-xl border border-border bg-white pl-12 pr-4 text-sm cursor-pointer hover:border-primary/50 transition-all"
                         readOnly
                     />
                 </div>
@@ -53,7 +53,7 @@ export function SearchFilters() {
                         <Users className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <select
-                        className="h-12 w-full appearance-none rounded-xl border border-border bg-background pl-12 pr-4 text-sm cursor-pointer hover:border-primary/50 transition-all"
+                        className="h-12 w-full appearance-none rounded-xl border border-border bg-white pl-12 pr-4 text-sm cursor-pointer hover:border-primary/50 transition-all"
                         value={guests}
                         onChange={(e) => setGuests(e.target.value)}
                     >

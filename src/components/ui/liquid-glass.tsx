@@ -59,8 +59,8 @@ export function LiquidGlass({
             vec3 baseColor = vec3(1.0, 1.0, 1.0);
             vec3 finalColor = baseColor + topHighlight + specular + mouseHighlight;
             
-            float alpha = 0.08 + topHighlight * 0.4 + specular * 0.5 + mouseHighlight * 0.3;
-            alpha = clamp(alpha, 0.0, 0.6);
+            float alpha = 0.03 + topHighlight * 0.2 + specular * 0.3 + mouseHighlight * 0.2;
+            alpha = clamp(alpha, 0.0, 0.4);
             
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -206,8 +206,8 @@ export function LiquidGlass({
             ref={containerRef}
             className={cn(
                 "relative overflow-hidden rounded-2xl",
-                "bg-white/40", // Stronger frosted glass
-                "backdrop-blur-[3xp] backdrop-saturate-150", // smooth blur
+                "bg-white/10", // Much more subtle whiteness
+                "backdrop-blur-[3px] backdrop-saturate-150",
                 "border border-white/60", // Definite border
                 className
             )}

@@ -11,13 +11,13 @@ export async function Header() {
         <header className="fixed top-0 inset-x-0 z-50 py-3 px-4 sm:px-6">
             <div className="w-full max-w-7xl mx-auto">
                 <LiquidGlass animate={false} className="flex h-14 items-center justify-between px-4 sm:px-6">
-                    <div className="relative z-10 flex-1 flex items-center gap-2">
-                        {!session && (
+                    <div className="relative z-10 flex-1 flex items-center gap-4">
+                        {(!session || session.user.role === "customer") && (
                             <Link
                                 href="/partner"
-                                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+                                className="text-sm font-semibold text-white/90 hover:text-white transition-colors"
                             >
-                                Partner
+                                Become a Partner
                             </Link>
                         )}
                         {session?.user.role === "platform_admin" && (

@@ -58,7 +58,7 @@ export default async function Home() {
         {/* Search Section - Overlapping or just below with smooth transition */}
         <section className="relative z-20 -mt-24 pb-16">
           <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-fade-in-up stagger-2 bg-card/50 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl p-2">
+            <div className="animate-fade-in-up stagger-2">
               <SearchFilters />
             </div>
           </div>

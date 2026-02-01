@@ -28,7 +28,7 @@ export function SignOutButton({
             variant={variant}
             size={size}
             onClick={onSignOut}
-            className={cn("rounded-full font-bold text-xs md:text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10", className)}
+            className={cn("rounded-full font-bold text-xs md:text-sm text-white/90 hover:text-white hover:bg-white/10 border border-white/10", className)}
         >
             {children || "Sign Out"}
         </Button>
