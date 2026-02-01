@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { prisma, privilegedPrisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { HotelApplicationStatus } from "@prisma/client"
 
@@ -23,14 +23,13 @@ export async function updateApplicationStatus(id: string, status: HotelApplicati
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '') + '-' + Math.random().toString(36).substring(2, 7)
 
-        await prisma.$transaction([
-            // EXCEPTION: Updating user role programmatically here to allow auto-promotion upon approval.
-            // This overrides the general preference for manual role management in Prisma Studio.
-            prisma.user.update({
+        // Use privilegedPrisma to bypass the security restriction on role updates
+        await privilegedPrisma.$transaction([
+            privilegedPrisma.user.update({
                 where: { id: application.user_id },
                 data: { role: 'hotel_admin' }
             }),
-            prisma.hotel.create({
+            privilegedPrisma.hotel.create({
                 data: {
                     owner_id: application.user_id,
                     name: application.hotel_name,
@@ -48,7 +47,7 @@ export async function updateApplicationStatus(id: string, status: HotelApplicati
                     is_active: false // Require admin to activate after filling details
                 }
             }),
-            prisma.hotelApplication.update({
+            privilegedPrisma.hotelApplication.update({
                 where: { id },
                 data: { status }
             })

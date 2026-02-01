@@ -3,8 +3,9 @@ import { SearchFilters } from "@/components/search/search-filters"
 import { HotelCard } from "@/components/hotels/hotel-card"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
-import { ArrowRight, Star, Shield, CreditCard } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export const dynamic = 'force-dynamic'
 
@@ -17,66 +18,46 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 w-full pt-20">
-        <section className="py-16 md:py-24">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8 animate-fade-in-up">
-                <div className="space-y-4">
-                  <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full">
-                    Book Now, Pay Later
-                  </span>
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight">
-                    Find Your Perfect
-                    <span className="text-primary block">Escape</span>
-                  </h1>
-                  <p className="text-lg text-muted-foreground max-w-lg">
-                    Experience boutique luxury with our seamless booking system. Handpicked properties for the discerning traveler.
-                  </p>
-                </div>
+      <main className="flex-1 w-full">
+        {/* Full Screen Hero Section */}
+        <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=3270&auto=format&fit=crop"
+              alt="Luxury Hotel"
+              fill
+              className="object-cover"
+              priority
+            />
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-black/30" />
 
-                <div className="flex flex-wrap gap-6">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      <Star className="w-5 h-5 text-secondary" />
-                    </div>
-                    <span className="text-sm font-medium">Premium Selection</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-primary" />
-                    </div>
-                    <span className="text-sm font-medium">Verified Properties</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      <CreditCard className="w-5 h-5 text-secondary" />
-                    </div>
-                    <span className="text-sm font-medium">Flexible Payment</span>
-                  </div>
-                </div>
-              </div>
+            {/* Gradient Blur to Bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          </div>
 
-              <div className="relative animate-fade-in stagger-2">
-                <div className="aspect-[4/3] rounded-2xl bg-muted overflow-hidden border border-border">
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground hero-pattern">
-                    <div className="text-center p-8">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-                        <Star className="w-10 h-10 text-primary" />
-                      </div>
-                      <p className="text-sm font-medium">Hero Image Placeholder</p>
-                      <p className="text-xs text-muted-foreground mt-1">Replace with your hotel imagery</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* Hero Content */}
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 pt-20">
+            <div className="space-y-4 animate-fade-in-up">
+              <span className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md text-white border border-white/30 text-sm font-semibold rounded-full">
+                Book Now, Pay Later
+              </span>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight drop-shadow-md">
+                Find Your Perfect <br className="hidden md:block" />
+                <span className="text-primary-foreground">Escape</span>
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto drop-shadow-sm font-medium">
+                Experience boutique luxury with our seamless booking system. <br className="hidden md:block" /> Handpicked properties for the discerning traveler.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className="py-12 bg-card border-y border-border">
+        {/* Search Section - Overlapping or just below with smooth transition */}
+        <section className="relative z-20 -mt-24 pb-16">
           <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-fade-in-up stagger-3">
+            <div className="animate-fade-in-up stagger-2 bg-card/50 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl p-2">
               <SearchFilters />
             </div>
           </div>
@@ -115,7 +96,7 @@ export default async function Home() {
                 <div className="text-secondary-foreground/80">Premium Hotels</div>
               </div>
               <div className="animate-fade-in-up stagger-2">
-                <div className="text-4xl font-bold mb-2">50K+</div>
+                <div className="text-4xl font-bold mb-2">5K+</div>
                 <div className="text-secondary-foreground/80">Happy Travelers</div>
               </div>
               <div className="animate-fade-in-up stagger-3">
