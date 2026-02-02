@@ -4,8 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import PhoneInput from 'react-phone-number-input'
-import 'react-phone-number-input/style.css'
+import { CountryCodePicker } from "@/components/ui/country-code-picker"
 
 export function PartnerApplyForm() {
     const [loading, setLoading] = useState(false)
@@ -15,6 +14,7 @@ export function PartnerApplyForm() {
         hotel_name: "",
         contact_person: "",
         applicant_email: "",
+        country_code: "+1",
         contact_phone: "",
         hotel_address: "",
         city: "",
@@ -109,14 +109,21 @@ export function PartnerApplyForm() {
                 </div>
                 <div className="space-y-2">
                     <label className="text-sm font-medium leading-none">Phone Number</label>
-                    <PhoneInput
-                        placeholder="Enter phone number"
-                        value={formData.contact_phone}
-                        onChange={(value) => setFormData(prev => ({ ...prev, contact_phone: value || "" }))}
-                        defaultCountry="US"
-                        displayInitialValueAsLocalNumber={false}
-                        className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-within:ring-2 focus-within:ring-slate-950 focus-within:ring-offset-2"
-                    />
+                    <div className="flex gap-2">
+                        <CountryCodePicker
+                            value={formData.country_code}
+                            onChange={(val) => setFormData(prev => ({ ...prev, country_code: val }))}
+                        />
+                        <Input
+                            type="tel"
+                            name="contact_phone"
+                            value={formData.contact_phone}
+                            onChange={handleChange}
+                            placeholder="000 000 0000"
+                            className="flex-1 focus-visible:ring-[#5AA9E6]"
+                            required
+                        />
+                    </div>
                 </div>
             </div>
             <div className="grid gap-6 sm:grid-cols-2">

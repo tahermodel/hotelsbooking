@@ -5,6 +5,7 @@ import { Pencil, X, Check, User, Mail, Phone, AlertTriangle, Lock } from "lucide
 import { Button } from "@/components/ui/button"
 import { updateUserAccount, deleteAccountAction } from "@/actions/user"
 import { useRouter } from "next/navigation"
+import { CountryCodePicker } from "@/components/ui/country-code-picker"
 
 interface AccountSettingsFormProps {
     user: {
@@ -17,10 +18,23 @@ interface AccountSettingsFormProps {
 export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+    // Helper to split phone into code and number
+    const splitPhone = (phone: string | null) => {
+        if (!phone) return { code: "+1", number: "" }
+        const parts = phone.split(" ")
+        if (parts.length > 1) {
+            return { code: parts[0], number: parts.slice(1).join(" ") }
+        }
+        return { code: "+1", number: phone }
+    }
+
+    const initialPhone = splitPhone(user.phone)
+
     const [formData, setFormData] = useState({
         name: user.name || "",
         email: user.email || "",
-        phone: user.phone || "",
+        country_code: initialPhone.code,
+        phone_number: initialPhone.number,
         password: ""
     })
     const router = useRouter()
@@ -30,7 +44,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
         const data = new FormData()
         data.append("name", formData.name)
         data.append("email", formData.email)
-        data.append("phone", formData.phone)
+        data.append("phone", `${formData.country_code} ${formData.phone_number}`)
         if (formData.password) data.append("password", formData.password)
 
         const result = await updateUserAccount(data)
@@ -48,7 +62,8 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
         setFormData({
             name: user.name || "",
             email: user.email || "",
-            phone: user.phone || "",
+            country_code: initialPhone.code,
+            phone_number: initialPhone.number,
             password: ""
         })
         setIsEditing(false)
@@ -70,7 +85,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
     const hasChanges =
         formData.name !== (user.name || "") ||
         formData.email !== (user.email || "") ||
-        formData.phone !== (user.phone || "") ||
+        `${formData.country_code} ${formData.phone_number}` !== (user.phone || "") ||
         formData.password !== ""
 
     return (
@@ -157,14 +172,20 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                             Phone Number
                         </label>
                         {isEditing ? (
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                                placeholder="Enter your phone number"
-                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                            />
+                            <div className="flex gap-2">
+                                <CountryCodePicker
+                                    value={formData.country_code}
+                                    onChange={(val) => setFormData(prev => ({ ...prev, country_code: val }))}
+                                />
+                                <input
+                                    type="tel"
+                                    name="phone_number"
+                                    value={formData.phone_number}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, phone_number: e.target.value }))}
+                                    placeholder="Enter your phone number"
+                                    className="h-11 flex-1 rounded-xl border border-input bg-background px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#5AA9E6]/20 focus:border-[#5AA9E6]"
+                                />
+                            </div>
                         ) : (
                             <div className="h-11 w-full rounded-xl border border-border bg-muted/30 px-4 flex items-center text-sm">
                                 {user.phone || "Not set"}
