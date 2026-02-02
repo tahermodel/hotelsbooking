@@ -86,15 +86,16 @@ export default function VerifyEmailClient() {
         <div className="relative min-h-screen w-full flex items-center justify-center p-4">
             <div className="fixed inset-0 z-0">
                 <Image
-                    src="https://images.unsplash.com/photo-1612278675615-7b093b07772d?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src="https://images.unsplash.com/photo-1612278675615-7b093b07772d?q=100&auto=format&fit=crop&w=2560"
                     alt="Background"
                     fill
                     className="object-cover"
                     priority
+                    quality={100}
                 />
-                <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
             </div>
-            <div className="relative z-10 w-full flex items-center justify-center">
+            <div className="relative z-10 w-full max-w-[min(440px,100%)] flex items-center justify-center">
                 {children}
             </div>
         </div>
@@ -103,13 +104,13 @@ export default function VerifyEmailClient() {
     if (success) {
         return (
             <Layout>
-                <LiquidGlass className="w-full max-w-md p-8 md:p-12 text-center space-y-6 backdrop-blur-xl border-white/30" animate={false}>
-                    <div className="mx-auto w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30 shadow-lg shadow-green-500/10">
-                        <CheckCircle2 className="w-10 h-10 text-green-400" />
+                <LiquidGlass className="w-full p-6 sm:p-10 md:p-12 text-center space-y-6 backdrop-blur-xl border-white/30" animate={false}>
+                    <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30 shadow-lg shadow-green-500/10">
+                        <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-green-400" />
                     </div>
                     <div className="space-y-2">
-                        <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">Verified!</h1>
-                        <p className="text-white/70">Your email has been successfully verified.</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-sm">Verified!</h1>
+                        <p className="text-white/70 text-sm">Your email has been successfully verified.</p>
                     </div>
                     <div className="pt-2">
                         <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
@@ -124,22 +125,22 @@ export default function VerifyEmailClient() {
 
     return (
         <Layout>
-            <LiquidGlass className="w-full max-w-md p-8 md:p-10 shadow-2xl space-y-8 backdrop-blur-xl border-white/30" animate={false}>
+            <LiquidGlass className="w-full p-6 sm:p-8 md:p-10 shadow-2xl space-y-6 sm:space-y-8 backdrop-blur-xl border-white/30" animate={false}>
                 <div className="space-y-3 text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-2 border border-white/20">
-                        <Mail className="w-8 h-8 text-white" />
+                    <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/10 mb-2 border border-white/20">
+                        <Mail className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">Verify Email</h1>
-                    <p className="text-white/70 text-sm">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-sm">Verify Email</h1>
+                    <p className="text-white/70 text-xs sm:text-sm">
                         Please enter the 6-digit code sent to<br />
                         <span className="font-semibold text-white underline underline-offset-4 decoration-white/20">{email}</span>
                     </p>
                 </div>
 
-                <form onSubmit={handleVerify} className="space-y-8">
-                    <div className="flex justify-center gap-2 sm:gap-3">
+                <form onSubmit={handleVerify} className="space-y-6 sm:space-y-8">
+                    <div className="flex justify-center gap-1.5 sm:gap-3">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="relative w-10 h-14 sm:w-12 sm:h-16">
+                            <div key={i} className="relative w-9 h-12 sm:w-12 sm:h-16">
                                 <input
                                     id={`code-${i}`}
                                     type="text"
@@ -161,7 +162,7 @@ export default function VerifyEmailClient() {
                                             document.getElementById(`code-${i - 1}`)?.focus();
                                         }
                                     }}
-                                    className="w-full h-full rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-2xl font-bold text-white shadow-lg transition-all focus:border-white/50 focus:bg-white/20 focus:scale-110 focus:outline-none"
+                                    className="w-full h-full rounded-lg sm:rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-xl sm:text-2xl font-bold text-white shadow-lg transition-all focus:border-white/50 focus:bg-white/20 focus:scale-110 focus:outline-none"
                                 />
                             </div>
                         ))}

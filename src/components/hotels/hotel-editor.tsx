@@ -361,38 +361,48 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                 </Card>
             </div>
 
-            {/* Bottom Actions - Floating Pill with Liquid Glass */}
+            {/* Bottom Actions - Floating Sticky Button with Liquid Glass */}
             <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
-                <LiquidGlass animate={false} className="flex h-16 items-center gap-4 px-8 rounded-full shadow-2xl pointer-events-auto border-white/20">
-                    <Button
-                        size="lg"
-                        onClick={async () => {
-                            setLoading(true)
-                            try {
-                                await updateHotel(hotel.id, formData)
-                                if (!hotel.is_active) {
-                                    await toggleHotelStatus(hotel.id, true)
-                                }
-                                router.refresh()
-                            } catch (error) {
-                                console.error(error)
-                            } finally {
-                                setLoading(false)
+                <button
+                    disabled={loading}
+                    onClick={async () => {
+                        setLoading(true)
+                        try {
+                            await updateHotel(hotel.id, formData)
+                            if (!hotel.is_active) {
+                                await toggleHotelStatus(hotel.id, true)
                             }
-                        }}
-                        disabled={loading}
-                        className="rounded-full px-12 hover:scale-105 transition-transform active:scale-95 shadow-xl font-bold min-w-[200px]"
-                    >
-                        {loading ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                            <>
-                                {hotel.is_active ? <Save className="w-5 h-5 mr-2" /> : <Globe className="w-5 h-5 mr-2" />}
-                                {hotel.is_active ? "Save Changes" : "Publish Property"}
-                            </>
+                            router.refresh()
+                        } catch (error) {
+                            console.error(error)
+                        } finally {
+                            setLoading(false)
+                        }
+                    }}
+                    className="pointer-events-auto group"
+                >
+                    <LiquidGlass
+                        animate={!loading}
+                        className={cn(
+                            "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
+                            "border-white/40 bg-black/80 hover:bg-black/90",
+                            loading && "opacity-80 cursor-not-allowed"
                         )}
-                    </Button>
-                </LiquidGlass>
+                    >
+                        <div className="flex items-center justify-center gap-3 text-white font-bold tracking-wide">
+                            {loading ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                                <>
+                                    {hotel.is_active ? <Save className="w-5 h-5" /> : <Globe className="w-5 h-5" />}
+                                    <span className="text-lg">
+                                        {hotel.is_active ? "Save Changes" : "Publish Property"}
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    </LiquidGlass>
+                </button>
             </div>
         </div>
     )

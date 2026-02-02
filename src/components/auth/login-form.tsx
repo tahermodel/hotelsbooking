@@ -60,10 +60,10 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
     }
 
     return (
-        <LiquidGlass className="w-full max-w-md p-8 md:p-10 shadow-2xl space-y-8 backdrop-blur-xl border-white/30" animate={false}>
+        <LiquidGlass className="w-full p-5 sm:p-8 md:p-10 shadow-2xl space-y-6 sm:space-y-8 backdrop-blur-xl border-white/30" animate={false}>
             <div className="flex flex-col space-y-2 text-center">
-                <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">Welcome Back</h1>
-                <p className="text-white/70 text-sm">Sign in to continue your journey with StayEase</p>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-sm">Welcome Back</h1>
+                <p className="text-white/70 text-xs sm:text-sm">Sign in to continue your journey with StayEase</p>
             </div>
 
             <div className="grid gap-6">
