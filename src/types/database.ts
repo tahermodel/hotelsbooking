@@ -30,8 +30,6 @@ export interface Hotel {
     images: string[];
     contact_email: string;
     contact_phone: string | null;
-    check_in_time: string;
-    check_out_time: string;
     is_active: boolean;
     is_verified: boolean;
 }

@@ -42,8 +42,6 @@ export async function updateApplicationStatus(id: string, status: HotelApplicati
                     city: "Update City",
                     country: "Update Country",
                     star_rating: 0,
-                    check_in_time: "15:00",
-                    check_out_time: "11:00",
                     is_active: false // Require admin to activate after filling details
                 }
             }),

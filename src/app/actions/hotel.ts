@@ -17,8 +17,6 @@ const hotelSchema = z.object({
     main_image: z.string().optional().nullable(),
     contact_email: z.string().email(),
     contact_phone: z.string().optional(),
-    check_in_time: z.string(),
-    check_out_time: z.string(),
 })
 
 export async function updateHotel(hotelId: string, data: z.infer<typeof hotelSchema>) {
@@ -28,12 +26,14 @@ export async function updateHotel(hotelId: string, data: z.infer<typeof hotelSch
     const hotel = await prisma.hotel.findUnique({ where: { id: hotelId } })
     if (!hotel || hotel.owner_id !== session.user.id) throw new Error("Unauthorized")
 
+    const { amenities, images, ...rest } = data
+
     await prisma.hotel.update({
         where: { id: hotelId },
         data: {
-            ...data,
-            amenities: { set: data.amenities },
-            images: { set: data.images },
+            ...rest,
+            amenities: { set: amenities },
+            images: { set: images },
             main_image: data.main_image
         }
     })

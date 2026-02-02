@@ -32,8 +32,6 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         main_image: hotel.main_image || "",
         contact_email: hotel.contact_email || "",
         contact_phone: hotel.contact_phone || "",
-        check_in_time: hotel.check_in_time || "14:00",
-        check_out_time: hotel.check_out_time || "11:00",
     })
     const [amenityInput, setAmenityInput] = useState("")
     const [imageInput, setImageInput] = useState("")
@@ -368,16 +366,6 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                             <div className="grid gap-2">
                                 <label className="text-sm font-medium">Contact Phone</label>
                                 <Input value={formData.contact_phone} onChange={(e) => handleChange("contact_phone", e.target.value)} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="grid gap-2">
-                                    <label className="text-sm font-medium">Check-in</label>
-                                    <Input value={formData.check_in_time} onChange={(e) => handleChange("check_in_time", e.target.value)} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <label className="text-sm font-medium">Check-out</label>
-                                    <Input value={formData.check_out_time} onChange={(e) => handleChange("check_out_time", e.target.value)} />
-                                </div>
                             </div>
                         </div>
                     </div>
