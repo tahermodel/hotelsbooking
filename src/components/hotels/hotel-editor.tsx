@@ -8,9 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Loader2, Save, Globe, X, Plus, Image as ImageIcon, Star, UploadCloud } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 import { updateHotel, toggleHotelStatus } from "@/app/actions/hotel"
 import { cn } from "@/lib/utils"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
 
 interface HotelEditorProps {
     hotel: any
@@ -37,6 +39,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
     const [amenityInput, setAmenityInput] = useState("")
     const [imageInput, setImageInput] = useState("")
     const [mainImageInput, setMainImageInput] = useState("")
+    const [hoveredStar, setHoveredStar] = useState<number | null>(null)
 
     const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }))
@@ -125,27 +128,38 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
 
                         <div className="grid gap-2">
                             <label className="text-sm font-medium">Star Rating</label>
-                            <div className="flex gap-1">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <button
-                                        key={star}
-                                        type="button"
-                                        onClick={() => handleChange("star_rating", star)}
-                                        className="transition-transform active:scale-95"
-                                    >
-                                        <Star
-                                            className={cn(
-                                                "w-8 h-8",
-                                                star <= formData.star_rating
-                                                    ? "fill-yellow-400 text-yellow-400"
-                                                    : "text-muted border-muted"
-                                            )}
-                                        />
-                                    </button>
-                                ))}
-                                <span className="ml-2 py-1 text-sm font-medium text-muted-foreground">
-                                    {formData.star_rating} / 5 stars
-                                </span>
+                            <div className="flex gap-1 items-center">
+                                <div className="flex gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <motion.button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => handleChange("star_rating", star)}
+                                            onMouseEnter={() => setHoveredStar(star)}
+                                            onMouseLeave={() => setHoveredStar(null)}
+                                            whileHover={{ scale: 1.2 }}
+                                            whileTap={{ scale: 0.9 }}
+                                            className="transition-colors active:scale-95"
+                                        >
+                                            <Star
+                                                className={cn(
+                                                    "w-8 h-8 transition-all duration-300",
+                                                    star <= (hoveredStar ?? formData.star_rating)
+                                                        ? "fill-yellow-400 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"
+                                                        : "text-muted border-muted grayscale opacity-50"
+                                                )}
+                                            />
+                                        </motion.button>
+                                    ))}
+                                </div>
+                                <motion.span
+                                    key={formData.star_rating}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="ml-4 py-1 text-sm font-bold text-primary bg-primary/10 px-3 rounded-full"
+                                >
+                                    {formData.star_rating} Stars
+                                </motion.span>
                             </div>
                         </div>
                     </CardContent>
@@ -361,10 +375,10 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                 </Card>
             </div>
 
-            {/* Bottom Actions - Floating Pill */}
+            {/* Bottom Actions - Floating Pill with Liquid Glass */}
             <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
-                <div className="nav-glass px-8 py-4 rounded-full shadow-2xl flex items-center gap-4 border border-white/20 pointer-events-auto animate-fade-in-up">
-                    <Button variant="outline" size="lg" onClick={handleSave} disabled={loading} className="rounded-full px-8 hover:scale-105 transition-transform active:scale-95">
+                <LiquidGlass animate={false} className="flex h-16 items-center gap-4 px-8 rounded-full shadow-2xl pointer-events-auto border-white/20">
+                    <Button variant="outline" size="lg" onClick={handleSave} disabled={loading} className="rounded-full px-8 hover:scale-105 transition-transform active:scale-95 bg-white/10 backdrop-blur-sm border-white/20">
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                         Save Changes
                     </Button>
@@ -394,7 +408,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                             </Button>
                         </div>
                     )}
-                </div>
+                </LiquidGlass>
             </div>
         </div>
     )
