@@ -49,7 +49,7 @@ export default async function NewRoomPage({ searchParams }: { searchParams: Prom
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-4xl mx-auto pt-24 animate-fade-in">
+            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-4xl mx-auto pt-24 animate-fade-in flex flex-col">
                 <RoomEditor hotelId={hotelId} />
             </main>
         </div>

@@ -87,9 +87,21 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         reader.readAsDataURL(file)
     }
 
-    const onSave = () => {
-        if (canSubmit) handleSave();
-    };
+    const handleSave = async () => {
+        if (!canSubmit) return;
+        setLoading(true)
+        try {
+            await updateHotel(hotel.id, formData)
+            if (!hotel.is_active) {
+                await toggleHotelStatus(hotel.id, true)
+            }
+            router.refresh()
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <div className="space-y-8">
@@ -384,20 +396,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
             <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
                 <button
                     disabled={!canSubmit}
-                    onClick={async () => {
-                        if (!canSubmit) return;
-                        try {
-                            await updateHotel(hotel.id, formData)
-                            if (!hotel.is_active) {
-                                await toggleHotelStatus(hotel.id, true)
-                            }
-                            router.refresh()
-                        } catch (error) {
-                            console.error(error)
-                        } finally {
-                            setLoading(false)
-                        }
-                    }}
+                    onClick={handleSave}
                     className="pointer-events-auto group"
                 >
                     <LiquidGlass

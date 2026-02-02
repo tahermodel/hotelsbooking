@@ -132,29 +132,29 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
     }
 
     return (
-        <div className="space-y-8 max-w-4xl mx-auto">
-            <div className="flex items-center gap-6 border-b border-black/5 pb-8">
-                <div className="flex items-center gap-6">
+        <div className="space-y-8 w-full">
+            <div className="flex flex-col items-center text-center gap-4 border-b border-black/5 pb-8">
+                <div className="flex items-center gap-4 w-full">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => router.push('/partner/dashboard/rooms')}
-                        className="rounded-full h-12 w-12 hover:bg-black/10 border border-black/5 transition-all active:scale-90 bg-white/50 backdrop-blur-sm shadow-sm text-black"
+                        className="rounded-full h-12 w-12 hover:bg-black/10 border border-black/5 transition-all active:scale-90 bg-white/50 backdrop-blur-sm shadow-sm text-black shrink-0"
                     >
                         <ArrowLeft className="w-6 h-6" />
                     </Button>
-                    <div>
+                    <div className="flex-1 pr-12">
                         <h1 className="text-3xl font-bold tracking-tight">{isEditing ? "Edit Room" : "Add New Room"}</h1>
                         <p className="text-muted-foreground/80 font-medium">{isEditing ? room.name : "Create a new room type"}</p>
                     </div>
+                    {isEditing && (
+                        <div className="shrink-0">
+                            <Button variant="ghost" size="icon" onClick={handleDelete} disabled={loading} className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10">
+                                <Trash2 className="w-5 h-5" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
-                {isEditing && (
-                    <div className="ml-auto">
-                        <Button variant="ghost" size="icon" onClick={handleDelete} disabled={loading} className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10">
-                            <Trash2 className="w-5 h-5" />
-                        </Button>
-                    </div>
-                )}
             </div>
 
             <div className="grid gap-8">

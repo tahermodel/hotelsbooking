@@ -22,9 +22,9 @@ export default async function EditRoomPage({ params }: { params: Promise<{ roomI
     if (room.hotel.owner_id !== session.user.id) redirect("/partner/dashboard")
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-6xl pt-24 animate-fade-in">
+            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-4xl mx-auto pt-24 animate-fade-in flex flex-col">
                 <RoomEditor room={room} hotelId={room.hotel_id} />
             </main>
         </div>
