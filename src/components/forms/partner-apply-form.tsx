@@ -114,6 +114,7 @@ export function PartnerApplyForm() {
                         value={formData.contact_phone}
                         onChange={(value) => setFormData(prev => ({ ...prev, contact_phone: value || "" }))}
                         defaultCountry="US"
+                        displayInitialValueAsLocalNumber={false}
                         className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-within:ring-2 focus-within:ring-slate-950 focus-within:ring-offset-2"
                     />
                 </div>
