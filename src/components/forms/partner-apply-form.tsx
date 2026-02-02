@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 
 export function PartnerApplyForm() {
     const [loading, setLoading] = useState(false)
@@ -13,7 +15,6 @@ export function PartnerApplyForm() {
         hotel_name: "",
         contact_person: "",
         applicant_email: "",
-        country_code: "+1",
         contact_phone: "",
         hotel_address: "",
         city: "",
@@ -108,38 +109,13 @@ export function PartnerApplyForm() {
                 </div>
                 <div className="space-y-2">
                     <label className="text-sm font-medium leading-none">Phone Number</label>
-                    <div className="flex gap-2">
-                        <select
-                            name="country_code"
-                            value={formData.country_code}
-                            onChange={(e) => setFormData(prev => ({ ...prev, country_code: e.target.value }))}
-                            className="flex h-10 w-[120px] rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            <option value="+1">+1 (US)</option>
-                            <option value="+44">+44 (UK)</option>
-                            <option value="+971">+971 (UAE)</option>
-                            <option value="+20">+20 (EG)</option>
-                            <option value="+966">+966 (KSA)</option>
-                            <option value="+33">+33 (FR)</option>
-                            <option value="+49">+49 (DE)</option>
-                            <option value="+91">+91 (IN)</option>
-                            <option value="+81">+81 (JP)</option>
-                            <option value="+86">+86 (CN)</option>
-                            <option value="+7">+7 (RU)</option>
-                            <option value="+55">+55 (BR)</option>
-                            <option value="+90">+90 (TR)</option>
-                            <option value="+61">+61 (AU)</option>
-                        </select>
-                        <Input
-                            type="tel"
-                            name="contact_phone"
-                            value={formData.contact_phone}
-                            onChange={handleChange}
-                            placeholder="000 000 0000"
-                            className="flex-1"
-                            required
-                        />
-                    </div>
+                    <PhoneInput
+                        placeholder="Enter phone number"
+                        value={formData.contact_phone}
+                        onChange={(value) => setFormData(prev => ({ ...prev, contact_phone: value || "" }))}
+                        defaultCountry="US"
+                        className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-within:ring-2 focus-within:ring-slate-950 focus-within:ring-offset-2"
+                    />
                 </div>
             </div>
             <div className="grid gap-6 sm:grid-cols-2">
