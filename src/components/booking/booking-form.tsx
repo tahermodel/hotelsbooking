@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -28,7 +28,7 @@ export function BookingForm({
 
     const checkIn = searchParams.checkIn || new Date().toISOString().split('T')[0]
     const checkOut = searchParams.checkOut || new Date(Date.now() + 86400000).toISOString().split('T')[0]
-    const dates = [checkIn]
+    const dates = useMemo(() => [checkIn], [checkIn])
 
     useEffect(() => {
         if (session?.user?.id && !locked) {
@@ -44,7 +44,7 @@ export function BookingForm({
                 releaseRoomLock(roomType.id, dates)
             }
         }
-    }, [session, roomType.id])
+    }, [session, roomType.id, dates, locked])
 
     const handleBooking = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -115,7 +115,7 @@ export function BookingForm({
                                 <CreditCard className="h-5 w-5 text-primary" />
                                 <p className="font-semibold text-foreground">Secure Payment via Stripe</p>
                             </div>
-                            <p className="text-sm text-muted-foreground">You'll be redirected to Stripe's secure payment page to complete your booking.</p>
+                            <p className="text-sm text-muted-foreground">You&apos;ll be redirected to Stripe&apos;s secure payment page to complete your booking.</p>
                         </div>
                     </div>
 

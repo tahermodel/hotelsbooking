@@ -66,6 +66,33 @@ export function LiquidGlass({
         }
     `
 
+    const updateSize = useCallback(() => {
+        const container = containerRef.current
+        const sceneData = sceneRef.current
+        if (!container || !sceneData) return
+
+        const rect = container.getBoundingClientRect()
+        const width = Math.max(rect.width, 1)
+        const height = Math.max(rect.height, 1)
+
+        sceneData.renderer.setSize(width, height)
+        sceneData.uniforms.uAspect.value = width / height
+    }, [])
+
+    const animateScene = useCallback(() => {
+        const sceneData = sceneRef.current
+        if (!sceneData) return
+
+        const { renderer, scene, camera, clock, uniforms, mouse, targetMouse } = sceneData
+
+        mouse.lerp(targetMouse, 0.08)
+        uniforms.uMouse.value.copy(mouse)
+        uniforms.uTime.value = clock.getElapsedTime()
+
+        renderer.render(scene, camera)
+        sceneData.animationId = requestAnimationFrame(animateScene)
+    }, [])
+
     const initScene = useCallback(() => {
         const canvas = canvasRef.current
         const container = containerRef.current
@@ -125,34 +152,7 @@ export function LiquidGlass({
         } catch (error) {
             console.warn('WebGL initialization failed:', error)
         }
-    }, [])
-
-    const updateSize = useCallback(() => {
-        const container = containerRef.current
-        const sceneData = sceneRef.current
-        if (!container || !sceneData) return
-
-        const rect = container.getBoundingClientRect()
-        const width = Math.max(rect.width, 1)
-        const height = Math.max(rect.height, 1)
-
-        sceneData.renderer.setSize(width, height)
-        sceneData.uniforms.uAspect.value = width / height
-    }, [])
-
-    const animateScene = useCallback(() => {
-        const sceneData = sceneRef.current
-        if (!sceneData) return
-
-        const { renderer, scene, camera, clock, uniforms, mouse, targetMouse } = sceneData
-
-        mouse.lerp(targetMouse, 0.08)
-        uniforms.uMouse.value.copy(mouse)
-        uniforms.uTime.value = clock.getElapsedTime()
-
-        renderer.render(scene, camera)
-        sceneData.animationId = requestAnimationFrame(animateScene)
-    }, [])
+    }, [animateScene, fragmentShader, updateSize, vertexShader])
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
         const container = containerRef.current
@@ -222,12 +222,6 @@ export function LiquidGlass({
                 className="absolute inset-0 z-0 pointer-events-none"
             />
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-[inherit]">
-                <div
-                    className="absolute top-0 left-[5%] right-[5%] h-[1px]"
-                    style={{
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)'
-                    }}
-                />
                 <div
                     className="absolute bottom-0 left-[15%] right-[15%] h-[1px]"
                     style={{

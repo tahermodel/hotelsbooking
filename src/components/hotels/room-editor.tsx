@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -247,7 +248,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
 
                         {formData.main_image && (
                             <div className="relative aspect-video rounded-lg overflow-hidden border border-border mt-4 group">
-                                <img src={formData.main_image} alt="Main" className="object-cover w-full h-full" />
+                                <Image src={formData.main_image} alt="Main" fill className="object-cover" />
                                 <button
                                     onClick={() => handleChange("main_image", "")}
                                     className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive"
@@ -308,7 +309,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
                         {formData.images.map((img: string, idx: number) => (
                             <div key={idx} className="relative aspect-video rounded-lg overflow-hidden group border border-border shadow-sm">
-                                <img src={img} alt="Gallery" className="object-cover w-full h-full transition-transform group-hover:scale-105" />
+                                <Image src={img} alt="Gallery" fill className="object-cover transition-transform group-hover:scale-105" />
                                 <button
                                     onClick={() => handleChange("images", formData.images.filter((_: any, i: number) => i !== idx))}
                                     className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive"
