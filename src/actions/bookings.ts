@@ -184,3 +184,46 @@ export async function cancelBooking(bookingId: string, reason: string) {
     return { success: true, refundAmount }
 }
 
+
+export async function checkInGuest(bookingId: string) {
+    const session = await auth()
+    if (!session?.user?.id) throw new Error("Unauthorized")
+
+    const booking = await prisma.booking.findUnique({
+        where: { id: bookingId },
+        include: { payment: true, hotel: true }
+    })
+
+    if (!booking) throw new Error("Booking not found")
+
+    if (booking.hotel.owner_id !== session.user.id && session.user.role !== "platform_admin") {
+        throw new Error("Unauthorized access to this booking")
+    }
+
+    if (booking.payment?.status === "captured" || booking.payment?.status === "succeeded") {
+        return { success: true, message: "Already captured" }
+    }
+
+    if (!booking.payment?.stripe_payment_intent_id || booking.payment.stripe_payment_intent_id === "pending") {
+        return { success: false, error: "No valid payment method found" }
+    }
+
+    try {
+        const { capturePayment } = await import("./payments")
+        await capturePayment(booking.payment.stripe_payment_intent_id)
+
+        await prisma.payment.update({
+            where: { id: booking.payment.id },
+            data: {
+                status: "captured",
+                captured_at: new Date()
+            }
+        })
+
+        // Optionally update booking status if needed, but 'confirmed' is fine.
+        return { success: true }
+    } catch (error: any) {
+        console.error("Capture failed:", error)
+        return { success: false, error: error.message || "Failed to capture payment" }
+    }
+}

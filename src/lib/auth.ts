@@ -95,6 +95,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
         }),
     ],
+    callbacks: {
+        ...authConfig.callbacks,
+        async session({ session, token }) {
+            if (token.id) {
+                const user = await prisma.user.findUnique({
+                    where: { id: token.id as string },
+                    select: { role: true }
+                })
+
+                // If user doesn't exist or role has changed, end the session
+                if (!user || user.role !== token.role) {
+                    return null as any // Force session to be null
+                }
+
+                if (session.user) {
+                    session.user.id = token.id as string
+                    session.user.role = token.role as any
+                }
+            }
+            return session
+        },
+    }
 })
 
 

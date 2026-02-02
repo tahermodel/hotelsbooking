@@ -27,6 +27,18 @@ export async function POST(req: Request) {
         })
     }
 
+
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object as any
+        await prisma.payment.update({
+            where: { booking_id: session.metadata.bookingId },
+            data: {
+                stripe_payment_intent_id: session.payment_intent,
+                status: "authorized"
+            }
+        })
+    }
+
     if (event.type === "payment_intent.succeeded") {
         const intent = event.data.object as any
         await prisma.payment.update({

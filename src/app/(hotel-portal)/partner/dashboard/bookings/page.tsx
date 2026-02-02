@@ -3,12 +3,15 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { formatCurrency } from "@/lib/utils"
+import { BookingAction } from "@/components/booking/booking-action"
 
 export const dynamic = 'force-dynamic'
 
 export default async function PartnerBookingsPage() {
     const session = await auth()
     if (!session?.user?.id) redirect("/login")
+
+
 
     const bookings = await prisma.booking.findMany({
         where: {
@@ -19,7 +22,8 @@ export default async function PartnerBookingsPage() {
         include: {
             hotel: {
                 select: { name: true }
-            }
+            },
+            payment: true
         },
         orderBy: { created_at: 'desc' }
     })
@@ -33,13 +37,25 @@ export default async function PartnerBookingsPage() {
                     {bookings?.map(booking => (
                         <div key={booking.id} className="p-6 border rounded-xl flex justify-between items-center bg-card">
                             <div>
-                                <p className="text-sm font-medium text-primary">{booking.booking_reference}</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm font-medium text-primary">{booking.booking_reference}</p>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                                        booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                        {booking.status}
+                                    </span>
+                                </div>
                                 <h3 className="font-bold text-lg">{booking.guest_name}</h3>
                                 <p className="text-sm text-muted-foreground">{booking.hotel.name} | {new Date(booking.check_in_date).toLocaleDateString()} - {new Date(booking.check_out_date).toLocaleDateString()}</p>
                             </div>
-                            <div className="text-right">
+                            <div className="text-right flex flex-col items-end gap-2">
                                 <p className="font-bold text-lg">{formatCurrency(booking.total_amount)}</p>
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">{booking.status}</span>
+                                <BookingAction
+                                    bookingId={booking.id}
+                                    paymentStatus={booking.payment?.status || "pending"}
+                                    bookingStatus={booking.status}
+                                    paymentIntentId={booking.payment?.stripe_payment_intent_id}
+                                />
                             </div>
                         </div>
                     ))}

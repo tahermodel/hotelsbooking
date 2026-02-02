@@ -43,6 +43,9 @@ export async function createCheckoutSession(params: {
         mode: 'payment',
         success_url: params.successUrl,
         cancel_url: params.cancelUrl,
+        payment_intent_data: {
+            capture_method: 'manual',
+        },
         metadata: {
             bookingId: params.bookingId,
         },
