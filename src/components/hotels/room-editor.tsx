@@ -54,6 +54,22 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
     const [imageInput, setImageInput] = useState("")
     const [mainImageInput, setMainImageInput] = useState("")
 
+    const isDirty = isEditing && (
+        formData.name !== (room.name || "") ||
+        formData.description !== (room.description || "") ||
+        formData.max_guests !== (room.max_guests || 2) ||
+        formData.bed_configuration !== (room.bed_configuration || "") ||
+        formData.size_sqm !== (room.size_sqm || 0) ||
+        formData.base_price !== (room.base_price || 0) ||
+        formData.available_from !== (room.available_from ? new Date(room.available_from).toISOString().split('T')[0] : "") ||
+        formData.available_until !== (room.available_until ? new Date(room.available_until).toISOString().split('T')[0] : "") ||
+        JSON.stringify(formData.amenities) !== JSON.stringify(room.amenities || []) ||
+        JSON.stringify(formData.images) !== JSON.stringify(room.images || []) ||
+        formData.main_image !== (room.main_image || "")
+    )
+
+    const canSubmit = !loading && (!isEditing || isDirty) && formData.name.length > 0;
+
     const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }))
     }
@@ -360,16 +376,16 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
             {/* Bottom Actions - Styled exactly like Hotel Publish */}
             <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
                 <button
-                    disabled={loading}
-                    onClick={handleSave}
+                    disabled={!canSubmit}
+                    onClick={() => { if (canSubmit) handleSave() }}
                     className="pointer-events-auto group"
                 >
                     <LiquidGlass
-                        animate={!loading}
+                        animate={!loading && canSubmit}
                         className={cn(
                             "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
-                            "border-white/60 bg-white/20 hover:bg-white/30 backdrop-blur-md",
-                            loading && "opacity-80 cursor-not-allowed"
+                            "border-white/60 bg-white/20 backdrop-blur-md",
+                            canSubmit ? "hover:bg-white/30 cursor-pointer" : "opacity-50 cursor-not-allowed grayscale-[0.5]"
                         )}
                     >
                         <div className="flex items-center justify-center gap-3 text-primary font-bold tracking-wide min-w-[160px]">

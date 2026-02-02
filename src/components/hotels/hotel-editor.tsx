@@ -40,6 +40,21 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
     const [mainImageInput, setMainImageInput] = useState("")
     const [hoveredStar, setHoveredStar] = useState<number | null>(null)
 
+    const isDirty =
+        formData.name !== (hotel.name || "") ||
+        formData.description !== (hotel.description || "") ||
+        formData.address !== (hotel.address || "") ||
+        formData.city !== (hotel.city || "") ||
+        formData.country !== (hotel.country || "") ||
+        formData.star_rating !== (hotel.star_rating || 5) ||
+        formData.contact_email !== (hotel.contact_email || "") ||
+        formData.contact_phone !== (hotel.contact_phone || "") ||
+        JSON.stringify(formData.amenities) !== JSON.stringify(hotel.amenities || []) ||
+        JSON.stringify(formData.images) !== JSON.stringify(hotel.images || []) ||
+        formData.main_image !== (hotel.main_image || "")
+
+    const canSubmit = !loading && (!hotel.is_active || isDirty);
+
     const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }))
     }
@@ -71,6 +86,10 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         }
         reader.readAsDataURL(file)
     }
+
+    const onSave = () => {
+        if (canSubmit) handleSave();
+    };
 
     return (
         <div className="space-y-8">
@@ -364,9 +383,9 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
             {/* Bottom Actions - Floating Sticky Button with Liquid Glass */}
             <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
                 <button
-                    disabled={loading}
+                    disabled={!canSubmit}
                     onClick={async () => {
-                        setLoading(true)
+                        if (!canSubmit) return;
                         try {
                             await updateHotel(hotel.id, formData)
                             if (!hotel.is_active) {
@@ -382,11 +401,11 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                     className="pointer-events-auto group"
                 >
                     <LiquidGlass
-                        animate={!loading}
+                        animate={!loading && canSubmit}
                         className={cn(
                             "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
-                            "border-white/60 bg-white/20 hover:bg-white/30 backdrop-blur-md",
-                            loading && "opacity-80 cursor-not-allowed"
+                            "border-white/60 bg-white/20 backdrop-blur-md",
+                            canSubmit ? "hover:bg-white/30 cursor-pointer" : "opacity-50 cursor-not-allowed grayscale-[0.5]"
                         )}
                     >
                         <div className="flex items-center justify-center gap-3 text-primary font-bold tracking-wide">
