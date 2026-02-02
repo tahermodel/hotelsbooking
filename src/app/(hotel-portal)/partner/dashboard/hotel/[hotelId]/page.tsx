@@ -21,10 +21,12 @@ export default async function PartnerHotelEditPage({ params }: { params: Promise
     if (hotel.owner_id !== session.user.id) redirect("/partner/dashboard")
 
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-6xl pt-24 animate-fade-in">
-                <HotelEditor hotel={hotel} />
+            <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-6xl pt-24 animate-fade-in text-center flex flex-col items-center">
+                <div className="w-full text-left">
+                    <HotelEditor hotel={hotel} />
+                </div>
             </main>
         </div>
     )

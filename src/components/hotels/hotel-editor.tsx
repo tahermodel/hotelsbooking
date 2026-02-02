@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, Save, Globe, X, Plus, Image as ImageIcon, Star, UploadCloud } from "lucide-react"
 import { updateHotel, toggleHotelStatus } from "@/app/actions/hotel"
 import { cn } from "@/lib/utils"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 interface HotelEditorProps {
     hotel: any
@@ -99,43 +100,14 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                     <h1 className="text-3xl font-bold">Edit Property</h1>
                     <p className="text-muted-foreground">{hotel.name}</p>
                 </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" onClick={handleSave} disabled={loading}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                        Save Changes
-                    </Button>
-                    {!showConfirm ? (
-                        <Button
-                            variant={hotel.is_active ? "destructive" : "default"}
-                            onClick={() => setShowConfirm(true)}
-                            disabled={loading}
-                        >
-                            <Globe className="w-4 h-4 mr-2" />
-                            {hotel.is_active ? "Unpublish" : "Publish Now"}
-                        </Button>
-                    ) : (
-                        <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2">
-                            <span className="text-xs font-medium text-muted-foreground">Are you sure?</span>
-                            <Button size="sm" variant="ghost" onClick={() => setShowConfirm(false)}>Cancel</Button>
-                            <Button
-                                size="sm"
-                                variant={hotel.is_active ? "destructive" : "default"}
-                                onClick={handlePublishToggle}
-                                disabled={loading}
-                            >
-                                Confirm
-                            </Button>
-                        </div>
-                    )}
-                </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Info */}
-                <div className="lg:col-span-2 space-y-8">
-                    <div className="card-section p-6 space-y-6">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Basic Information</h3>
-
+            <div className="max-w-4xl mx-auto space-y-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg uppercase tracking-wider text-primary font-bold">Basic Information</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
                         <div className="grid gap-2">
                             <label className="text-sm font-medium">Hotel Name</label>
                             <Input value={formData.name} onChange={(e) => handleChange("name", e.target.value)} />
@@ -176,10 +148,14 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                 </span>
                             </div>
                         </div>
-                    </div>
+                    </CardContent>
+                </Card>
 
-                    <div className="card-section p-6 space-y-6">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Location</h3>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg uppercase tracking-wider text-primary font-bold">Location</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
                         <div className="grid gap-4">
                             <div className="grid gap-2">
                                 <label className="text-sm font-medium">Address</label>
@@ -196,10 +172,32 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </CardContent>
+                </Card>
 
-                    <div className="card-section p-6 space-y-6">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Amenities</h3>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg uppercase tracking-wider text-primary font-bold">Contact info</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <label className="text-sm font-medium">Contact Email</label>
+                                <Input value={formData.contact_email} onChange={(e) => handleChange("contact_email", e.target.value)} />
+                            </div>
+                            <div className="grid gap-2">
+                                <label className="text-sm font-medium">Contact Phone</label>
+                                <Input value={formData.contact_phone} onChange={(e) => handleChange("contact_phone", e.target.value)} />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg uppercase tracking-wider text-primary font-bold">Amenities</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
                         <div className="flex gap-2">
                             <Input
                                 value={amenityInput}
@@ -232,10 +230,14 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                 </Badge>
                             ))}
                         </div>
-                    </div>
+                    </CardContent>
+                </Card>
 
-                    <div className="card-section p-6 space-y-6">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Main Image (Card Display)</h3>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg uppercase tracking-wider text-primary font-bold">Main Image (Card Display)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
                         <div className="flex flex-col gap-4">
                             <div className="flex gap-2">
                                 <Input
@@ -290,10 +292,14 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </CardContent>
+                </Card>
 
-                    <div className="card-section p-6 space-y-6">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Gallery Images (Hotel Page)</h3>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg uppercase tracking-wider text-primary font-bold">Gallery Images (Hotel Page)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
                         <div className="flex flex-col gap-4">
                             <div className="flex gap-2">
                                 <Input
@@ -351,25 +357,40 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
+            </div>
 
-                {/* Sidebar */}
-                <div className="space-y-6">
-                    <div className="card-section p-6 space-y-6 sticky top-24">
-                        <h3 className="section-title text-lg border-b border-border pb-2">Policies</h3>
-                        <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                <label className="text-sm font-medium">Contact Email</label>
-                                <Input value={formData.contact_email} onChange={(e) => handleChange("contact_email", e.target.value)} />
-                            </div>
-                            <div className="grid gap-2">
-                                <label className="text-sm font-medium">Contact Phone</label>
-                                <Input value={formData.contact_phone} onChange={(e) => handleChange("contact_phone", e.target.value)} />
-                            </div>
-                        </div>
+            {/* Bottom Actions */}
+            <div className="flex justify-end gap-3 pt-8 border-t border-border mt-12 bg-background-alt sticky bottom-0 py-6 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+                <Button variant="outline" size="lg" onClick={handleSave} disabled={loading}>
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                    Save Changes
+                </Button>
+                {!showConfirm ? (
+                    <Button
+                        size="lg"
+                        variant={hotel.is_active ? "destructive" : "default"}
+                        onClick={() => setShowConfirm(true)}
+                        disabled={loading}
+                    >
+                        <Globe className="w-4 h-4 mr-2" />
+                        {hotel.is_active ? "Unpublish" : "Publish Now"}
+                    </Button>
+                ) : (
+                    <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2">
+                        <span className="text-sm font-medium text-muted-foreground mr-2">Are you sure?</span>
+                        <Button size="lg" variant="ghost" onClick={() => setShowConfirm(false)}>Cancel</Button>
+                        <Button
+                            size="lg"
+                            variant={hotel.is_active ? "destructive" : "default"}
+                            onClick={handlePublishToggle}
+                            disabled={loading}
+                        >
+                            Confirm
+                        </Button>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     )
