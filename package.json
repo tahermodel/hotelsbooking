@@ -20,7 +20,7 @@
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.29.2",
     "lucide-react": "^0.468.0",
     "next": "15.1.9",
@@ -50,6 +50,11 @@
     "typescript": "^5.7.2"
   },
   "overrides": {
-    "@auth/core": "$@auth/core"
+    "@auth/core": "$@auth/core",
+    "react-day-picker": {
+      "react": "$react",
+      "react-dom": "$react-dom",
+      "date-fns": "$date-fns"
+    }
   }
 }
