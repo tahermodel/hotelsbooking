@@ -9,7 +9,8 @@ export async function POST(req: Request) {
         return new NextResponse("Unauthorized", { status: 401 })
     }
 
-    const { applicant_email, hotel_name, hotel_address, contact_person, contact_phone, property_description } = await req.json()
+    const { applicant_email, hotel_name, hotel_address, contact_person, contact_phone, property_description, city, country, country_code } = await req.json()
+    const fullPhone = `${country_code} ${contact_phone}`
 
     try {
         const application = await prisma.hotelApplication.create({
@@ -18,8 +19,10 @@ export async function POST(req: Request) {
                 applicant_email,
                 hotel_name,
                 hotel_address,
+                city,
+                country,
                 contact_person,
-                contact_phone,
+                contact_phone: fullPhone,
                 description: property_description,
                 status: "pending"
             }

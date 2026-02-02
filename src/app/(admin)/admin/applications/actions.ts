@@ -36,11 +36,10 @@ export async function updateApplicationStatus(id: string, status: HotelApplicati
                     slug,
                     description: application.description,
                     address: application.hotel_address,
+                    city: application.city,
+                    country: application.country,
                     contact_email: application.applicant_email,
                     contact_phone: application.contact_phone,
-                    // Defaults for required fields
-                    city: "Update City",
-                    country: "Update Country",
                     star_rating: 0,
                     is_active: false // Require admin to activate after filling details
                 }

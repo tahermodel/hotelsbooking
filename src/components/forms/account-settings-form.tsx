@@ -67,6 +67,12 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
         }
     }
 
+    const hasChanges =
+        formData.name !== (user.name || "") ||
+        formData.email !== (user.email || "") ||
+        formData.phone !== (user.phone || "") ||
+        formData.password !== ""
+
     return (
         <form onSubmit={handleSave} className="space-y-8">
             <section className="card-section p-6 animate-fade-in-up stagger-1">
@@ -99,13 +105,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                             >
                                 <X className="w-4 h-4" />
                             </button>
-                            <button
-                                type="submit"
-                                className="icon-btn bg-primary text-white hover:bg-primary/90"
-                                aria-label="Save changes"
-                            >
-                                <Check className="w-4 h-4" />
-                            </button>
+
                         </div>
                     )}
                 </div>
@@ -192,7 +192,11 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
 
                 {isEditing && (
                     <div className="mt-6 pt-4 border-t border-border">
-                        <Button type="submit" className="w-full sm:w-auto">
+                        <Button
+                            type="submit"
+                            className="w-full sm:w-auto"
+                            disabled={!hasChanges}
+                        >
                             Update Account Info
                         </Button>
                     </div>

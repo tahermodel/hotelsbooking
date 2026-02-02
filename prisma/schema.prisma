@@ -282,6 +282,8 @@ model HotelApplication {
   user_id         String                 @map("user_id")
   user            User                   @relation(fields: [user_id], references: [id])
   
+  city            String                 @map("city")
+  country         String                 @map("country")
   created_at      DateTime               @default(now()) @map("created_at")
   updated_at      DateTime               @updatedAt @map("updated_at")
 

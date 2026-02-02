@@ -21,131 +21,74 @@ export default async function AdminDashboardPage() {
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container py-12 max-w-6xl pt-24">
-                <div className="mb-8 animate-fade-in">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-                            <Shield className="w-5 h-5 text-accent-foreground" />
+            <main className="flex-1 container mx-auto px-6 py-12 max-w-4xl pt-32 flex flex-col items-center">
+                <div className="w-full mb-12 animate-fade-in text-center">
+                    <div className="flex flex-col items-center gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center shadow-lg">
+                            <Shield className="w-6 h-6 text-accent-foreground" />
                         </div>
                         <span className="section-title mb-0">Admin Panel</span>
                     </div>
-                    <h1 className="text-3xl font-bold">Platform Administration</h1>
-                    <p className="text-muted-foreground mt-1">Manage hotels, users, and applications</p>
+                    <h1 className="text-4xl font-bold tracking-tight">Platform Administration</h1>
+                    <p className="text-muted-foreground mt-2 text-lg">Essential overview and management tools</p>
                 </div>
 
-                <section className="mb-10">
-                    <span className="section-title">Overview</span>
-                    <div className="grid gap-4 sm:grid-cols-3">
-                        <div className="stat-card animate-fade-in-up stagger-1">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                                    <Building2 className="w-6 h-6 text-accent" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-muted-foreground font-medium">Total Hotels</p>
-                                    <p className="text-3xl font-bold">{hotelCount || 0}</p>
+                <div className="w-full grid gap-8">
+                    <section className="animate-fade-in-up stagger-1">
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            <div className="stat-card">
+                                <div className="flex flex-col items-center text-center gap-3">
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                                        <Building2 className="w-6 h-6 text-accent" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Hotels</p>
+                                        <p className="text-3xl font-black">{hotelCount || 0}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="stat-card animate-fade-in-up stagger-2">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
-                                    <Users className="w-6 h-6 text-secondary" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-muted-foreground font-medium">Total Users</p>
-                                    <p className="text-3xl font-bold">{userCount || 0}</p>
+                            <div className="stat-card">
+                                <div className="flex flex-col items-center text-center gap-3">
+                                    <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                                        <Users className="w-6 h-6 text-secondary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Users</p>
+                                        <p className="text-3xl font-black">{userCount || 0}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="stat-card animate-fade-in-up stagger-3">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                                    <FileText className="w-6 h-6 text-accent" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-muted-foreground font-medium">Pending Apps</p>
-                                    <p className="text-3xl font-bold">{pendingApps || 0}</p>
+                            <div className="stat-card">
+                                <div className="flex flex-col items-center text-center gap-3">
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                                        <FileText className="w-6 h-6 text-accent" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Pending Applications</p>
+                                        <p className="text-3xl font-black">{pendingApps || 0}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                <div className="grid gap-6 lg:grid-cols-2">
-                    <section className="animate-fade-in-up stagger-4">
-                        <span className="section-title">Quick Actions</span>
-                        <div className="card-section divide-y divide-border">
-                            <Link href="/admin/applications" className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                        <FileText className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">Review Applications</p>
-                                        <p className="text-sm text-muted-foreground">Approve or reject hotel applications</p>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                            </Link>
-
-                            <Link href="/admin/hotels" className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
-                                        <Building2 className="w-5 h-5 text-secondary group-hover:text-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">Manage Hotels</p>
-                                        <p className="text-sm text-muted-foreground">View and edit all properties</p>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all" />
-                            </Link>
-
-                            <Link href="/admin/users" className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                        <Users className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">Manage Users</p>
-                                        <p className="text-sm text-muted-foreground">View platform users</p>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                            </Link>
-
-                            <Link href="/admin/settings" className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
-                                        <Settings className="w-5 h-5 text-secondary group-hover:text-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">Platform Settings</p>
-                                        <p className="text-sm text-muted-foreground">Configure system options</p>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all" />
-                            </Link>
                         </div>
                     </section>
 
-                    <section className="animate-fade-in-up stagger-5">
-                        <span className="section-title">Analytics</span>
-                        <div className="card-section p-8 flex flex-col items-center justify-center text-center h-[calc(100%-2rem)] min-h-[280px]">
-                            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                                <BarChart3 className="w-8 h-8 text-muted-foreground" />
+                    <section className="animate-fade-in-up stagger-2 max-w-sm mx-auto w-full">
+                        <Link href="/admin/applications" className="group">
+                            <div className="card-section p-6 flex flex-col items-center text-center gap-4 hover:border-primary transition-all duration-300 hover:shadow-xl group-hover:-translate-y-1">
+                                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <FileText className="w-7 h-7 text-primary group-hover:text-white transition-colors" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold">Review Applications</h3>
+                                    <p className="text-sm text-muted-foreground mt-1">Approve or reject new hotel partner requests</p>
+                                </div>
+                                <div className="flex items-center gap-2 text-primary font-semibold text-sm">
+                                    Launch Module <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </div>
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Platform Insights</h3>
-                            <p className="text-sm text-muted-foreground max-w-xs">
-                                Analytics and revenue reports will appear here as booking data accumulates
-                            </p>
-                            <Button variant="outline" size="sm" className="mt-6" disabled>
-                                Coming Soon
-                            </Button>
-                        </div>
+                        </Link>
                     </section>
                 </div>
             </main>

@@ -23,7 +23,7 @@ export default async function MyBookingsPage() {
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container py-12 max-w-4xl pt-24 px-4 sm:px-6">
+            <main className="flex-1 container py-12 max-w-4xl pt-24 px-4 sm:px-6 mx-auto">
                 <div className="mb-8 animate-fade-in">
                     <Link
                         href="/account"

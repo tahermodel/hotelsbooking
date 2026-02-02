@@ -30,7 +30,7 @@ export default async function AccountPage() {
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container py-12 max-w-2xl pt-24 px-4 sm:px-6">
+            <main className="flex-1 container py-12 max-w-2xl pt-24 px-4 sm:px-6 mx-auto">
                 <div className="animate-fade-in mb-8">
                     <span className="section-title">Account</span>
                     <h1 className="text-3xl font-bold">My Profile</h1>
