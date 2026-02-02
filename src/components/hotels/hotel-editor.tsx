@@ -75,18 +75,18 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
     return (
         <div className="space-y-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                     <Button
                         variant="ghost"
+                        size="icon"
                         onClick={() => router.push('/partner/dashboard')}
-                        className="rounded-full hover:bg-secondary transition-colors"
+                        className="rounded-full h-12 w-12 hover:bg-black/10 border border-black/5 transition-all active:scale-90 bg-white/50 backdrop-blur-sm shadow-sm text-black"
                     >
-                        <ArrowLeft className="w-5 h-5 mr-1" />
-                        Back
+                        <ArrowLeft className="w-6 h-6" />
                     </Button>
                     <div>
-                        <h1 className="text-3xl font-bold">Edit Property</h1>
-                        <p className="text-muted-foreground">{hotel.name}</p>
+                        <h1 className="text-3xl font-bold tracking-tight">Edit Property</h1>
+                        <p className="text-muted-foreground/80 font-medium">{hotel.name}</p>
                     </div>
                 </div>
             </div>
@@ -385,13 +385,13 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                         animate={!loading}
                         className={cn(
                             "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
-                            "border-white/40 bg-black/80 hover:bg-black/90",
+                            "border-white/60 bg-white/20 hover:bg-white/30 backdrop-blur-md",
                             loading && "opacity-80 cursor-not-allowed"
                         )}
                     >
-                        <div className="flex items-center justify-center gap-3 text-white font-bold tracking-wide">
+                        <div className="flex items-center justify-center gap-3 text-primary font-bold tracking-wide">
                             {loading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <Loader2 className="w-6 h-6 animate-spin text-primary" />
                             ) : (
                                 <>
                                     {hotel.is_active ? <Save className="w-5 h-5" /> : <Globe className="w-5 h-5" />}

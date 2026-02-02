@@ -78,7 +78,7 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
                         <div className="relative group">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
                             <Input
-                                className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                                className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.02] shadow-none ring-0 focus-visible:ring-0"
                                 placeholder="name@example.com"
                                 type="email"
                                 value={email}
@@ -89,7 +89,7 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
                         <div className="relative group">
                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
                             <Input
-                                className="pl-10 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                                className="pl-10 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.02] shadow-none ring-0 focus-visible:ring-0"
                                 placeholder="Password"
                                 type={showPassword ? "text" : "password"}
                                 value={password}

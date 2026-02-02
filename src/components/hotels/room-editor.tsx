@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud } from "lucide-react"
+import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud, ArrowLeft } from "lucide-react"
 import { createRoom, updateRoom, deleteRoom } from "@/app/actions/room"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
+import { cn } from "@/lib/utils"
 
 interface RoomEditorProps {
     room?: any
@@ -115,22 +117,28 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
 
     return (
         <div className="space-y-8 max-w-4xl mx-auto">
-            <div className="flex justify-between items-center border-b border-border pb-6">
-                <div>
-                    <h1 className="text-3xl font-bold">{isEditing ? "Edit Room" : "Add New Room"}</h1>
-                    <p className="text-muted-foreground">{isEditing ? room.name : "Create a new room type"}</p>
-                </div>
-                <div className="flex gap-3">
-                    {isEditing && (
-                        <Button variant="destructive" size="icon" onClick={handleDelete} disabled={loading}>
-                            <Trash2 className="w-4 h-4" />
-                        </Button>
-                    )}
-                    <Button onClick={handleSave} disabled={loading}>
-                        {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                        {isEditing ? "Save Changes" : "Create Room"}
+            <div className="flex items-center gap-6 border-b border-black/5 pb-8">
+                <div className="flex items-center gap-6">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => router.push('/partner/dashboard/rooms')}
+                        className="rounded-full h-12 w-12 hover:bg-black/10 border border-black/5 transition-all active:scale-90 bg-white/50 backdrop-blur-sm shadow-sm text-black"
+                    >
+                        <ArrowLeft className="w-6 h-6" />
                     </Button>
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">{isEditing ? "Edit Room" : "Add New Room"}</h1>
+                        <p className="text-muted-foreground/80 font-medium">{isEditing ? room.name : "Create a new room type"}</p>
+                    </div>
                 </div>
+                {isEditing && (
+                    <div className="ml-auto">
+                        <Button variant="ghost" size="icon" onClick={handleDelete} disabled={loading} className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10">
+                            <Trash2 className="w-5 h-5" />
+                        </Button>
+                    </div>
+                )}
             </div>
 
             <div className="grid gap-8">
@@ -347,6 +355,37 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Bottom Actions - Styled exactly like Hotel Publish */}
+            <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
+                <button
+                    disabled={loading}
+                    onClick={handleSave}
+                    className="pointer-events-auto group"
+                >
+                    <LiquidGlass
+                        animate={!loading}
+                        className={cn(
+                            "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
+                            "border-white/60 bg-white/20 hover:bg-white/30 backdrop-blur-md",
+                            loading && "opacity-80 cursor-not-allowed"
+                        )}
+                    >
+                        <div className="flex items-center justify-center gap-3 text-primary font-bold tracking-wide min-w-[160px]">
+                            {loading ? (
+                                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                            ) : (
+                                <>
+                                    {isEditing ? <Save className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                                    <span className="text-lg">
+                                        {isEditing ? "Save Changes" : "Create Room"}
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    </LiquidGlass>
+                </button>
             </div>
         </div>
     )

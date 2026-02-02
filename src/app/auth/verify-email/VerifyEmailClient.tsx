@@ -162,7 +162,7 @@ export default function VerifyEmailClient() {
                                             document.getElementById(`code-${i - 1}`)?.focus();
                                         }
                                     }}
-                                    className="w-full h-full rounded-lg sm:rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-xl sm:text-2xl font-bold text-white shadow-lg transition-all focus:border-white/50 focus:bg-white/20 focus:scale-110 focus:outline-none"
+                                    className="w-full h-full rounded-lg sm:rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-xl sm:text-2xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-110 focus:outline-none"
                                 />
                             </div>
                         ))}
