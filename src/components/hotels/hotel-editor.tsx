@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Save, Globe, X, Plus, Image as ImageIcon, Star, UploadCloud } from "lucide-react"
+import { Loader2, Save, Globe, X, Plus, Image as ImageIcon, Star, UploadCloud, ArrowLeft } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { updateHotel, toggleHotelStatus } from "@/app/actions/hotel"
 import { cn } from "@/lib/utils"
@@ -22,7 +22,6 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
     const router = useRouter()
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [loading, setLoading] = useState(false)
-    const [showConfirm, setShowConfirm] = useState(false)
     const [formData, setFormData] = useState({
         name: hotel.name,
         description: hotel.description || "",
@@ -45,30 +44,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
         setFormData(prev => ({ ...prev, [field]: value }))
     }
 
-    const handleSave = async () => {
-        setLoading(true)
-        try {
-            await updateHotel(hotel.id, formData)
-            router.refresh()
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setLoading(false)
-        }
-    }
 
-    const handlePublishToggle = async () => {
-        setLoading(true)
-        try {
-            await toggleHotelStatus(hotel.id, !hotel.is_active)
-            setShowConfirm(false)
-            router.refresh()
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
@@ -99,9 +75,19 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
     return (
         <div className="space-y-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
-                <div>
-                    <h1 className="text-3xl font-bold">Edit Property</h1>
-                    <p className="text-muted-foreground">{hotel.name}</p>
+                <div className="flex items-center gap-4">
+                    <Button
+                        variant="ghost"
+                        onClick={() => router.push('/partner/dashboard')}
+                        className="rounded-full hover:bg-secondary transition-colors"
+                    >
+                        <ArrowLeft className="w-5 h-5 mr-1" />
+                        Back
+                    </Button>
+                    <div>
+                        <h1 className="text-3xl font-bold">Edit Property</h1>
+                        <p className="text-muted-foreground">{hotel.name}</p>
+                    </div>
                 </div>
             </div>
 
@@ -378,36 +364,34 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
             {/* Bottom Actions - Floating Pill with Liquid Glass */}
             <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
                 <LiquidGlass animate={false} className="flex h-16 items-center gap-4 px-8 rounded-full shadow-2xl pointer-events-auto border-white/20">
-                    <Button variant="outline" size="lg" onClick={handleSave} disabled={loading} className="rounded-full px-8 hover:scale-105 transition-transform active:scale-95 bg-white/10 backdrop-blur-sm border-white/20">
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                        Save Changes
+                    <Button
+                        size="lg"
+                        onClick={async () => {
+                            setLoading(true)
+                            try {
+                                await updateHotel(hotel.id, formData)
+                                if (!hotel.is_active) {
+                                    await toggleHotelStatus(hotel.id, true)
+                                }
+                                router.refresh()
+                            } catch (error) {
+                                console.error(error)
+                            } finally {
+                                setLoading(false)
+                            }
+                        }}
+                        disabled={loading}
+                        className="rounded-full px-12 hover:scale-105 transition-transform active:scale-95 shadow-xl font-bold min-w-[200px]"
+                    >
+                        {loading ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <>
+                                {hotel.is_active ? <Save className="w-5 h-5 mr-2" /> : <Globe className="w-5 h-5 mr-2" />}
+                                {hotel.is_active ? "Save Changes" : "Publish Property"}
+                            </>
+                        )}
                     </Button>
-                    {!showConfirm ? (
-                        <Button
-                            size="lg"
-                            variant={hotel.is_active ? "destructive" : "default"}
-                            onClick={() => setShowConfirm(true)}
-                            disabled={loading}
-                            className="rounded-full px-8 hover:scale-105 transition-transform active:scale-95"
-                        >
-                            <Globe className="w-4 h-4 mr-2" />
-                            {hotel.is_active ? "Unpublish" : "Publish Now"}
-                        </Button>
-                    ) : (
-                        <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 bg-background/40 backdrop-blur-md rounded-full px-4 py-1 border border-border/50">
-                            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap px-2">Are you sure?</span>
-                            <Button size="sm" variant="ghost" onClick={() => setShowConfirm(false)} className="rounded-full">Cancel</Button>
-                            <Button
-                                size="sm"
-                                variant={hotel.is_active ? "destructive" : "default"}
-                                onClick={handlePublishToggle}
-                                disabled={loading}
-                                className="rounded-full px-4"
-                            >
-                                Confirm
-                            </Button>
-                        </div>
-                    )}
                 </LiquidGlass>
             </div>
         </div>

@@ -5,8 +5,10 @@ import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Chrome, Eye, EyeOff } from "lucide-react"
+import { Chrome, Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react"
 import { loginAction } from "@/actions/auth"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
+import { Input } from "@/components/ui/input"
 
 interface LoginFormProps {
     message?: string
@@ -40,7 +42,6 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
         formData.append("email", email)
         formData.append("password", password)
 
-        // Using Server Action to bypass NextAuth masking
         const result = await loginAction(formData)
 
         setLoading(false)
@@ -59,33 +60,37 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
     }
 
     return (
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <LiquidGlass className="w-full max-w-md p-8 md:p-10 shadow-2xl space-y-8 backdrop-blur-xl border-white/30" animate={false}>
             <div className="flex flex-col space-y-2 text-center">
-                <h1 className="text-2xl font-semibold tracking-tight">Sign in to StayEase</h1>
-                <p className="text-sm text-muted-foreground">Enter your email and password below</p>
+                <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">Welcome Back</h1>
+                <p className="text-white/70 text-sm">Sign in to continue your journey with StayEase</p>
             </div>
 
             <div className="grid gap-6">
                 {message && (
-                    <div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md text-sm">
+                    <div className="p-4 bg-white/10 border border-white/20 text-white rounded-xl text-sm backdrop-blur-md animate-in fade-in slide-in-from-top-2">
                         {message}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="grid gap-2">
-                        <input
-                            className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                            placeholder="name@example.com"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <div className="relative">
-                            <input
-                                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring pr-10"
-                                placeholder="password"
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-4">
+                        <div className="relative group">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                            <Input
+                                className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                                placeholder="name@example.com"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="relative group">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                            <Input
+                                className="pl-10 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                                placeholder="Password"
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -93,31 +98,40 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
                             />
                             <button
                                 type="button"
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             </button>
                         </div>
-                        {error && (
-                            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-center animate-in fade-in slide-in-from-top-2">
-                                <p className="text-sm font-semibold text-destructive tracking-tight leading-relaxed">
-                                    {error}
-                                </p>
-                            </div>
-                        )}
-                        <Button disabled={loading}>
-                            {loading ? "Signing in..." : "Sign In with Email"}
-                        </Button>
                     </div>
+
+                    {error && (
+                        <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/30 text-center animate-in fade-in slide-in-from-top-2">
+                            <p className="text-sm font-medium text-red-100 tracking-tight leading-relaxed">
+                                {error}
+                            </p>
+                        </div>
+                    )}
+
+                    <Button
+                        disabled={loading}
+                        className="w-full h-12 bg-white text-primary hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
+                    >
+                        {loading ? "Signing in..." : (
+                            <span className="flex items-center justify-center gap-2">
+                                Sign In <ArrowRight className="h-4 w-4" />
+                            </span>
+                        )}
+                    </Button>
                 </form>
 
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t" />
+                        <span className="w-full border-t border-white/10" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                        <span className="bg-transparent px-2 text-white/50">Or continue with</span>
                     </div>
                 </div>
 
@@ -126,6 +140,7 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
                     type="button"
                     disabled={loading}
                     onClick={() => signIn("google")}
+                    className="h-12 border-white/20 bg-white/5 text-white hover:bg-white/10 rounded-xl"
                 >
                     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                         <path
@@ -148,16 +163,16 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
                     Google
                 </Button>
 
-                <p className="px-8 text-center text-sm text-muted-foreground">
+                <p className="text-center text-sm text-white/70">
                     Don&apos;t have an account?{" "}
                     <Link
                         href="/register"
-                        className="underline underline-offset-4 hover:text-primary"
+                        className="text-white font-bold hover:underline underline-offset-4"
                     >
                         Sign Up
                     </Link>
                 </p>
             </div>
-        </div>
+        </LiquidGlass>
     )
 }

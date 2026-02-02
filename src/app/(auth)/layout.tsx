@@ -6,28 +6,19 @@ export default function AuthLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-muted lg:flex overflow-hidden">
+        <div className="relative min-h-screen w-full flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-0">
                 <Image
-                    src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&auto=format&fit=crop&q=80"
-                    alt="Luxury hotel background"
+                    src="https://images.unsplash.com/photo-1612278675615-7b093b07772d?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Background"
                     fill
                     className="object-cover"
                     priority
                 />
-
-                <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-r from-transparent via-background/20 to-background z-10" />
-
-                <div className="relative z-20 p-10 flex items-center text-lg font-medium">
-                    <span className="text-2xl font-bold text-white drop-shadow-md">StayEase</span>
-                </div>
-                <div className="relative z-20 mt-auto p-10">
-                    <p className="text-lg text-white drop-shadow-md font-medium">
-                        Join thousands of travelers booking their dream stays with ease and security.
-                    </p>
-                </div>
+                <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
             </div>
-            <div className="lg:p-8">
+
+            <div className="relative z-10 w-full flex items-center justify-center">
                 {children}
             </div>
         </div>

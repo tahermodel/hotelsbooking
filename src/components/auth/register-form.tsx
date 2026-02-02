@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, User, Mail, Lock, ArrowRight } from "lucide-react"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
+import { Input } from "@/components/ui/input"
 
 export function RegisterForm() {
     const router = useRouter()
@@ -31,69 +33,78 @@ export function RegisterForm() {
     }
 
     return (
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <LiquidGlass className="w-full max-w-md p-8 md:p-10 shadow-2xl space-y-8 backdrop-blur-xl border-white/30" animate={false}>
             <div className="flex flex-col space-y-2 text-center">
-                <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
-                <p className="text-sm text-muted-foreground">Enter your details to get started</p>
+                <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">Create Account</h1>
+                <p className="text-white/70 text-sm">Join StayEase and start your journey</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="grid gap-4">
-                <div className="grid gap-2">
-                    <label className="text-sm font-medium">Full Name</label>
-                    <input
-                        name="fullName"
-                        className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                        placeholder="Name"
-                        required
-                    />
-                </div>
-                <div className="grid gap-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <input
-                        name="email"
-                        type="email"
-                        className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                        placeholder="name@example.com"
-                        required
-                    />
-                </div>
-                <div className="grid gap-2">
-                    <label className="text-sm font-medium">Password</label>
-                    <div className="relative">
-                        <input
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-4">
+                    <div className="relative group">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                        <Input
+                            name="fullName"
+                            className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                            placeholder="Full Name"
+                            required
+                        />
+                    </div>
+                    <div className="relative group">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                        <Input
+                            name="email"
+                            type="email"
+                            className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                            placeholder="name@example.com"
+                            required
+                        />
+                    </div>
+                    <div className="relative group">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                        <Input
                             name="password"
                             type={showPassword ? "text" : "password"}
-                            className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring pr-10"
-                            placeholder="6 characters at least"
+                            className="pl-10 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20 focus:border-white/40 rounded-xl transition-all"
+                            placeholder="Password (min 6 chars)"
                             required
                         />
                         <button
                             type="button"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                     </div>
                 </div>
+
                 {error && (
-                    <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-center animate-in fade-in slide-in-from-top-2">
-                        <p className="text-sm font-semibold text-destructive tracking-tight leading-relaxed">
+                    <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/30 text-center animate-in fade-in slide-in-from-top-2">
+                        <p className="text-sm font-medium text-red-100 tracking-tight leading-relaxed">
                             {error}
                         </p>
                     </div>
                 )}
-                <Button disabled={loading}>
-                    {loading ? "Creating account..." : "Sign Up"}
+
+                <Button
+                    disabled={loading}
+                    className="w-full h-12 bg-white text-primary hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
+                >
+                    {loading ? "Creating account..." : (
+                        <span className="flex items-center justify-center gap-2">
+                            Sign Up <ArrowRight className="h-4 w-4" />
+                        </span>
+                    )}
                 </Button>
             </form>
 
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
+                    <span className="w-full border-t border-white/10" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                    <span className="bg-transparent px-2 text-white/50">Or continue with</span>
                 </div>
             </div>
 
@@ -102,8 +113,9 @@ export function RegisterForm() {
                 type="button"
                 disabled={loading}
                 onClick={() => signIn("google")}
+                className="h-12 border-white/20 bg-white/5 text-white hover:bg-white/10 rounded-xl w-full flex items-center justify-center gap-2"
             >
-                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                <svg className="h-4 w-4" viewBox="0 0 24 24">
                     <path
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                         fill="#4285F4"
@@ -121,18 +133,18 @@ export function RegisterForm() {
                         fill="#EA4335"
                     />
                 </svg>
-                Sign up with Google
+                Google
             </Button>
 
-            <p className="px-8 text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-white/70">
                 Already have an account?{" "}
                 <Link
                     href="/login"
-                    className="underline underline-offset-4 hover:text-primary"
+                    className="text-white font-bold hover:underline underline-offset-4"
                 >
                     Sign In
                 </Link>
             </p>
-        </div>
+        </LiquidGlass>
     )
 }
