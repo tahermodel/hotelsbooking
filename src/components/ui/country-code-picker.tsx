@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, ChevronsUpDown, Search } from "lucide-react"
+import { ChevronsUpDown, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
     Popover,
@@ -35,26 +35,26 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
     )
 
     return (
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2 items-center">
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         type="button"
-                        className="flex h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-50 focus:outline-none focus:border-[#5AA9E6] focus:ring-1 focus:ring-[#5AA9E6] transition-all"
+                        className="flex h-10 w-12 sm:w-14 items-center justify-center gap-1 rounded-md border border-slate-200 bg-white px-1 sm:px-2 py-2 text-sm hover:bg-slate-50 focus:outline-none focus:border-[#5AA9E6] focus:ring-1 focus:ring-[#5AA9E6] transition-all"
                     >
                         {selectedCountry ? (
                             <img
-                                src={`https://purecatbefana.github.io/country-flag-icons/3x2/${selectedCountry.code}.svg`}
+                                src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
                                 alt={selectedCountry.name}
-                                className="w-5 h-3.5 object-cover rounded-sm"
+                                className="w-5 h-3.5 object-cover rounded-sm shadow-sm"
                             />
                         ) : (
                             <Search className="h-4 w-4 opacity-50" />
                         )}
-                        <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+                        <ChevronsUpDown className="h-3 w-3 shrink-0 opacity-50 hidden sm:block" />
                     </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[280px] p-0" align="start">
+                <PopoverContent className="w-[280px] p-0 bg-white shadow-xl border border-slate-200 rounded-lg z-[100]" align="start">
                     <div className="flex items-center border-b px-3 py-2">
                         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
                         <input
@@ -64,7 +64,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
-                    <div className="max-h-[300px] overflow-y-auto overflow-x-hidden">
+                    <div className="max-h-[300px] overflow-y-auto overflow-x-hidden bg-white">
                         {filteredCountries.length === 0 && (
                             <div className="py-6 text-center text-sm text-muted-foreground">No country found.</div>
                         )}
@@ -72,8 +72,8 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                             <div
                                 key={country.code}
                                 className={cn(
-                                    "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-2 text-sm outline-none hover:bg-slate-100 transition-colors",
-                                    value === country.prefix && "bg-slate-50"
+                                    "relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2.5 text-sm outline-none hover:bg-slate-50 transition-colors",
+                                    value === country.prefix && "bg-slate-100 font-medium"
                                 )}
                                 onClick={() => {
                                     onChange(country.prefix)
@@ -82,9 +82,9 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                                 }}
                             >
                                 <img
-                                    src={`https://purecatbefana.github.io/country-flag-icons/3x2/${country.code}.svg`}
+                                    src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
                                     alt={country.name}
-                                    className="mr-2 w-5 h-3.5 object-cover rounded-sm"
+                                    className="mr-3 w-5 h-3.5 object-cover rounded-sm border border-slate-100 shadow-sm"
                                 />
                                 <span className="flex-1 truncate">
                                     {country.name}
@@ -97,7 +97,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                     </div>
                 </PopoverContent>
             </Popover>
-            <div className="relative flex-1">
+            <div className="relative">
                 <input
                     type="text"
                     value={value}
@@ -107,7 +107,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                         onChange(val)
                     }}
                     placeholder="+1"
-                    className="flex h-10 w-20 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#5AA9E6] focus:ring-offset-2 transition-all"
+                    className="flex h-10 w-[60px] sm:w-[70px] rounded-md border border-slate-200 bg-white px-2 py-2 text-sm text-center ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#5AA9E6] focus:ring-offset-2 transition-all shadow-sm"
                 />
             </div>
         </div>
