@@ -28,7 +28,16 @@ export function BookingForm({
 
     const checkIn = searchParams.checkIn || new Date().toISOString().split('T')[0]
     const checkOut = searchParams.checkOut || new Date(Date.now() + 86400000).toISOString().split('T')[0]
-    const dates = useMemo(() => [checkIn], [checkIn])
+
+    const dates = useMemo(() => {
+        const start = new Date(checkIn)
+        const end = new Date(checkOut)
+        const days = []
+        for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+            days.push(new Date(d).toISOString().split('T')[0])
+        }
+        return days
+    }, [checkIn, checkOut])
 
     useEffect(() => {
         if (session?.user?.id && !locked) {

@@ -11,8 +11,18 @@ import { Badge } from "@/components/ui/badge"
 
 export const dynamic = 'force-dynamic'
 
-export default async function HotelPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function HotelPage({
+    params,
+    searchParams
+}: {
+    params: Promise<{ slug: string }>,
+    searchParams: Promise<{ checkIn?: string, checkOut?: string }>
+}) {
     const { slug } = await params
+    const { checkIn, checkOut } = await searchParams
+
+    const searchCheckIn = checkIn ? new Date(checkIn) : undefined
+    const searchCheckOut = checkOut ? new Date(checkOut) : undefined
 
     const session = await auth()
 
@@ -25,8 +35,16 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                     bookings: {
                         where: {
                             status: { in: ['pending', 'confirmed'] },
-                            check_in_date: { lte: new Date() },
-                            check_out_date: { gte: new Date() }
+                            ...(searchCheckIn && searchCheckOut ? {
+                                AND: [
+                                    { check_in_date: { lt: searchCheckOut } },
+                                    { check_out_date: { gt: searchCheckIn } }
+                                ]
+                            } : {
+                                // Default check: currently booked
+                                check_in_date: { lte: new Date() },
+                                check_out_date: { gte: new Date() }
+                            })
                         }
                     }
                 }
@@ -224,23 +242,33 @@ export default async function HotelPage({ params }: { params: Promise<{ slug: st
                             <div className="space-y-6">
                                 {hotel.rooms?.map((room: any) => {
                                     const isBooked = room.bookings && room.bookings.length > 0
+                                    const isOutsideRange = (room.available_from && searchCheckIn && new Date(room.available_from) > searchCheckIn) ||
+                                        (room.available_until && searchCheckOut && new Date(room.available_until) < searchCheckOut);
+
+                                    const isAvailable = !isBooked && !isOutsideRange;
+
                                     return (
                                         <div key={room.id} className="p-5 bg-background border border-dashed rounded-2xl group hover:border-accent transition-all">
                                             <div className="mb-4">
                                                 <h4 className="font-black text-lg text-foreground">{room.name}</h4>
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{room.max_guests} Guests</p>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">
+                                                    {room.max_guests} Guests
+                                                    {room.available_from && ` • Available from ${new Date(room.available_from).toLocaleDateString()}`}
+                                                </p>
                                             </div>
                                             <div className="flex justify-between items-end">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm text-muted-foreground line-through opacity-50">${Math.round(room.base_price * 1.2)}</span>
                                                     <span className="font-black text-2xl text-primary">${room.base_price}</span>
                                                 </div>
-                                                {isBooked ? (
+                                                {!isAvailable ? (
                                                     <div className="px-4 py-2 bg-destructive/10 border border-destructive/30 rounded-xl">
-                                                        <span className="text-sm font-bold text-destructive">Booked</span>
+                                                        <span className="text-sm font-bold text-destructive">
+                                                            {isBooked ? "Booked" : "Unavailable for these dates"}
+                                                        </span>
                                                     </div>
                                                 ) : (
-                                                    <Link href={`/rooms/${room.id}`}>
+                                                    <Link href={`/rooms/${room.id}${checkIn && checkOut ? `?checkIn=${checkIn}&checkOut=${checkOut}` : ""}`}>
                                                         <Button size="sm" className="rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90">
                                                             More Info
                                                         </Button>

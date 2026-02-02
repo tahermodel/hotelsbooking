@@ -16,7 +16,9 @@ const roomSchema = z.object({
     images: z.array(z.string()),
     main_image: z.string().optional().nullable(),
     base_price: z.coerce.number().min(0),
-    hotel_id: z.string() // Ensure room is linked to a hotel
+    hotel_id: z.string(),
+    available_from: z.string().optional().nullable(),
+    available_until: z.string().optional().nullable(),
 })
 
 export async function createRoom(data: z.infer<typeof roomSchema>) {
@@ -30,12 +32,15 @@ export async function createRoom(data: z.infer<typeof roomSchema>) {
 
     if (!hotel || hotel.owner_id !== session.user.id) throw new Error("Unauthorized access to hotel")
 
+    const { available_from, available_until, amenities, images, ...rest } = data
+
     const room = await prisma.roomType.create({
         data: {
-            ...data,
-            amenities: { set: data.amenities },
-            images: { set: data.images },
-            main_image: data.main_image
+            ...rest,
+            amenities,
+            images,
+            available_from: available_from ? new Date(available_from) : null,
+            available_until: available_until ? new Date(available_until) : null,
         }
     })
 
@@ -56,13 +61,16 @@ export async function updateRoom(roomId: string, data: Omit<z.infer<typeof roomS
 
     if (!existingRoom || existingRoom.hotel.owner_id !== session.user.id) throw new Error("Unauthorized")
 
+    const { available_from, available_until, amenities, images, ...rest } = data
+
     await prisma.roomType.update({
         where: { id: roomId },
         data: {
-            ...data,
-            amenities: { set: data.amenities },
-            images: { set: data.images },
-            main_image: (data as any).main_image
+            ...rest,
+            amenities,
+            images,
+            available_from: available_from ? new Date(available_from) : null,
+            available_until: available_until ? new Date(available_until) : null,
         }
     })
 

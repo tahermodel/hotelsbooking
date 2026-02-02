@@ -9,14 +9,41 @@ export async function lockRoom(roomId: string, dates: string[]) {
     if (!session?.user?.id) throw new Error("Unauthorized")
 
     const lockExpiresAt = addMinutes(new Date(), 10)
+    const dateObjects = dates.map(d => new Date(d))
 
-    // Using a transaction to simulate the RPC behavior
     return await prisma.$transaction(async (tx) => {
-        // 1. Check if all dates are available and not locked by others
-        const availability = await tx.roomAvailability.findMany({
+        // 1. Check Room availability range
+        const room = await tx.roomType.findUnique({
+            where: { id: roomId }
+        })
+        if (!room) throw new Error("Room not found")
+
+        for (const date of dateObjects) {
+            if (room.available_from && date < room.available_from) throw new Error("Some dates are outside room range")
+            if (room.available_until && date > room.available_until) throw new Error("Some dates are outside room range")
+        }
+
+        // 2. Check overlapping bookings
+        const checkIn = new Date(Math.min(...dateObjects.map(d => d.getTime())))
+        const checkOut = new Date(Math.max(...dateObjects.map(d => d.getTime())) + 86400000)
+
+        const overlappingBooking = await tx.booking.findFirst({
             where: {
                 room_id: roomId,
-                date: { in: dates.map(d => new Date(d)) },
+                status: 'confirmed',
+                AND: [
+                    { check_in_date: { lt: checkOut } },
+                    { check_out_date: { gt: checkIn } }
+                ]
+            }
+        })
+        if (overlappingBooking) throw new Error("Dates are already booked")
+
+        // 3. Check existing locks/blocks
+        const existingBlocks = await tx.roomAvailability.findMany({
+            where: {
+                room_id: roomId,
+                date: { in: dateObjects },
                 OR: [
                     { is_available: false },
                     {
@@ -26,22 +53,30 @@ export async function lockRoom(roomId: string, dates: string[]) {
                 ]
             }
         })
+        if (existingBlocks.length > 0) throw new Error("Some dates are locked or blocked")
 
-        if (availability.length > 0) {
-            throw new Error("Some dates are no longer available")
+        // 4. Create locks
+        for (const date of dateObjects) {
+            await tx.roomAvailability.upsert({
+                where: {
+                    room_id_date: {
+                        room_id: roomId,
+                        date: date
+                    }
+                },
+                update: {
+                    locked_until: lockExpiresAt,
+                    locked_by: session.user.id
+                },
+                create: {
+                    room_id: roomId,
+                    date: date,
+                    locked_until: lockExpiresAt,
+                    locked_by: session.user.id,
+                    is_available: true
+                }
+            })
         }
-
-        // 2. Lock the dates
-        await tx.roomAvailability.updateMany({
-            where: {
-                room_id: roomId,
-                date: { in: dates.map(d => new Date(d)) }
-            },
-            data: {
-                locked_until: lockExpiresAt,
-                locked_by: session.user.id
-            }
-        })
 
         return true
     })
@@ -51,15 +86,12 @@ export async function releaseRoomLock(roomId: string, dates: string[]) {
     const session = await auth()
     if (!session?.user?.id) return
 
-    await prisma.roomAvailability.updateMany({
+    await prisma.roomAvailability.deleteMany({
         where: {
             room_id: roomId,
             locked_by: session.user.id,
-            date: { in: dates.map(d => new Date(d)) }
-        },
-        data: {
-            locked_until: null,
-            locked_by: null
+            date: { in: dates.map(d => new Date(d)) },
+            is_available: true // Don't delete manual blocks
         }
     })
 }

@@ -16,37 +16,65 @@ type PageProps = {
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams
   const query = typeof params.q === 'string' ? params.q : undefined
+  const checkIn = typeof params.checkIn === 'string' ? new Date(params.checkIn) : undefined
+  const checkOut = typeof params.checkOut === 'string' ? new Date(params.checkOut) : undefined
 
   let hotels = []
-  const isSearch = !!query
+  const isSearch = !!query || (!!checkIn && !!checkOut)
 
-  if (isSearch) {
-    hotels = await prisma.hotel.findMany({
-      where: {
-        is_active: true,
-        OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { city: { contains: query, mode: 'insensitive' } },
-          { country: { contains: query, mode: 'insensitive' } }
-        ]
-      },
-      include: {
-        rooms: {
-          select: { base_price: true }
-        }
-      }
-    })
-  } else {
-    hotels = await prisma.hotel.findMany({
-      where: { is_active: true },
-      take: 6,
-      include: {
-        rooms: {
-          select: { base_price: true }
-        }
-      }
-    })
+  const whereClause: any = {
+    is_active: true,
   }
+
+  if (query) {
+    whereClause.OR = [
+      { name: { contains: query, mode: 'insensitive' } },
+      { city: { contains: query, mode: 'insensitive' } },
+      { country: { contains: query, mode: 'insensitive' } }
+    ]
+  }
+
+  if (checkIn && checkOut) {
+    whereClause.rooms = {
+      some: {
+        AND: [
+          {
+            OR: [
+              { available_from: null },
+              { available_from: { lte: checkIn } }
+            ]
+          },
+          {
+            OR: [
+              { available_until: null },
+              { available_until: { gte: checkOut } }
+            ]
+          },
+          {
+            bookings: {
+              none: {
+                status: 'confirmed',
+                AND: [
+                  { check_in_date: { lt: checkOut } },
+                  { check_out_date: { gt: checkIn } }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+
+  hotels = await prisma.hotel.findMany({
+    where: whereClause,
+    take: isSearch ? undefined : 6,
+    include: {
+      rooms: {
+        select: { base_price: true }
+      }
+    }
+  })
 
   return (
     <div className="flex min-h-screen flex-col bg-background-alt">
@@ -109,14 +137,6 @@ export default async function Home({ searchParams }: PageProps) {
                   {isSearch ? "Best matches for your search" : "Handpicked properties for your next adventure"}
                 </p>
               </div>
-              {!isSearch && (
-                <Link href="/search">
-                  <Button variant="outline" className="group">
-                    View All
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              )}
             </div>
 
             {hotels.length > 0 ? (

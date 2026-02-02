@@ -31,6 +31,8 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
         images: room.images || [],
         main_image: room.main_image || "",
         base_price: room.base_price || 0,
+        available_from: room.available_from ? new Date(room.available_from).toISOString().split('T')[0] : "",
+        available_until: room.available_until ? new Date(room.available_until).toISOString().split('T')[0] : "",
     } : {
         name: "",
         description: "",
@@ -41,6 +43,8 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
         images: [],
         main_image: "",
         base_price: 0,
+        available_from: "",
+        available_until: "",
     }
 
     const [formData, setFormData] = useState(initialData)
@@ -162,6 +166,29 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                 <label className="text-sm font-medium">Size (sqm)</label>
                                 <Input type="number" min="0" value={formData.size_sqm} onChange={(e) => handleChange("size_sqm", parseFloat(e.target.value))} />
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card-section p-6 space-y-6">
+                    <h3 className="section-title text-lg border-b border-border pb-2">Availability Range</h3>
+                    <p className="text-sm text-muted-foreground">Define when this room is available for booking. Leave empty if always available.</p>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <label className="text-sm font-medium">Available From</label>
+                            <Input
+                                type="date"
+                                value={formData.available_from}
+                                onChange={(e) => handleChange("available_from", e.target.value)}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <label className="text-sm font-medium">Available Until</label>
+                            <Input
+                                type="date"
+                                value={formData.available_until}
+                                onChange={(e) => handleChange("available_until", e.target.value)}
+                            />
                         </div>
                     </div>
                 </div>

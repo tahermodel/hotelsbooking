@@ -13,26 +13,51 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "Missing parameters" }, { status: 400 })
     }
 
-    const availability = await prisma.roomAvailability.findMany({
+    const checkIn = new Date(startDate)
+    const checkOut = new Date(endDate)
+
+    const rooms = await prisma.roomType.findMany({
         where: {
-            room: {
-                hotel_id: hotelId
-            },
-            date: {
-                gte: new Date(startDate),
-                lte: new Date(endDate)
-            },
-            is_available: true,
-            OR: [
-                { locked_until: null },
-                { locked_until: { lte: new Date() } }
+            hotel_id: hotelId,
+            AND: [
+                {
+                    OR: [
+                        { available_from: null },
+                        { available_from: { lte: checkIn } }
+                    ]
+                },
+                {
+                    OR: [
+                        { available_until: null },
+                        { available_until: { gte: checkOut } }
+                    ]
+                },
+                {
+                    bookings: {
+                        none: {
+                            status: 'confirmed',
+                            AND: [
+                                { check_in_date: { lt: checkOut } },
+                                { check_out_date: { gt: checkIn } }
+                            ]
+                        }
+                    }
+                },
+                {
+                    availability: {
+                        none: {
+                            is_available: false,
+                            AND: [
+                                { date: { gte: checkIn } },
+                                { date: { lt: checkOut } }
+                            ]
+                        }
+                    }
+                }
             ]
-        },
-        include: {
-            room: true
         }
     })
 
-    return NextResponse.json(availability)
+    return NextResponse.json(rooms)
 }
 

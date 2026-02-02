@@ -28,41 +28,65 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
 
     const validated = bookingSchema.parse(data)
 
-    // Transaction to ensure atomicity: Check availability -> Create Booking -> Mark as unavailable
     const result = await prisma.$transaction(async (tx) => {
-        // 1. Check if dates are available (or locked by THIS user)
-        // We need to check if there is any overlapping booking or unavailable date
-        // Note: Ideally RoomAvailability table should be the source of truth for free/busy
+        // 1. Check if room exists and dates are within its availability range
+        const room = await tx.roomType.findUnique({
+            where: { id: validated.roomId }
+        })
 
-        // Let's assume RoomAvailability exists and is used. In a real system, you'd check overlapping Bookings too.
-        // For this fix, I'll rely on the existing "locked" logic implying availability but reinforce it.
+        if (!room) throw new Error("Room not found")
 
-        // Simple check: Is there already a confirmed booking for this room on these dates?
-        const existingBooking = await tx.booking.findFirst({
+        const checkIn = new Date(validated.checkInDate)
+        const checkOut = new Date(validated.checkOutDate)
+
+        if (room.available_from && checkIn < room.available_from) {
+            throw new Error(`Room is only available from ${room.available_from.toLocaleDateString()}`)
+        }
+        if (room.available_until && checkOut > room.available_until) {
+            throw new Error(`Room is only available until ${room.available_until.toLocaleDateString()}`)
+        }
+
+        // 2. Check for overlapping confirmed bookings
+        const overlappingBooking = await tx.booking.findFirst({
             where: {
                 room_id: validated.roomId,
                 status: 'confirmed',
-                OR: [
-                    {
-                        check_in_date: { lte: new Date(validated.checkOutDate) },
-                        check_out_date: { gte: new Date(validated.checkInDate) }
-                    }
+                AND: [
+                    { check_in_date: { lt: checkOut } },
+                    { check_out_date: { gt: checkIn } }
                 ]
             }
         })
 
-        if (existingBooking) {
+        if (overlappingBooking) {
             throw new Error("Room is already booked for these dates.")
         }
 
+        // 3. Check for manual blocks in RoomAvailability
+        const blockedDates = await tx.roomAvailability.findMany({
+            where: {
+                room_id: validated.roomId,
+                is_available: false,
+                AND: [
+                    { date: { gte: checkIn } },
+                    { date: { lt: checkOut } }
+                ]
+            }
+        })
+
+        if (blockedDates.length > 0) {
+            throw new Error("Some of the selected dates are blocked for maintenance.")
+        }
+
+        // 4. Create the booking
         const booking = await tx.booking.create({
             data: {
                 booking_reference: `BK-${Math.random().toString(36).toUpperCase().substring(2, 10)}`,
                 user_id: session.user.id,
                 hotel_id: validated.hotelId,
                 room_id: validated.roomId,
-                check_in_date: new Date(validated.checkInDate),
-                check_out_date: new Date(validated.checkOutDate),
+                check_in_date: checkIn,
+                check_out_date: checkOut,
                 guests_count: validated.guestsCount,
                 total_amount: validated.totalAmount,
                 guest_name: validated.guestName,
@@ -71,45 +95,27 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
             }
         })
 
-        // Create Payment Record
+        // 5. Create Payment Record
         await tx.payment.create({
             data: {
                 booking_id: booking.id,
                 stripe_payment_intent_id: validated.paymentIntentId,
                 amount: validated.totalAmount,
-                status: 'pending' // managed by webhooks or capture logic
+                status: 'pending'
             }
         })
 
-        // 2. Mark dates as unavailable in RoomAvailability
-        // We neeed to generate the date range
-        const startDate = new Date(validated.checkInDate)
-        const endDate = new Date(validated.checkOutDate)
-        const datesToCheck = []
-        for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
-            datesToCheck.push(new Date(d))
-        }
-
-        // Upsert availability to 'false'
-        for (const date of datesToCheck) {
-            // simplified logic: finding or creating availability record
-            // Note: In a real app, this might be more complex depending on schema
-            await tx.roomAvailability.deleteMany({
-                where: {
-                    room_id: validated.roomId,
-                    date: date,
-                    locked_by: session.user.id // Remove our lock if it exists
+        // 6. Clear our lock if it exists
+        await tx.roomAvailability.deleteMany({
+            where: {
+                room_id: validated.roomId,
+                locked_by: session.user.id,
+                date: {
+                    gte: checkIn,
+                    lt: checkOut
                 }
-            })
-
-            await tx.roomAvailability.create({
-                data: {
-                    room_id: validated.roomId,
-                    date: date,
-                    is_available: false,
-                }
-            })
-        }
+            }
+        })
 
         return booking
     })

@@ -9,8 +9,19 @@ import { Badge } from "@/components/ui/badge"
 
 export const dynamic = 'force-dynamic'
 
-export default async function RoomPage({ params }: { params: Promise<{ roomId: string }> }) {
+export default async function RoomPage({
+    params,
+    searchParams
+}: {
+    params: Promise<{ roomId: string }>,
+    searchParams: Promise<{ checkIn?: string, checkOut?: string }>
+}) {
     const { roomId } = await params
+    const { checkIn, checkOut } = await searchParams
+
+    const searchCheckIn = checkIn ? new Date(checkIn) : undefined
+    const searchCheckOut = checkOut ? new Date(checkOut) : undefined
+
     const session = await auth()
 
     const room = await prisma.roomType.findUnique({
@@ -20,8 +31,15 @@ export default async function RoomPage({ params }: { params: Promise<{ roomId: s
             bookings: {
                 where: {
                     status: { in: ['pending', 'confirmed'] },
-                    check_in_date: { lte: new Date() },
-                    check_out_date: { gte: new Date() }
+                    ...(searchCheckIn && searchCheckOut ? {
+                        AND: [
+                            { check_in_date: { lt: searchCheckOut } },
+                            { check_out_date: { gt: searchCheckIn } }
+                        ]
+                    } : {
+                        check_in_date: { lte: new Date() },
+                        check_out_date: { gte: new Date() }
+                    })
                 }
             }
         }
@@ -127,13 +145,22 @@ export default async function RoomPage({ params }: { params: Promise<{ roomId: s
                         )}
 
                         <div className="pt-6 border-t border-dashed flex flex-col items-center gap-4">
-                            {isBooked ? (
+                            {(!isBooked && room.available_from && searchCheckIn && new Date(room.available_from) > searchCheckIn) ||
+                                (!isBooked && room.available_until && searchCheckOut && new Date(room.available_until) < searchCheckOut) ? (
                                 <div className="w-full p-6 bg-destructive/10 border-2 border-destructive/30 rounded-2xl text-center">
-                                    <p className="text-xl font-black text-destructive">This room is currently booked</p>
-                                    <p className="text-sm text-muted-foreground mt-2 font-medium">Please check back later or choose another room</p>
+                                    <p className="text-xl font-black text-destructive">Unavailable for these dates</p>
+                                    <p className="text-sm text-muted-foreground mt-2 font-medium">
+                                        Room is only available from {new Date(room.available_from!).toLocaleDateString()}
+                                        {room.available_until && ` to ${new Date(room.available_until).toLocaleDateString()}`}
+                                    </p>
+                                </div>
+                            ) : isBooked ? (
+                                <div className="w-full p-6 bg-destructive/10 border-2 border-destructive/30 rounded-2xl text-center">
+                                    <p className="text-xl font-black text-destructive">This room is already booked for these dates</p>
+                                    <p className="text-sm text-muted-foreground mt-2 font-medium">Please check other dates or rooms</p>
                                 </div>
                             ) : (
-                                <Link href={`/booking/${room.hotel_id}?roomType=${room.id}`} className="w-full">
+                                <Link href={`/booking/${room.hotel_id}?roomType=${room.id}${checkIn && checkOut ? `&checkIn=${checkIn}&checkOut=${checkOut}` : ""}`} className="w-full">
                                     <Button size="lg" className="w-full text-lg font-bold h-14 rounded-xl bg-foreground text-background hover:bg-foreground/90">
                                         Book This Room
                                     </Button>

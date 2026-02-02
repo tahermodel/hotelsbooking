@@ -116,8 +116,6 @@ model Hotel {
   main_image    String?  @map("main_image")
   contact_email String   @map("contact_email")
   contact_phone String?  @map("contact_phone")
-  check_in_time String   @map("check_in_time")
-  check_out_time String  @map("check_out_time")
   
   is_active     Boolean  @default(true) @map("is_active")
   is_verified   Boolean  @default(false) @map("is_verified")
@@ -146,6 +144,9 @@ model RoomType {
   images            String[]
   main_image        String?  @map("main_image")
   base_price        Float    @map("base_price")
+  
+  available_from    DateTime? @map("available_from")
+  available_until   DateTime? @map("available_until")
   
   created_at        DateTime @default(now()) @map("created_at")
   updated_at        DateTime @updatedAt @map("updated_at")
