@@ -361,36 +361,40 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                 </Card>
             </div>
 
-            {/* Bottom Actions */}
-            <div className="flex justify-end gap-3 pt-8 border-t border-border mt-12 bg-background-alt sticky bottom-0 py-6 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
-                <Button variant="outline" size="lg" onClick={handleSave} disabled={loading}>
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                    Save Changes
-                </Button>
-                {!showConfirm ? (
-                    <Button
-                        size="lg"
-                        variant={hotel.is_active ? "destructive" : "default"}
-                        onClick={() => setShowConfirm(true)}
-                        disabled={loading}
-                    >
-                        <Globe className="w-4 h-4 mr-2" />
-                        {hotel.is_active ? "Unpublish" : "Publish Now"}
+            {/* Bottom Actions - Floating Pill */}
+            <div className="sticky bottom-8 z-50 flex justify-center mt-12 px-4 pointer-events-none">
+                <div className="nav-glass px-8 py-4 rounded-full shadow-2xl flex items-center gap-4 border border-white/20 pointer-events-auto animate-fade-in-up">
+                    <Button variant="outline" size="lg" onClick={handleSave} disabled={loading} className="rounded-full px-8 hover:scale-105 transition-transform active:scale-95">
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                        Save Changes
                     </Button>
-                ) : (
-                    <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2">
-                        <span className="text-sm font-medium text-muted-foreground mr-2">Are you sure?</span>
-                        <Button size="lg" variant="ghost" onClick={() => setShowConfirm(false)}>Cancel</Button>
+                    {!showConfirm ? (
                         <Button
                             size="lg"
                             variant={hotel.is_active ? "destructive" : "default"}
-                            onClick={handlePublishToggle}
+                            onClick={() => setShowConfirm(true)}
                             disabled={loading}
+                            className="rounded-full px-8 hover:scale-105 transition-transform active:scale-95"
                         >
-                            Confirm
+                            <Globe className="w-4 h-4 mr-2" />
+                            {hotel.is_active ? "Unpublish" : "Publish Now"}
                         </Button>
-                    </div>
-                )}
+                    ) : (
+                        <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 bg-background/40 backdrop-blur-md rounded-full px-4 py-1 border border-border/50">
+                            <span className="text-sm font-medium text-muted-foreground whitespace-nowrap px-2">Are you sure?</span>
+                            <Button size="sm" variant="ghost" onClick={() => setShowConfirm(false)} className="rounded-full">Cancel</Button>
+                            <Button
+                                size="sm"
+                                variant={hotel.is_active ? "destructive" : "default"}
+                                onClick={handlePublishToggle}
+                                disabled={loading}
+                                className="rounded-full px-4"
+                            >
+                                Confirm
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )
