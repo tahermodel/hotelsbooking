@@ -13,7 +13,7 @@ import { LiquidGlass } from "@/components/ui/liquid-glass"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { format } from "date-fns"
+import { format, isSameDay } from "date-fns"
 import { DateRange } from "react-day-picker"
 
 interface RoomEditorProps {
@@ -63,7 +63,11 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
         to: formData.available_until ? new Date(formData.available_until) : undefined
     })
     const [blockedDates, setBlockedDates] = useState<Date[]>(
-        formData.blocked_dates.map((d: string) => new Date(d))
+        formData.blocked_dates.map((d: string) => {
+            const date = new Date(d);
+            date.setHours(0, 0, 0, 0);
+            return date;
+        })
     )
     const [selectionMode, setSelectionMode] = useState<'range' | 'blocks'>('range')
     const [amenityInput, setAmenityInput] = useState("")
@@ -262,16 +266,26 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
 
                                             if (range?.from) {
                                                 const newBlocked = blockedDates.filter((d: Date) => {
-                                                    if (range.to) return d >= range.from! && d <= range.to;
-                                                    return d >= range.from!;
+                                                    const normalizedD = new Date(d).setHours(0, 0, 0, 0);
+                                                    const from = new Date(range.from!).setHours(0, 0, 0, 0);
+                                                    if (range.to) {
+                                                        const to = new Date(range.to).setHours(0, 0, 0, 0);
+                                                        return normalizedD >= from && normalizedD <= to;
+                                                    }
+                                                    return normalizedD >= from;
                                                 });
                                                 setBlockedDates(newBlocked);
                                                 handleChange("blocked_dates", newBlocked.map(d => d.toISOString()));
                                             }
                                         } else {
-                                            const dates = val as Date[];
-                                            setBlockedDates(dates);
-                                            handleChange("blocked_dates", (dates || []).map(d => d.toISOString()));
+                                            const dates = val as Date[] || [];
+                                            const normalized = dates.map(d => {
+                                                const date = new Date(d);
+                                                date.setHours(0, 0, 0, 0);
+                                                return date;
+                                            });
+                                            setBlockedDates(normalized);
+                                            handleChange("blocked_dates", normalized.map(d => d.toISOString()));
                                         }
                                     }}
                                     disabled={selectionMode === 'blocks' ? (date) => {
@@ -281,14 +295,17 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         return false;
                                     } : undefined}
                                     modifiers={{
-                                        blocked: blockedDates,
+                                        blocked: (date) => blockedDates.some(d => isSameDay(d, date)),
                                         inRange: (date) => {
                                             if (!dateRange?.from || !dateRange?.to) return false;
-                                            return date >= dateRange.from && date <= dateRange.to;
+                                            const normalizedDate = new Date(date).setHours(0, 0, 0, 0);
+                                            const from = new Date(dateRange.from).setHours(0, 0, 0, 0);
+                                            const to = new Date(dateRange.to).setHours(0, 0, 0, 0);
+                                            return normalizedDate >= from && normalizedDate <= to;
                                         }
                                     }}
                                     modifiersClassNames={{
-                                        blocked: "bg-destructive text-destructive-foreground hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground rounded-md",
+                                        blocked: "blocked-day-red",
                                         inRange: selectionMode === 'blocks' ? "bg-primary/10 text-primary font-bold" : ""
                                     }}
                                     numberOfMonths={2}
@@ -305,14 +322,24 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         day_selected: cn(
                                             "aria-selected:opacity-100",
                                             selectionMode === 'blocks'
-                                                ? "bg-destructive text-destructive-foreground hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
-                                                : "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground"
+                                                ? "!bg-destructive !text-destructive-foreground"
+                                                : "bg-primary text-primary-foreground"
                                         ),
-                                        day_range_start: "day-range-start",
-                                        day_range_end: "day-range-end",
+                                        day_range_start: "day-range-start bg-primary text-primary-foreground",
+                                        day_range_end: "day-range-end bg-primary text-primary-foreground",
                                         day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
                                     }}
                                 />
+                                <style jsx global>{`
+                                    .blocked-day-red {
+                                        background-color: rgb(239 68 68) !important;
+                                        color: white !important;
+                                        border-radius: 0.5rem !important;
+                                    }
+                                    .blocked-day-red:hover {
+                                        background-color: rgb(220 38 38) !important;
+                                    }
+                                `}</style>
                             </div>
                         </div>
 

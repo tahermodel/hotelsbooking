@@ -36,12 +36,12 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
     )
 
     return (
-        <div className="flex gap-1.5 sm:gap-2 items-center">
+        <div className="flex gap-1.5 items-center">
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         type="button"
-                        className="flex h-10 w-12 sm:w-14 items-center justify-center gap-1 rounded-md border border-slate-200 bg-white px-1 sm:px-2 py-2 text-sm hover:bg-slate-50 focus:outline-none focus:border-[#5AA9E6] focus:ring-1 focus:ring-[#5AA9E6] transition-all"
+                        className="flex h-12 w-16 items-center justify-center gap-1 rounded-2xl border border-white/20 bg-white/10 px-2 py-2 text-sm text-white hover:bg-white/20 transition-all outline-none"
                     >
                         {selectedCountry ? (
                             <Image
@@ -54,20 +54,19 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                         ) : (
                             <Search className="h-4 w-4 opacity-50" />
                         )}
-                        <ChevronsUpDown className="h-3 w-3 shrink-0 opacity-50 hidden sm:block" />
                     </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[280px] p-0 bg-white shadow-xl border border-slate-200 rounded-lg z-[100]" align="start">
-                    <div className="flex items-center border-b px-3 py-2">
+                <PopoverContent className="w-[280px] p-0 bg-white/95 backdrop-blur-xl shadow-2xl border border-white/20 rounded-2xl z-[100]" align="start">
+                    <div className="flex items-center border-b border-black/5 px-3 py-2">
                         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
                         <input
-                            className="flex h-9 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                            className="flex h-10 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                             placeholder="Search country or code..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
-                    <div className="max-h-[300px] overflow-y-auto overflow-x-hidden bg-white">
+                    <div className="max-h-[300px] overflow-y-auto overflow-x-hidden p-1">
                         {filteredCountries.length === 0 && (
                             <div className="py-6 text-center text-sm text-muted-foreground">No country found.</div>
                         )}
@@ -75,8 +74,8 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                             <div
                                 key={country.code}
                                 className={cn(
-                                    "relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2.5 text-sm outline-none hover:bg-slate-50 transition-colors",
-                                    value === country.prefix && "bg-slate-100 font-medium"
+                                    "relative flex cursor-pointer select-none items-center rounded-xl px-3 py-2.5 text-sm outline-none hover:bg-black/5 transition-colors",
+                                    value === country.prefix && "bg-black/5 font-bold"
                                 )}
                                 onClick={() => {
                                     onChange(country.prefix)
@@ -89,12 +88,12 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                                     alt={country.name}
                                     width={20}
                                     height={14}
-                                    className="mr-3 w-5 h-3.5 object-cover rounded-sm border border-slate-100 shadow-sm"
+                                    className="mr-3 w-5 h-3.5 object-cover rounded-sm border border-black/5 shadow-sm"
                                 />
                                 <span className="flex-1 truncate">
                                     {country.name}
                                 </span>
-                                <span className="ml-2 font-mono text-muted-foreground">
+                                <span className="ml-2 font-mono text-black/40 font-bold">
                                     {country.prefix}
                                 </span>
                             </div>
@@ -112,7 +111,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                         onChange(val)
                     }}
                     placeholder="+1"
-                    className="flex h-10 w-[60px] sm:w-[70px] rounded-md border border-slate-200 bg-white px-2 py-2 text-sm text-center ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#5AA9E6] focus:ring-offset-2 transition-all shadow-sm"
+                    className="flex h-12 w-20 rounded-2xl border border-white/20 bg-white/10 px-2 py-2 text-sm text-center text-white font-bold placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all transition-all"
                 />
             </div>
         </div>

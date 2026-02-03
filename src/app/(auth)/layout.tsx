@@ -15,7 +15,7 @@ export default function AuthLayout({
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-0 bg-black/35" />
+                <div className="absolute inset-0 bg-black/15" />
             </div>
 
             <div className="relative z-10 w-full max-w-[min(420px,100%)] flex items-center justify-center">
