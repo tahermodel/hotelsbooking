@@ -2,9 +2,9 @@ import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Users, Building2, FileText, BarChart3, ChevronRight, Settings, Shield } from "lucide-react"
+import { Building2, FileText, BarChart3, ChevronRight, Settings, Shield, Sparkles, Users } from "lucide-react"
 import Link from "next/link"
+import { AnimatedSection, ClientContentWrapper, AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 
 export const dynamic = 'force-dynamic'
 
@@ -19,78 +19,61 @@ export default async function AdminDashboardPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background-alt">
+        <div className="flex min-h-screen flex-col bg-neutral-950 text-white selection:bg-white selection:text-black">
             <Header />
-            <main className="flex-1 container mx-auto px-6 py-12 max-w-4xl pt-32 flex flex-col items-center">
-                <div className="w-full mb-12 animate-fade-in text-center">
-                    <div className="flex flex-col items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center shadow-lg">
-                            <Shield className="w-6 h-6 text-accent-foreground" />
+            <main className="flex-1 container mx-auto px-6 py-24 max-w-4xl pt-40">
+                <ClientContentWrapper className="space-y-16">
+
+                    <AnimatedSection>
+                        <div className="text-center space-y-4">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-accent">
+                                <Shield className="w-3.5 h-3.5" />
+                                Platform Authority
+                            </div>
+                            <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">Administration</h1>
+                            <p className="text-white/40 font-medium text-lg">Platform governance and oversight</p>
                         </div>
-                        <span className="section-title mb-0">Admin Panel</span>
-                    </div>
-                    <h1 className="text-4xl font-bold tracking-tight">Platform Administration</h1>
-                    <p className="text-muted-foreground mt-2 text-lg">Essential overview and management tools</p>
-                </div>
+                    </AnimatedSection>
 
-                <div className="w-full grid gap-8">
-                    <section className="animate-fade-in-up stagger-1">
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            <div className="stat-card">
-                                <div className="flex flex-col items-center text-center gap-3">
-                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                                        <Building2 className="w-6 h-6 text-accent" />
+                    <AnimatedSection delay={0.1}>
+                        <div className="grid gap-6 md:grid-cols-3">
+                            {[
+                                { label: 'Total Hotels', value: hotelCount, icon: Building2, color: 'text-white' },
+                                { label: 'Total Users', value: userCount, icon: Users, color: 'text-white' },
+                                { label: 'Pending Apps', value: pendingApps, icon: FileText, color: 'text-accent' }
+                            ].map((stat, i) => (
+                                <div key={i} className="card-section p-8 bg-white/[0.02] flex flex-col items-center text-center gap-4 group hover:bg-white/[0.04] transition-colors">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:text-white transition-colors">
+                                        <stat.icon className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Hotels</p>
-                                        <p className="text-3xl font-black">{hotelCount || 0}</p>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">{stat.label}</p>
+                                        <p className="text-4xl font-black tracking-tight">{stat.value || 0}</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="stat-card">
-                                <div className="flex flex-col items-center text-center gap-3">
-                                    <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
-                                        <Users className="w-6 h-6 text-secondary" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Users</p>
-                                        <p className="text-3xl font-black">{userCount || 0}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="stat-card">
-                                <div className="flex flex-col items-center text-center gap-3">
-                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-                                        <FileText className="w-6 h-6 text-accent" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Pending Applications</p>
-                                        <p className="text-3xl font-black">{pendingApps || 0}</p>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
-                    </section>
+                    </AnimatedSection>
 
-                    <section className="animate-fade-in-up stagger-2 max-w-sm mx-auto w-full">
-                        <Link href="/admin/applications" className="group">
-                            <div className="card-section p-6 flex flex-col items-center text-center gap-4 hover:border-primary transition-all duration-300 hover:shadow-xl group-hover:-translate-y-1">
-                                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                    <FileText className="w-7 h-7 text-primary group-hover:text-white transition-colors" />
+                    <AnimatedSection delay={0.2}>
+                        <Link href="/admin/applications" className="block max-w-md mx-auto group">
+                            <div className="card-section p-8 bg-white/[0.02] flex flex-col items-center text-center gap-6 border-white/10 group-hover:border-white/20 transition-all duration-500 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="w-20 h-20 rounded-[24px] bg-white/5 border border-white/10 flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform duration-500">
+                                    <FileText className="w-8 h-8 text-white group-hover:text-accent transition-colors" />
                                 </div>
-                                <div>
-                                    <h3 className="text-xl font-bold">Review Applications</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">Approve or reject new hotel partner requests</p>
+                                <div className="relative z-10 space-y-2">
+                                    <h3 className="text-2xl font-black tracking-tight">Review Applications</h3>
+                                    <p className="text-white/40 text-sm font-medium leading-relaxed">Validate and onboard the next wave of luxury hospitality partners.</p>
                                 </div>
-                                <div className="flex items-center gap-2 text-primary font-semibold text-sm">
-                                    Launch Module <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white relative z-10 group-hover:gap-4 transition-all">
+                                    Access Module <ChevronRight className="w-4 h-4" />
                                 </div>
                             </div>
                         </Link>
-                    </section>
-                </div>
+                    </AnimatedSection>
+
+                </ClientContentWrapper>
             </main>
         </div>
     )

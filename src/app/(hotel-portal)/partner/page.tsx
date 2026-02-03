@@ -103,39 +103,39 @@ export default async function PartnerPage() {
                                 <h2 className="text-3xl font-bold mb-8">Rules and Policies</h2>
                                 <div className="space-y-4">
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <CheckCircle2 className="w-4 h-4 text-accent-foreground" />
+                                        <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold">Commission</p>
-                                            <p className="text-muted-foreground">Standard 15% commission on all completed stays.</p>
+                                            <p className="font-bold text-white">Commission</p>
+                                            <p className="text-white/40 text-sm">Standard 15% commission on all completed stays.</p>
                                         </div>
                                     </div>
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <CheckCircle2 className="w-4 h-4 text-white" />
+                                        <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold">Response Time</p>
-                                            <p className="text-muted-foreground">Must respond to booking requests within 24 hours.</p>
+                                            <p className="font-bold text-white">Response Time</p>
+                                            <p className="text-white/40 text-sm">Must respond to booking requests within 24 hours.</p>
                                         </div>
                                     </div>
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <CheckCircle2 className="w-4 h-4 text-white" />
+                                        <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold">Accuracy</p>
-                                            <p className="text-muted-foreground">All room info and photos must be kept up-to-date.</p>
+                                            <p className="font-bold text-white">Accuracy</p>
+                                            <p className="text-white/40 text-sm">All room info and photos must be kept up-to-date.</p>
                                         </div>
                                     </div>
                                     <div className="flex gap-4 items-start">
-                                        <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <CheckCircle2 className="w-4 h-4 text-accent-foreground" />
+                                        <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold">Cancellations</p>
-                                            <p className="text-muted-foreground">Partners must honor the platform&apos;s cancellation policy.</p>
+                                            <p className="font-bold text-white">Cancellations</p>
+                                            <p className="text-white/40 text-sm">Partners must honor the platform&apos;s cancellation policy.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -163,12 +163,13 @@ export default async function PartnerPage() {
                     </div>
                 </section>
 
-                <section className="py-16 bg-accent text-accent-foreground">
-                    <div className="container px-4 max-w-4xl mx-auto text-center">
-                        <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-                        <p className="text-primary-foreground/80 mb-8">Join hundreds of hotels already growing with StayEase</p>
+                <section className="py-24 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-white/[0.02]" />
+                    <div className="container px-4 max-w-4xl mx-auto text-center relative z-10">
+                        <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Ready to Get Started?</h2>
+                        <p className="text-white/40 text-lg mb-10 max-w-xl mx-auto">Join hundreds of luxury establishments already growing their reach with StayEase.</p>
                         <Link href="/partner/apply">
-                            <Button size="lg" className="bg-white text-accent hover:bg-white/90">
+                            <Button size="lg" className="bg-white text-black hover:bg-white/90 font-black h-14 px-12 rounded-2xl shadow-2xl shadow-white/5 transition-all">
                                 Apply Now
                             </Button>
                         </Link>

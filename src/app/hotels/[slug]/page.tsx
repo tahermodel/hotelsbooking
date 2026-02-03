@@ -10,6 +10,7 @@ import { ReviewForm } from "@/components/hotels/review-form"
 import { Badge } from "@/components/ui/badge"
 import { AnimatedSection, ClientContentWrapper, AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 import { formatCurrency } from "@/lib/utils"
+import { HotelActions } from "@/components/hotels/hotel-actions"
 
 export const dynamic = 'force-dynamic'
 
@@ -199,17 +200,7 @@ export default async function HotelPage({
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex gap-3">
-                                    <AnimatedScaleButton className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
-                                        <Share2 className="w-5 h-5 text-white/60" />
-                                    </AnimatedScaleButton>
-                                    <AnimatedScaleButton className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
-                                        <Heart className="w-5 h-5 text-white/60" />
-                                    </AnimatedScaleButton>
-                                    <AnimatedScaleButton className="h-12 px-6 rounded-2xl bg-white text-black font-bold flex items-center gap-2 hover:bg-white/90 transition-all">
-                                        Experience <ChevronRight className="w-4 h-4" />
-                                    </AnimatedScaleButton>
-                                </div>
+                                <HotelActions hotelName={hotel.name} hotelSlug={hotel.slug} />
                             </div>
                         </AnimatedSection>
 
@@ -242,7 +233,7 @@ export default async function HotelPage({
 
                         {/* Rooms List */}
                         <AnimatedSection>
-                            <div className="space-y-10 pt-16 border-t border-white/5">
+                            <div id="accommodations" className="space-y-10 pt-16 border-t border-white/5 scroll-mt-32">
                                 <div className="flex justify-between items-end">
                                     <div>
                                         <h2 className="text-3xl font-black tracking-tight mb-2">Accommodations</h2>
@@ -391,10 +382,13 @@ export default async function HotelPage({
                         </AnimatedSection>
 
                         <AnimatedSection delay={0.2}>
-                            <div className="card-section p-8 bg-black border-white/20 text-center">
-                                <h4 className="text-xl font-bold mb-4">Member Benefits</h4>
-                                <p className="text-white/40 text-sm mb-8 leading-relaxed">Sign up to unlock secret rates and priority upgrades at this establishment.</p>
-                                <Button className="w-full bg-white text-black font-black h-12 rounded-xl">Learn More</Button>
+                            <div className="card-section p-8 bg-white/[0.02] border-white/10 shadow-2xl relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                <h4 className="text-xl font-black tracking-tight mb-4 relative z-10">Luxury Concierge</h4>
+                                <p className="text-white/40 text-sm mb-8 leading-relaxed relative z-10">Our elite concierge team is ready to curate your perfect stay, from private jet transfers to exclusive local experiences.</p>
+                                <Button className="w-full bg-white text-black font-black h-12 rounded-xl relative z-10 hover:bg-white/90 shadow-xl shadow-white/5 transition-all">
+                                    Inquire Now
+                                </Button>
                             </div>
                         </AnimatedSection>
                     </div>

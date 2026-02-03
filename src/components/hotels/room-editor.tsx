@@ -154,27 +154,37 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
 
     return (
         <div className="max-w-4xl mx-auto w-full space-y-12 pb-24">
-            <div className="flex flex-col items-center text-center gap-4 border-b border-black/5 pb-8">
-                <div className="flex items-center gap-4 w-full">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => router.push('/partner/dashboard/rooms')}
-                        className="rounded-full h-12 w-12 hover:bg-white/10 border border-white/10 transition-all active:scale-90 bg-white/5 backdrop-blur-md shadow-lg text-white shrink-0"
-                    >
-                        <ArrowLeft className="w-6 h-6" />
-                    </Button>
-                    <div className="flex-1 pr-12">
-                        <h1 className="text-3xl font-bold tracking-tight">{isEditing ? "Edit Room" : "Add New Room"}</h1>
-                        <p className="text-muted-foreground/80 font-medium">{isEditing ? room.name : "Create a new room type"}</p>
+            <div className="flex flex-col items-center text-center gap-6 border-b border-white/5 pb-10 mb-10 w-full">
+                <div className="flex items-center justify-between w-full">
+                    <div className="w-12 shrink-0">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => router.push('/partner/dashboard/rooms')}
+                            className="rounded-full h-12 w-12 hover:bg-white/10 border border-white/10 transition-all active:scale-90 bg-white/5 backdrop-blur-md shadow-lg text-white"
+                        >
+                            <ArrowLeft className="w-6 h-6" />
+                        </Button>
                     </div>
-                    {isEditing && (
-                        <div className="shrink-0">
-                            <Button variant="ghost" size="icon" onClick={handleDelete} disabled={loading} className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10">
+
+                    <div className="flex-1 px-4">
+                        <h1 className="text-4xl font-black tracking-tight text-white">{isEditing ? "Edit Room" : "Add New Room"}</h1>
+                        <p className="text-white/40 font-bold uppercase tracking-widest text-[10px] mt-2 italic">{isEditing ? room.name : "Create a new architectural masterpiece"}</p>
+                    </div>
+
+                    <div className="w-12 shrink-0 flex justify-end">
+                        {isEditing && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleDelete}
+                                disabled={loading}
+                                className="text-red-500/40 hover:text-red-500 hover:bg-red-500/10 rounded-full h-12 w-12 transition-all"
+                            >
                                 <Trash2 className="w-5 h-5" />
                             </Button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -210,7 +220,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         min="0"
                                         value={formData.base_price}
                                         onChange={(e) => handleChange("base_price", parseFloat(e.target.value))}
-                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold"
+                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     />
                                     <button
                                         type="button"
@@ -236,7 +246,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         min="1"
                                         value={formData.max_guests}
                                         onChange={(e) => handleChange("max_guests", parseInt(e.target.value))}
-                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold"
+                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     />
                                     <button
                                         type="button"
@@ -266,7 +276,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         min="0"
                                         value={formData.size_sqm}
                                         onChange={(e) => handleChange("size_sqm", parseFloat(e.target.value))}
-                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold"
+                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     />
                                     <button
                                         type="button"

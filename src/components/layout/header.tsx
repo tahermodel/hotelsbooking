@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { SignOutButton } from "@/components/auth/sign-out-button"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
+import { AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 
 export async function Header() {
     const session = await auth()
@@ -21,23 +22,21 @@ export async function Header() {
                             </Link>
                         )}
                         {session?.user.role === "platform_admin" && (
-                            <Link href="/admin/dashboard">
-                                <Button
-                                    size="sm"
-                                    className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                            <Link href="/admin/dashboard" className="hidden sm:block">
+                                <AnimatedScaleButton
+                                    className="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all border border-white/10"
                                 >
                                     Admin
-                                </Button>
+                                </AnimatedScaleButton>
                             </Link>
                         )}
                         {session?.user.role === "hotel_admin" && (
-                            <Link href="/partner/dashboard">
-                                <Button
-                                    size="sm"
-                                    className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                            <Link href="/partner/dashboard" className="hidden sm:block">
+                                <AnimatedScaleButton
+                                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40"
                                 >
                                     Dashboard
-                                </Button>
+                                </AnimatedScaleButton>
                             </Link>
                         )}
                     </div>

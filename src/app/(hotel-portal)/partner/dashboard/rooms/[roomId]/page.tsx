@@ -24,7 +24,7 @@ export default async function EditRoomPage({ params }: { params: Promise<{ roomI
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-4xl mx-auto pt-24 animate-fade-in flex flex-col">
+            <main className="flex-1 px-4 sm:px-6 lg:px-8 py-12 pt-36 max-w-4xl mx-auto w-full">
                 <RoomEditor room={room} hotelId={room.hotel_id} />
             </main>
         </div>

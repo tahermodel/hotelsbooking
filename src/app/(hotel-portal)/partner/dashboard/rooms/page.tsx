@@ -31,7 +31,7 @@ export default async function PartnerRoomsPage({ searchParams }: { searchParams:
     return (
         <div className="flex min-h-screen flex-col bg-background-alt">
             <Header />
-            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 pt-32 max-w-4xl mx-auto">
+            <main className="flex-1 px-4 sm:px-6 lg:px-8 py-12 pt-36 max-w-4xl mx-auto w-full">
                 <div className="flex items-center gap-6 mb-12">
                     <Link href="/partner/dashboard">
                         <Button

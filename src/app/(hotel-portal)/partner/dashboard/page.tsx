@@ -110,7 +110,7 @@ export default async function PartnerDashboardPage() {
                                                     </Button>
                                                 </Link>
                                                 <Link href={`/partner/dashboard/bookings?hotel=${hotel.id}`} className="w-full">
-                                                    <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-secondary/5 border-secondary/20 text-secondary font-semibold">
+                                                    <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-white/5 border-white/20 text-white font-bold transition-all">
                                                         Bookings
                                                     </Button>
                                                 </Link>

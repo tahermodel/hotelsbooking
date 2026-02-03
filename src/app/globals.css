@@ -277,3 +277,14 @@ h6 {
 .bg-destructive {
   background-color: var(--destructive);
 }
+
+/* Hide number input arrows globally */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -102,61 +102,110 @@ export function BookingForm({
     }
 
     return (
-        <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-                <div className="rounded-xl border p-6 space-y-6">
-                    <h2 className="text-xl font-bold">Guest Details</h2>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Full Name</label>
-                            <input className="w-full h-11 px-4 border border-input rounded-xl bg-background text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40" defaultValue={session?.user?.name || ""} />
+        <div className="grid gap-8 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-8">
+                <div className="rounded-[32px] border border-white/5 p-8 md:p-10 space-y-8 bg-white/[0.02]">
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-black tracking-tight">Guest Details</h2>
+                        <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Personal Information</p>
+                    </div>
+
+                    <div className="grid gap-6 sm:grid-cols-2">
+                        <div className="space-y-3">
+                            <label className="text-[10px] text-white/40 font-black uppercase tracking-widest ml-1">Full Name</label>
+                            <input className="w-full h-14 px-5 border border-white/10 rounded-2xl bg-white/5 text-white font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/10 focus:bg-white/[0.08]" defaultValue={session?.user?.name || ""} />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Email Address</label>
-                            <input className="w-full h-11 px-4 border border-input rounded-xl bg-background text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40" defaultValue={session?.user?.email || ""} />
+                        <div className="space-y-3">
+                            <label className="text-[10px] text-white/40 font-black uppercase tracking-widest ml-1">Email Address</label>
+                            <input className="w-full h-14 px-5 border border-white/10 rounded-2xl bg-white/5 text-white font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/10 focus:bg-white/[0.08]" defaultValue={session?.user?.email || ""} />
                         </div>
                     </div>
 
-                    <div className="pt-6 border-t">
-                        <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-                        <div className="p-4 border-2 border-primary/30 rounded-lg bg-primary/5">
-                            <div className="flex items-center gap-2 mb-2">
-                                <CreditCard className="h-5 w-5 text-primary" />
-                                <p className="font-semibold text-foreground">Secure Payment via Stripe</p>
+                    <div className="pt-8 border-t border-white/5">
+                        <div className="flex flex-col gap-6">
+                            <div className="space-y-2">
+                                <h2 className="text-2xl font-black tracking-tight">Payment Method</h2>
+                                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Secure Checkout</p>
                             </div>
-                            <p className="text-sm text-muted-foreground">You&apos;ll be redirected to Stripe&apos;s secure payment page to complete your booking.</p>
+
+                            <div className="p-6 border border-white/10 rounded-3xl bg-white/[0.03] space-y-3 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl -mr-16 -mt-16 group-hover:bg-white/10 transition-all duration-500" />
+                                <div className="flex items-center gap-4 relative z-10">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+                                        <CreditCard className="h-6 w-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-white">Credit Card via Stripe</p>
+                                        <p className="text-xs text-white/40">Secured 256-bit SSL encrypted payment</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <Button
-                        className="w-full lg:w-max h-12 px-10 rounded-xl shadow-xl shadow-success/10"
-                        size="lg"
-                        variant="success"
-                        onClick={handleBooking}
-                        disabled={loading || !locked}
-                    >
-                        {loading ? "Processing..." : "Confirm Reservation"}
-                    </Button>
+                    <div className="pt-4">
+                        <Button
+                            className="w-full h-16 bg-white text-black hover:bg-white/90 font-black text-lg rounded-2xl shadow-2xl shadow-white/5 transition-all active:scale-[0.98]"
+                            onClick={handleBooking}
+                            disabled={loading || !locked}
+                        >
+                            {loading ? "Processing..." : "Complete Booking"}
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            <div className="space-y-6">
-                <div className="rounded-xl border p-6 bg-card">
-                    <h2 className="text-xl font-bold mb-4">Summary</h2>
-                    <div className="space-y-4">
-                        <div className="flex justify-between">
-                            <span>{roomType.name} x 1 night</span>
-                            <span>{formatCurrency(roomType.base_price)}</span>
+            <div className="space-y-10">
+                <div className="rounded-[32px] border border-white/5 p-8 md:p-10 bg-white/[0.02] shadow-2xl backdrop-blur-xl space-y-8">
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-black tracking-tight">Your Stay</h2>
+                        <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Reservation Summary</p>
+                    </div>
+
+                    {/* Dates Display */}
+                    <div className="grid grid-cols-2 gap-4 py-6 border-y border-white/5">
+                        <div className="space-y-1">
+                            <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Check-In</p>
+                            <p className="font-bold text-white text-lg">{new Date(checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                         </div>
-                        <div className="flex justify-between">
-                            <span>Taxes & Fees</span>
-                            <span>{formatCurrency(0)}</span>
-                        </div>
-                        <div className="border-t pt-4 flex justify-between font-bold text-lg">
-                            <span>Total</span>
-                            <span>{formatCurrency(roomType.base_price)}</span>
+                        <div className="space-y-1 text-right">
+                            <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Check-Out</p>
+                            <p className="font-bold text-white text-lg">{new Date(checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                         </div>
                     </div>
+
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center group">
+                            <div className="space-y-1">
+                                <p className="font-bold text-white">{roomType.name}</p>
+                                <p className="text-xs text-white/40">Rate for {dates.length} night{dates.length > 1 ? 's' : ''}</p>
+                            </div>
+                            <span className="font-bold text-white">{formatCurrency(roomType.base_price * dates.length)}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-white/40">
+                            <span className="text-sm font-medium">Service Fees</span>
+                            <span className="text-sm font-bold">{formatCurrency(0)}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-white/40">
+                            <span className="text-sm font-medium">Tourism Taxes</span>
+                            <span className="text-sm font-bold">{formatCurrency(0)}</span>
+                        </div>
+
+                        <div className="pt-6 border-t border-white/10 flex justify-between items-baseline">
+                            <span className="text-lg font-black tracking-tight text-white">Grand Total</span>
+                            <span className="text-3xl font-black text-white">{formatCurrency(roomType.base_price * dates.length)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-6 rounded-[24px] bg-white/[0.01] border border-white/5 space-y-4">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-white/40">Need help?</h4>
+                    <p className="text-xs text-white/30 leading-relaxed font-medium">
+                        Our concierge is available 24/7 to assist with your reservation at {hotel.name}.
+                        Reach us at <span className="text-white/60">support@stayease.luxury</span>
+                    </p>
                 </div>
             </div>
         </div>
