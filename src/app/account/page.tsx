@@ -28,72 +28,85 @@ export default async function AccountPage() {
     const DashboardIcon = isCustomer ? BookOpen : LayoutDashboard
 
     return (
-        <div className="flex min-h-screen flex-col bg-background-alt">
-            <Header />
-            <main className="flex-1 container py-12 max-w-2xl pt-24 px-4 sm:px-6 mx-auto">
-                <div className="animate-fade-in mb-8">
-                    <span className="section-title">Account</span>
-                    <h1 className="text-3xl font-bold">My Profile</h1>
-                </div>
+        <div className="flex min-h-screen flex-col relative">
+            <div
+                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
+                style={{
+                    backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`
+                }}
+            >
+                <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+            </div>
 
-                <div className="space-y-6">
-                    <section className="card-section p-6 animate-fade-in-up stagger-1">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h2 className="text-2xl font-bold text-foreground">{user.name || "User"}</h2>
-                                <p className="text-muted-foreground">{user.email}</p>
-                                <div className="flex gap-2 mt-3">
-                                    <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase">
-                                        {user.role}
-                                    </span>
-                                    {user.is_verified && (
-                                        <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full">
-                                            Verified
+            <div className="relative z-10 flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-1 container py-12 max-w-2xl pt-24 px-4 sm:px-6 mx-auto">
+                    <div className="animate-fade-in mb-8">
+                        <span className="text-white/60 text-sm font-extrabold tracking-widest uppercase mb-2 block">Account</span>
+                        <h1 className="text-4xl font-bold text-white tracking-tight">My Profile</h1>
+                    </div>
+
+                    <div className="space-y-6">
+                        <section className="glass-liquid p-8 animate-fade-in-up stagger-1 rounded-3xl">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-black">{user.name || "User"}</h2>
+                                    <p className="text-black/60 font-medium">{user.email}</p>
+                                    <div className="flex gap-2 mt-4">
+                                        <span className="px-3 py-1 bg-black/10 text-black text-xs font-bold rounded-full uppercase tracking-wider">
+                                            {user.role.replace('_', ' ')}
                                         </span>
-                                    )}
-                                </div>
-                            </div>
-                            <Link href={dashboardLink} className="w-full sm:w-auto">
-                                <button className="flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-all w-full">
-                                    <DashboardIcon className="w-5 h-5" />
-                                    {dashboardLabel}
-                                </button>
-                            </Link>
-                        </div>
-                    </section>
-
-                    <AccountSettingsForm
-                        user={{
-                            name: user.name,
-                            email: user.email,
-                            phone: user.phone
-                        }}
-                    />
-
-                    <section className="animate-fade-in-up stagger-4">
-                        <div className="card-section p-5">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center">
-                                        <LogOut className="w-6 h-6 text-destructive" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold">Sign Out</h3>
-                                        <p className="text-sm text-muted-foreground">Log out from your account</p>
+                                        {user.is_verified && (
+                                            <span className="px-3 py-1 bg-white/40 text-black text-xs font-bold rounded-full border border-black/10">
+                                                Verified
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
-                                <SignOutButton
-                                    variant="outline"
-                                    size="sm"
-                                    className="text-destructive border-destructive/30 hover:bg-destructive hover:text-white hover:border-destructive w-full sm:w-auto"
-                                >
-                                    Sign Out
-                                </SignOutButton>
+                                <Link href={dashboardLink} className="w-full sm:w-auto">
+                                    <button className="flex items-center justify-center gap-2 px-8 py-3 bg-black text-white rounded-2xl font-bold hover:bg-black/90 transition-all w-full shadow-xl shadow-black/10 active:scale-95">
+                                        <DashboardIcon className="w-5 h-5" />
+                                        {dashboardLabel}
+                                    </button>
+                                </Link>
                             </div>
+                        </section>
+
+                        <div className="animate-fade-in-up stagger-2">
+                            <AccountSettingsForm
+                                user={{
+                                    name: user.name,
+                                    email: user.email,
+                                    phone: user.phone
+                                }}
+                            />
                         </div>
-                    </section>
-                </div>
-            </main>
+
+                        <section className="animate-fade-in-up stagger-4">
+                            <div className="glass-liquid p-6 rounded-3xl">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center">
+                                            <LogOut className="w-6 h-6 text-black" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-black">Sign Out</h3>
+                                            <p className="text-sm text-black/60">Log out from your account</p>
+                                        </div>
+                                    </div>
+                                    <SignOutButton
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-black border-black/20 hover:bg-black hover:text-white hover:border-black w-full sm:w-auto rounded-xl font-bold h-11"
+                                    >
+                                        Sign Out
+                                    </SignOutButton>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+            </div>
         </div>
     )
 }

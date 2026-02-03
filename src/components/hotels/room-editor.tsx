@@ -302,6 +302,15 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         row: "flex w-full mt-2 justify-between",
                                         cell: "flex-1 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                                         day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 mx-auto rounded-md flex items-center justify-center transition-colors hover:bg-muted/50",
+                                        day_selected: cn(
+                                            "aria-selected:opacity-100",
+                                            selectionMode === 'blocks'
+                                                ? "bg-destructive text-destructive-foreground hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
+                                                : "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground"
+                                        ),
+                                        day_range_start: "day-range-start",
+                                        day_range_end: "day-range-end",
+                                        day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
                                     }}
                                 />
                             </div>

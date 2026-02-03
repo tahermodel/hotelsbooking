@@ -47,6 +47,8 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                             <Image
                                 src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
                                 alt={selectedCountry.name}
+                                width={20}
+                                height={14}
                                 className="w-5 h-3.5 object-cover rounded-sm shadow-sm"
                             />
                         ) : (
@@ -85,6 +87,8 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                                 <Image
                                     src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
                                     alt={country.name}
+                                    width={20}
+                                    height={14}
                                     className="mr-3 w-5 h-3.5 object-cover rounded-sm border border-slate-100 shadow-sm"
                                 />
                                 <span className="flex-1 truncate">
