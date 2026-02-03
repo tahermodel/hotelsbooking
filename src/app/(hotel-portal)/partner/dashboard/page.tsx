@@ -16,42 +16,53 @@ export default async function PartnerDashboardPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background-alt">
+        <div className="flex min-h-screen flex-col bg-background-alt relative overflow-hidden">
+            {/* Decorative Background Elements */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none">
+                <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent/5 blur-[120px]" />
+            </div>
+
             <Header />
-            <main className="flex-1 container px-4 sm:px-6 lg:px-8 py-12 max-w-6xl pt-24">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 animate-fade-in">
-                    <div>
-                        <span className="section-title">Partner Portal</span>
-                        <h1 className="text-3xl font-bold">My Properties</h1>
-                        <p className="text-muted-foreground mt-1">Manage your hotels and track performance</p>
+
+            <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-6xl pt-32 relative z-10">
+                <div className="flex flex-col items-center text-center mb-16 animate-fade-in">
+                    <span className="section-title">Partner Portal</span>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                        My Properties
+                    </h1>
+                    <p className="text-lg text-muted-foreground max-w-2xl">
+                        Manage your hotels, track performance, and grow your hospitality business with ease.
+                    </p>
+                    <div className="mt-8">
+                        <Link href="/partner/apply">
+                            <Button size="lg" className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground border-none rounded-full px-8 shadow-lg shadow-accent/20 transition-all hover:scale-105 active:scale-95">
+                                <Plus className="w-5 h-5" />
+                                Add New Hotel
+                            </Button>
+                        </Link>
                     </div>
-                    <Link href="/partner/apply">
-                        <Button className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground border-none">
-                            <Plus className="w-4 h-4" />
-                            Add New Hotel
-                        </Button>
-                    </Link>
                 </div>
 
                 {(!hotels || hotels.length === 0) ? (
-                    <div className="animate-fade-in-up">
-                        <div className="card-section p-12 text-center">
-                            <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                    <div className="animate-fade-in-up flex justify-center">
+                        <div className="card-section p-12 text-center max-w-2xl w-full bg-white/50 backdrop-blur-sm border-white/20 shadow-xl">
+                            <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-6 shadow-inner">
                                 <Hotel className="w-10 h-10 text-accent" />
                             </div>
-                            <h2 className="text-2xl font-bold mb-2">No Hotels Yet</h2>
-                            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                                You haven&apos;t added any properties to our platform yet. Start growing your business today.
+                            <h2 className="text-2xl font-bold mb-3">No Hotels Yet</h2>
+                            <p className="text-muted-foreground mb-8 text-lg">
+                                You haven&apos;t added any properties to our platform yet. Start growing your business today and reach thousands of travelers.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link href="/partner/apply">
-                                    <Button size="lg" className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground border-none">
+                                    <Button size="lg" className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground border-none rounded-full px-8">
                                         <Plus className="w-4 h-4" />
                                         Add Your First Hotel
                                     </Button>
                                 </Link>
                                 <Link href="/partner">
-                                    <Button variant="outline" size="lg">
+                                    <Button variant="outline" size="lg" className="rounded-full px-8">
                                         Learn More
                                     </Button>
                                 </Link>
@@ -59,93 +70,106 @@ export default async function PartnerDashboardPage() {
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-8">
-                        <section>
-                            <span className="section-title">Your Hotels</span>
-                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="space-y-16">
+                        <section className="animate-fade-in-up">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
+                                <span className="section-title mb-0">Your Hotels</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
+                            </div>
+
+                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {hotels.map((hotel: any, index: number) => (
                                     <div
                                         key={hotel.id}
-                                        className={`card-section card-section-hover p-6 animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}
+                                        className={`card-section card-section-hover p-6 animate-fade-in-up stagger-${Math.min(index + 1, 6)} bg-white/60 backdrop-blur-sm border-white/30 flex flex-col`}
                                     >
-                                        <div className="flex items-start gap-4 mb-4">
-                                            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                                                <Hotel className="w-6 h-6 text-accent" />
+                                        <div className="flex items-start gap-4 mb-6">
+                                            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0 shadow-inner">
+                                                <Hotel className="w-7 h-7 text-primary" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="flex justify-between items-start">
-                                                    <h3 className="font-semibold truncate">{hotel.name}</h3>
-                                                    <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full border ${hotel.is_active ? 'bg-accent/10 text-accent border-accent/20' : 'bg-muted text-muted-foreground border-border'}`}>
+                                                <div className="flex justify-between items-start gap-2">
+                                                    <h3 className="font-bold text-lg truncate leading-tight">{hotel.name}</h3>
+                                                    <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-lg border ${hotel.is_active ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20'}`}>
                                                         {hotel.is_active ? 'Published' : 'Draft'}
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-muted-foreground">{hotel.city}, {hotel.country}</p>
+                                                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+                                                    <span className="opacity-70">{hotel.city}, {hotel.country}</span>
+                                                </p>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                                            <Link href={`/partner/dashboard/hotel/${hotel.id}`} className="w-full">
-                                                <Button variant="default" size="sm" className="w-full mb-1">
-                                                    {hotel.is_active ? 'Edit Info' : 'Complete Publication'}
-                                                </Button>
-                                            </Link>
-                                            <div className="flex gap-2">
-                                                <Link href={`/partner/dashboard/rooms?hotel=${hotel.id}`} className="flex-1">
-                                                    <Button variant="outline" size="sm" className="w-full">
+                                        <div className="mt-auto space-y-3">
+                                            <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <Link href={`/partner/dashboard/rooms?hotel=${hotel.id}`} className="w-full">
+                                                    <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-primary/5 border-primary/20 text-primary font-semibold">
                                                         Rooms
                                                     </Button>
                                                 </Link>
-                                                <Link href={`/partner/dashboard/bookings?hotel=${hotel.id}`} className="flex-1">
-                                                    <Button variant="outline" size="sm" className="w-full">
+                                                <Link href={`/partner/dashboard/bookings?hotel=${hotel.id}`} className="w-full">
+                                                    <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-secondary/5 border-secondary/20 text-secondary font-semibold">
                                                         Bookings
                                                     </Button>
                                                 </Link>
                                             </div>
+                                            <Link href={`/partner/dashboard/hotel/${hotel.id}`} className="w-full block">
+                                                <Button variant="default" className="w-full rounded-xl bg-foreground text-background hover:bg-foreground/90 font-bold">
+                                                    {hotel.is_active ? 'Management Dashboard' : 'Complete Setup'}
+                                                </Button>
+                                            </Link>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </section>
 
-                        <section>
-                            <span className="section-title">Quick Actions</span>
-                            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                <Link href="/partner/dashboard/bookings" className="card-section card-section-hover p-5 group animate-fade-in-up stagger-1">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                            <Calendar className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
+                        <section className="animate-fade-in-up stagger-3">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
+                                <span className="section-title mb-0">Quick Actions</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
+                            </div>
+
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                <Link href="/partner/dashboard/bookings" className="card-section card-section-hover p-6 group bg-white/60 backdrop-blur-sm border-white/30">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                            <Calendar className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-medium">All Bookings</p>
-                                            <p className="text-sm text-muted-foreground">View all reservations</p>
+                                            <p className="font-bold">Total Reservations</p>
+                                            <p className="text-xs text-muted-foreground">Manage all check-ins</p>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </Link>
 
-                                <Link href="/partner/dashboard/analytics" className="card-section card-section-hover p-5 group animate-fade-in-up stagger-2">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
-                                            <BarChart3 className="w-5 h-5 text-secondary group-hover:text-white transition-colors" />
+                                <Link href="/partner/dashboard/analytics" className="card-section card-section-hover p-6 group bg-white/60 backdrop-blur-sm border-white/30">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                                            <BarChart3 className="w-6 h-6 text-secondary group-hover:text-white transition-colors" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-medium">Analytics</p>
-                                            <p className="text-sm text-muted-foreground">Track performance</p>
+                                            <p className="font-bold">Analytics</p>
+                                            <p className="text-xs text-muted-foreground">Revenue and growth</p>
                                         </div>
                                         <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </Link>
 
-                                <Link href="/partner/dashboard/settings" className="card-section card-section-hover p-5 group animate-fade-in-up stagger-3">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                            <Settings className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
+                                <Link href="/partner/dashboard/settings" className="card-section card-section-hover p-6 group bg-white/60 backdrop-blur-sm border-white/30">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-all duration-300">
+                                            <Settings className="w-6 h-6 text-accent group-hover:text-white transition-colors" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-medium">Settings</p>
-                                            <p className="text-sm text-muted-foreground">Partner preferences</p>
+                                            <p className="font-bold">Portal Settings</p>
+                                            <p className="text-xs text-muted-foreground">Profile & Preferences</p>
                                         </div>
-                                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </Link>
                             </div>

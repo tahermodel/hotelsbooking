@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+
 import { CountryCodePicker } from "@/components/ui/country-code-picker"
 
 export function PartnerApplyForm() {
@@ -160,7 +160,7 @@ export function PartnerApplyForm() {
             </div>
             <div className="space-y-2">
                 <label className="text-sm font-medium leading-none">Tell us about your property</label>
-                <Textarea
+                <Input
                     name="property_description"
                     value={formData.property_description}
                     onChange={handleChange}

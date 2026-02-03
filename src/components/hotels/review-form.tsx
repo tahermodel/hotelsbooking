@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Input } from "@/components/ui/input"
 import { submitReview } from "@/actions/reviews"
 import { useRouter } from "next/navigation"
@@ -70,7 +70,7 @@ export function ReviewForm({
                 onChange={(e) => setTitle(e.target.value)}
                 required
             />
-            <Textarea
+            <Input
                 placeholder="Share your experience..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}

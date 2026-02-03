@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Badge } from "@/components/ui/badge"
 import { Loader2, Save, Globe, X, Plus, Image as ImageIcon, Star, UploadCloud, ArrowLeft } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -135,7 +135,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
 
                         <div className="grid gap-2">
                             <label className="text-sm font-medium">Description</label>
-                            <Textarea
+                            <Input
                                 className="min-h-[150px]"
                                 value={formData.description}
                                 onChange={(e) => handleChange("description", e.target.value)}

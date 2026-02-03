@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Badge } from "@/components/ui/badge"
 import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud, ArrowLeft } from "lucide-react"
 import { createRoom, updateRoom, deleteRoom } from "@/app/actions/room"
@@ -167,7 +167,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                         </div>
                         <div className="grid gap-2">
                             <label className="text-sm font-medium">Description</label>
-                            <Textarea
+                            <Input
                                 value={formData.description}
                                 onChange={(e) => handleChange("description", e.target.value)}
                                 placeholder="Describe the room..."
