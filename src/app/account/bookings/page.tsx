@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { cancelBooking } from "@/actions/bookings"
 import Link from "next/link"
 import { ArrowLeft, Calendar, MapPin, Hotel } from "lucide-react"
+import { LiquidGlass } from "@/components/ui/liquid-glass"
+import { ClientContentWrapper, AnimatedSection } from "@/components/layout/client-animation-wrapper"
 
 export const dynamic = 'force-dynamic'
 
@@ -21,93 +23,115 @@ export default async function MyBookingsPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-background-alt">
-            <Header />
-            <main className="flex-1 container py-12 max-w-4xl pt-24 px-4 sm:px-6 mx-auto">
-                <div className="mb-8 animate-fade-in">
-                    <Link
-                        href="/account"
-                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-4"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        Back to Account
-                    </Link>
-                    <span className="section-title block">Reservations</span>
-                    <h1 className="text-3xl font-bold">My Bookings</h1>
-                </div>
+        <div className="flex min-h-screen flex-col relative text-white">
+            <div
+                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
+                style={{
+                    backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden'
+                }}
+            >
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+            </div>
 
-                <div className="space-y-4">
-                    {bookings?.map((booking: any, index: number) => (
-                        <div
-                            key={booking.id}
-                            className={`card-section p-6 animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}
+            <div className="relative z-10 flex flex-col min-h-screen">
+                <Header />
+                <ClientContentWrapper className="flex-1 container py-12 max-w-4xl pt-24 px-4 sm:px-6 mx-auto">
+                    <AnimatedSection className="mb-8">
+                        <Link
+                            href="/account"
+                            className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors mb-4 group"
                         >
-                            <div className="flex flex-col md:flex-row justify-between gap-4">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                                        <Hotel className="w-6 h-6 text-accent" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-1">
-                                            <h3 className="font-bold text-lg">{booking.hotel.name}</h3>
-                                            <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${booking.status === 'confirmed' ? 'bg-secondary/10 text-secondary' :
-                                                booking.status === 'cancelled' ? 'bg-destructive/10 text-destructive' :
-                                                    'bg-muted text-muted-foreground'
-                                                }`}>
-                                                {booking.status}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                                            <MapPin className="w-4 h-4" />
-                                            {booking.hotel.city}, {booking.hotel.country}
-                                        </div>
-                                        <div className="flex flex-wrap gap-3">
-                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg">
-                                                <Calendar className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-xs font-medium">
-                                                    Check-in: {new Date(booking.check_in_date).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg">
-                                                <Calendar className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-xs font-medium">
-                                                    Check-out: {new Date(booking.check_out_date).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                            Back to Account
+                        </Link>
+                        <span className="text-white/60 text-sm font-extrabold tracking-widest uppercase mb-2 block">Reservations</span>
+                        <h1 className="text-4xl font-bold text-white tracking-tight">My Bookings</h1>
+                    </AnimatedSection>
 
-                                <div className="flex flex-col items-end gap-3 md:border-l md:border-border md:pl-6">
-                                    <p className="text-2xl font-bold text-accent">{formatCurrency(booking.total_amount)}</p>
-                                    {booking.status === 'confirmed' && (
-                                        <form action={async () => {
-                                            "use server"
-                                            await cancelBooking(booking.id, "Customer request")
-                                        }}>
-                                            <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive hover:text-white">
-                                                Cancel
+                    <div className="space-y-6">
+                        {bookings?.map((booking: any, index: number) => (
+                            <AnimatedSection key={booking.id}>
+                                <LiquidGlass className="p-6 border-white/20 shadow-xl">
+                                    <div className="flex flex-col md:flex-row justify-between gap-6 relative z-10">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0 border border-white/10">
+                                                <Hotel className="w-7 h-7 text-white" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-1 flex-wrap">
+                                                    <h3 className="font-bold text-xl text-white">{booking.hotel.name}</h3>
+                                                    <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider border ${booking.status === 'confirmed' ? 'bg-green-500/20 text-green-400 border-green-500/20' :
+                                                        booking.status === 'cancelled' ? 'bg-red-500/20 text-red-400 border-red-500/20' :
+                                                            'bg-white/10 text-white/60 border-white/10'
+                                                        }`}>
+                                                        {booking.status}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm text-white/70 mb-4">
+                                                    <MapPin className="w-4 h-4" />
+                                                    {booking.hotel.city}, {booking.hotel.country}
+                                                </div>
+                                                <div className="flex flex-wrap gap-3">
+                                                    <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                                                        <Calendar className="w-4 h-4 text-white/60" />
+                                                        <span className="text-xs font-bold text-white/90">
+                                                            IN: {new Date(booking.check_in_date).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                                                        <Calendar className="w-4 h-4 text-white/60" />
+                                                        <span className="text-xs font-bold text-white/90">
+                                                            OUT: {new Date(booking.check_out_date).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col items-end justify-between gap-4 md:border-l md:border-white/10 md:pl-8">
+                                            <div className="text-right">
+                                                <p className="text-sm text-white/60 font-medium mb-1">Total Amount</p>
+                                                <p className="text-3xl font-black text-white">{formatCurrency(booking.total_amount)}</p>
+                                            </div>
+                                            {booking.status === 'confirmed' && (
+                                                <form action={async () => {
+                                                    "use server"
+                                                    await cancelBooking(booking.id, "Customer request")
+                                                }} className="w-full md:w-auto">
+                                                    <Button variant="outline" size="sm" className="bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500 hover:text-white hover:border-red-500 w-full rounded-xl font-bold h-11 transition-all">
+                                                        Cancel Booking
+                                                    </Button>
+                                                </form>
+                                            )}
+                                        </div>
+                                    </div>
+                                </LiquidGlass>
+                            </AnimatedSection>
+                        ))}
+
+                        {(!bookings || bookings.length === 0) && (
+                            <AnimatedSection>
+                                <LiquidGlass className="py-20 text-center border-white/10">
+                                    <div className="relative z-10">
+                                        <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mx-auto mb-6 border border-white/10">
+                                            <Hotel className="w-10 h-10 text-white/40" />
+                                        </div>
+                                        <h3 className="text-xl font-bold text-white mb-2">No bookings found</h3>
+                                        <p className="text-white/60 mb-8 max-w-xs mx-auto">You haven&apos;t made any reservations yet. Ready to start your next adventure?</p>
+                                        <Link href="/">
+                                            <Button className="bg-white text-black hover:bg-white/90 font-bold px-8 py-6 rounded-2xl h-auto">
+                                                Start Exploring
                                             </Button>
-                                        </form>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    {(!bookings || bookings.length === 0) && (
-                        <div className="card-section py-16 text-center animate-fade-in">
-                            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-                                <Hotel className="w-8 h-8 text-muted-foreground" />
-                            </div>
-                            <p className="text-muted-foreground mb-4">You haven&apos;t made any bookings yet.</p>
-                            <Link href="/search">
-                                <Button>Start Exploring</Button>
-                            </Link>
-                        </div>
-                    )}
-                </div>
-            </main>
+                                        </Link>
+                                    </div>
+                                </LiquidGlass>
+                            </AnimatedSection>
+                        )}
+                    </div>
+                </ClientContentWrapper>
+            </div>
         </div>
     )
 }

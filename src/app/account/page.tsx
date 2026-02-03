@@ -32,14 +32,14 @@ export default async function AccountPage() {
     return (
         <div className="flex min-h-screen flex-col relative">
             <div
-                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat w-full h-[100dvh]"
+                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
-                    transform: 'translate3d(0,0,0)',
+                    transform: 'translateZ(0)',
                     backfaceVisibility: 'hidden'
                 }}
             >
-                <div className="absolute inset-0 bg-black/15" />
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
             </div>
 
             <div className="relative z-10 flex flex-col min-h-screen">
