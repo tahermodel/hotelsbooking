@@ -19,6 +19,7 @@ const roomSchema = z.object({
     hotel_id: z.string(),
     available_from: z.string().optional().nullable(),
     available_until: z.string().optional().nullable(),
+    blocked_dates: z.array(z.string()).optional().default([]),
 })
 
 export async function createRoom(data: z.infer<typeof roomSchema>) {
@@ -32,16 +33,29 @@ export async function createRoom(data: z.infer<typeof roomSchema>) {
 
     if (!hotel || hotel.owner_id !== session.user.id) throw new Error("Unauthorized access to hotel")
 
-    const { available_from, available_until, amenities, images, ...rest } = data
+    const { available_from, available_until, amenities, images, blocked_dates, ...rest } = data
 
-    const room = await prisma.roomType.create({
-        data: {
-            ...rest,
-            amenities,
-            images,
-            available_from: available_from ? new Date(available_from) : null,
-            available_until: available_until ? new Date(available_until) : null,
+    const room = await prisma.$transaction(async (tx) => {
+        const r = await tx.roomType.create({
+            data: {
+                ...rest,
+                amenities,
+                images,
+                available_from: available_from ? new Date(available_from) : null,
+                available_until: available_until ? new Date(available_until) : null,
+            }
+        })
+
+        if (blocked_dates && blocked_dates.length > 0) {
+            await tx.roomAvailability.createMany({
+                data: blocked_dates.map(date => ({
+                    room_id: r.id,
+                    date: new Date(date),
+                    is_available: false
+                }))
+            })
         }
+        return r
     })
 
     revalidatePath(`/partner/dashboard/rooms`)
@@ -61,16 +75,38 @@ export async function updateRoom(roomId: string, data: Omit<z.infer<typeof roomS
 
     if (!existingRoom || existingRoom.hotel.owner_id !== session.user.id) throw new Error("Unauthorized")
 
-    const { available_from, available_until, amenities, images, ...rest } = data
+    const { available_from, available_until, amenities, images, blocked_dates, ...rest } = data
 
-    await prisma.roomType.update({
-        where: { id: roomId },
-        data: {
-            ...rest,
-            amenities,
-            images,
-            available_from: available_from ? new Date(available_from) : null,
-            available_until: available_until ? new Date(available_until) : null,
+    await prisma.$transaction(async (tx) => {
+        await tx.roomType.update({
+            where: { id: roomId },
+            data: {
+                ...rest,
+                amenities,
+                images,
+                available_from: available_from ? new Date(available_from) : null,
+                available_until: available_until ? new Date(available_until) : null,
+            }
+        })
+
+        // Update manual blocks
+        // 1. Delete existing manual blocks
+        await tx.roomAvailability.deleteMany({
+            where: {
+                room_id: roomId,
+                is_available: false
+            }
+        })
+
+        // 2. Create new manual blocks
+        if (blocked_dates && blocked_dates.length > 0) {
+            await tx.roomAvailability.createMany({
+                data: blocked_dates.map(date => ({
+                    room_id: roomId,
+                    date: new Date(date),
+                    is_available: false
+                }))
+            })
         }
     })
 

@@ -29,7 +29,11 @@ export async function GET(req: Request) {
                 {
                     OR: [
                         { available_until: null },
-                        { available_until: { gte: checkOut } }
+                        {
+                            available_until: {
+                                gte: new Date(new Date(checkOut).getTime() - 86400000)
+                            }
+                        }
                     ]
                 },
                 {

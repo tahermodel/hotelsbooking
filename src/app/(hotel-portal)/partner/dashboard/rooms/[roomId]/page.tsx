@@ -15,7 +15,7 @@ export default async function EditRoomPage({ params }: { params: Promise<{ roomI
 
     const room = await prisma.roomType.findUnique({
         where: { id: roomId },
-        include: { hotel: true }
+        include: { hotel: true, availability: true }
     })
 
     if (!room) notFound()

@@ -7,10 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud, ArrowLeft } from "lucide-react"
+import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud, ArrowLeft, Calendar as CalendarIcon } from "lucide-react"
 import { createRoom, updateRoom, deleteRoom } from "@/app/actions/room"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
 import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { DateRange } from "react-day-picker"
 
 interface RoomEditorProps {
     room?: any
@@ -33,8 +37,11 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
         images: room.images || [],
         main_image: room.main_image || "",
         base_price: room.base_price || 0,
-        available_from: room.available_from ? new Date(room.available_from).toISOString().split('T')[0] : "",
-        available_until: room.available_until ? new Date(room.available_until).toISOString().split('T')[0] : "",
+        available_from: room.available_from ? new Date(room.available_from).toISOString() : "",
+        available_until: room.available_until ? new Date(room.available_until).toISOString() : "",
+        blocked_dates: (room.availability || [])
+            .filter((a: any) => !a.is_available)
+            .map((a: any) => new Date(a.date).toISOString()),
     } : {
         name: "",
         description: "",
@@ -47,9 +54,17 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
         base_price: 0,
         available_from: "",
         available_until: "",
+        blocked_dates: [],
     }
 
     const [formData, setFormData] = useState(initialData)
+    const [dateRange, setDateRange] = useState<DateRange | undefined>({
+        from: formData.available_from ? new Date(formData.available_from) : undefined,
+        to: formData.available_until ? new Date(formData.available_until) : undefined
+    })
+    const [blockedDates, setBlockedDates] = useState<Date[]>(
+        formData.blocked_dates.map((d: string) => new Date(d))
+    )
     const [amenityInput, setAmenityInput] = useState("")
     const [imageInput, setImageInput] = useState("")
     const [mainImageInput, setMainImageInput] = useState("")
@@ -61,8 +76,9 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
         formData.bed_configuration !== (room.bed_configuration || "") ||
         formData.size_sqm !== (room.size_sqm || 0) ||
         formData.base_price !== (room.base_price || 0) ||
-        formData.available_from !== (room.available_from ? new Date(room.available_from).toISOString().split('T')[0] : "") ||
-        formData.available_until !== (room.available_until ? new Date(room.available_until).toISOString().split('T')[0] : "") ||
+        formData.available_from !== (room.available_from ? new Date(room.available_from).toISOString() : "") ||
+        formData.available_until !== (room.available_until ? new Date(room.available_until).toISOString() : "") ||
+        JSON.stringify(formData.blocked_dates.slice().sort()) !== JSON.stringify(((room.availability || []).filter((a: any) => !a.is_available).map((a: any) => new Date(a.date).toISOString())).slice().sort()) ||
         JSON.stringify(formData.amenities) !== JSON.stringify(room.amenities || []) ||
         JSON.stringify(formData.images) !== JSON.stringify(room.images || []) ||
         formData.main_image !== (room.main_image || "")
@@ -195,24 +211,91 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                 </div>
 
                 <div className="card-section p-6 space-y-6">
-                    <h3 className="section-title text-lg border-b border-border pb-2">Availability Range</h3>
-                    <p className="text-sm text-muted-foreground">Define when this room is available for booking. Leave empty if always available.</p>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                            <label className="text-sm font-medium">Available From</label>
-                            <Input
-                                type="date"
-                                value={formData.available_from}
-                                onChange={(e) => handleChange("available_from", e.target.value)}
-                            />
+                    <h3 className="section-title text-lg border-b border-border pb-2">Availability & Blocks</h3>
+                    <p className="text-sm text-muted-foreground italic">Set the general available range first, then click on specific days within that range to block them.</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+                        <div className="space-y-4">
+                            <label className="text-sm font-semibold flex items-center gap-2">
+                                <CalendarIcon className="w-4 h-4 text-primary" />
+                                Availability Range
+                            </label>
+
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className={cn(
+                                            "w-full justify-start text-left font-normal h-12 rounded-xl border-border/50",
+                                            !dateRange && "text-muted-foreground"
+                                        )}
+                                    >
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        {dateRange?.from ? (
+                                            dateRange.to ? (
+                                                <>
+                                                    {format(dateRange.from, "LLL dd, y")} -{" "}
+                                                    {format(dateRange.to, "LLL dd, y")}
+                                                </>
+                                            ) : (
+                                                format(dateRange.from, "LLL dd, y")
+                                            )
+                                        ) : (
+                                            <span>Pick a range</span>
+                                        )}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        initialFocus
+                                        mode="range"
+                                        defaultMonth={dateRange?.from}
+                                        selected={dateRange}
+                                        onSelect={(range) => {
+                                            setDateRange(range);
+                                            handleChange("available_from", range?.from?.toISOString() || "");
+                                            handleChange("available_until", range?.to?.toISOString() || "");
+                                            // Reset blocked dates that fall outside new range
+                                            if (range?.from) {
+                                                const newBlocked = blockedDates.filter((d: Date) => {
+                                                    if (range.to) return d >= range.from! && d <= range.to;
+                                                    return d >= range.from!;
+                                                });
+                                                setBlockedDates(newBlocked);
+                                                handleChange("blocked_dates", newBlocked.map(d => d.toISOString()));
+                                            }
+                                        }}
+                                        numberOfMonths={2}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">The range your room is generally open</p>
                         </div>
-                        <div className="grid gap-2">
-                            <label className="text-sm font-medium">Available Until</label>
-                            <Input
-                                type="date"
-                                value={formData.available_until}
-                                onChange={(e) => handleChange("available_until", e.target.value)}
-                            />
+
+                        <div className="space-y-4">
+                            <label className="text-sm font-semibold flex items-center gap-2">
+                                <X className="w-4 h-4 text-destructive" />
+                                Highlight Unavailable Days
+                            </label>
+                            <div className="border border-border/50 rounded-2xl p-4 bg-muted/30">
+                                <Calendar
+                                    mode="multiple"
+                                    selected={blockedDates}
+                                    onSelect={(dates) => {
+                                        const newDates = dates || [];
+                                        setBlockedDates(newDates);
+                                        handleChange("blocked_dates", newDates.map(d => d.toISOString()));
+                                    }}
+                                    disabled={(date) => {
+                                        if (!dateRange?.from) return true;
+                                        if (dateRange.to && (date < dateRange.from || date > dateRange.to)) return true;
+                                        if (!dateRange.to && date < dateRange.from) return true;
+                                        return false;
+                                    }}
+                                    className="p-0 border-0 shadow-none bg-transparent"
+                                />
+                            </div>
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Days within the range where the room is blocked</p>
                         </div>
                     </div>
                 </div>

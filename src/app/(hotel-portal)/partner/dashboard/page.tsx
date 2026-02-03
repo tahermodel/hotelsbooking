@@ -17,7 +17,7 @@ export default async function PartnerDashboardPage() {
 
     return (
         <div className="flex min-h-screen flex-col bg-background-alt relative overflow-hidden">
-            {/* Decorative Background Elements */}
+
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none">
                 <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
                 <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent/5 blur-[120px]" />
@@ -117,7 +117,7 @@ export default async function PartnerDashboardPage() {
                                             </div>
                                             <Link href={`/partner/dashboard/hotel/${hotel.id}`} className="w-full block">
                                                 <Button variant="default" className="w-full rounded-xl bg-foreground text-background hover:bg-foreground/90 font-bold">
-                                                    {hotel.is_active ? 'Management Dashboard' : 'Complete Setup'}
+                                                    {hotel.is_active ? 'Edit' : 'Complete Setup'}
                                                 </Button>
                                             </Link>
                                         </div>
