@@ -153,7 +153,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
     }
 
     return (
-        <div className="space-y-8 w-full">
+        <div className="max-w-4xl mx-auto w-full space-y-12 pb-24">
             <div className="flex flex-col items-center text-center gap-4 border-b border-black/5 pb-8">
                 <div className="flex items-center gap-4 w-full">
                     <Button
@@ -194,22 +194,88 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                 placeholder="Describe the room..."
                             />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="grid gap-2">
-                                <label className="text-sm font-medium">Base Price ($)</label>
-                                <Input type="number" min="0" value={formData.base_price} onChange={(e) => handleChange("base_price", parseFloat(e.target.value))} />
+                                <label className="text-sm font-bold text-white/40 uppercase tracking-widest text-[10px]">Base Price ($)</label>
+                                <div className="flex h-12 bg-white/5 rounded-xl border border-white/10 overflow-hidden focus-within:border-primary/50 transition-colors">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleChange("base_price", Math.max(0, formData.base_price - 10))}
+                                        className="px-4 hover:bg-white/10 border-r border-white/10 text-white/60 transition-colors"
+                                    >
+                                        -
+                                    </button>
+                                    <Input
+                                        type="number"
+                                        min="0"
+                                        value={formData.base_price}
+                                        onChange={(e) => handleChange("base_price", parseFloat(e.target.value))}
+                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleChange("base_price", formData.base_price + 10)}
+                                        className="px-4 hover:bg-white/10 border-l border-white/10 text-white/60 transition-colors"
+                                    >
+                                        +
+                                    </button>
+                                </div>
                             </div>
                             <div className="grid gap-2">
-                                <label className="text-sm font-medium">Max Guests</label>
-                                <Input type="number" min="1" value={formData.max_guests} onChange={(e) => handleChange("max_guests", parseInt(e.target.value))} />
+                                <label className="text-sm font-bold text-white/40 uppercase tracking-widest text-[10px]">Max Guests</label>
+                                <div className="flex h-12 bg-white/5 rounded-xl border border-white/10 overflow-hidden focus-within:border-primary/50 transition-colors">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleChange("max_guests", Math.max(1, formData.max_guests - 1))}
+                                        className="px-4 hover:bg-white/10 border-r border-white/10 text-white/60 transition-colors"
+                                    >
+                                        -
+                                    </button>
+                                    <Input
+                                        type="number"
+                                        min="1"
+                                        value={formData.max_guests}
+                                        onChange={(e) => handleChange("max_guests", parseInt(e.target.value))}
+                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleChange("max_guests", formData.max_guests + 1)}
+                                        className="px-4 hover:bg-white/10 border-l border-white/10 text-white/60 transition-colors"
+                                    >
+                                        +
+                                    </button>
+                                </div>
                             </div>
                             <div className="grid gap-2">
-                                <label className="text-sm font-medium">Bed Config</label>
-                                <Input value={formData.bed_configuration} onChange={(e) => handleChange("bed_configuration", e.target.value)} placeholder="e.g. 1 King Bed" />
+                                <label className="text-sm font-bold text-white/40 uppercase tracking-widest text-[10px]">Bed Configuration</label>
+                                <Input value={formData.bed_configuration} onChange={(e) => handleChange("bed_configuration", e.target.value)} placeholder="e.g. 1 King Bed" className="h-12 bg-white/5 border-white/10 rounded-xl" />
                             </div>
                             <div className="grid gap-2">
-                                <label className="text-sm font-medium">Size (sqm)</label>
-                                <Input type="number" min="0" value={formData.size_sqm} onChange={(e) => handleChange("size_sqm", parseFloat(e.target.value))} />
+                                <label className="text-sm font-bold text-white/40 uppercase tracking-widest text-[10px]">Size (sqm)</label>
+                                <div className="flex h-12 bg-white/5 rounded-xl border border-white/10 overflow-hidden focus-within:border-primary/50 transition-colors">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleChange("size_sqm", Math.max(0, formData.size_sqm - 5))}
+                                        className="px-4 hover:bg-white/10 border-r border-white/10 text-white/60 transition-colors"
+                                    >
+                                        -
+                                    </button>
+                                    <Input
+                                        type="number"
+                                        min="0"
+                                        value={formData.size_sqm}
+                                        onChange={(e) => handleChange("size_sqm", parseFloat(e.target.value))}
+                                        className="border-0 bg-transparent h-full text-center focus-visible:ring-0 font-bold"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleChange("size_sqm", formData.size_sqm + 5)}
+                                        className="px-4 hover:bg-white/10 border-l border-white/10 text-white/60 transition-colors"
+                                    >
+                                        +
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,7 +290,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                 onClick={() => setSelectionMode('range')}
                                 className={cn(
                                     "px-4 py-2 text-sm font-bold rounded-lg transition-all",
-                                    selectionMode === 'range' ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                    selectionMode === 'range' ? "bg-white text-black shadow-sm" : "text-white/40 hover:text-white"
                                 )}
                             >
                                 1. Set Range
@@ -234,7 +300,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                 onClick={() => setSelectionMode('blocks')}
                                 className={cn(
                                     "px-4 py-2 text-sm font-bold rounded-lg transition-all",
-                                    selectionMode === 'blocks' ? "bg-white text-destructive shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                    selectionMode === 'blocks' ? "bg-red-500 text-white shadow-sm" : "text-white/40 hover:text-white"
                                 )}
                             >
                                 2. Block Days

@@ -36,9 +36,13 @@ export function ClientContentWrapper({ children, className }: ClientAnimationWra
     )
 }
 
-export function AnimatedSection({ children, className }: ClientAnimationWrapperProps) {
+export function AnimatedSection({ children, className, delay = 0 }: ClientAnimationWrapperProps & { delay?: number }) {
     return (
-        <motion.div variants={itemVariants} className={className}>
+        <motion.div
+            variants={itemVariants}
+            className={className}
+            transition={{ delay }}
+        >
             {children}
         </motion.div>
     )

@@ -36,7 +36,7 @@ export default async function PartnerDashboardPage() {
                     </p>
                     <div className="mt-8">
                         <Link href="/partner/apply">
-                            <Button size="lg" className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground border-none rounded-full px-8 shadow-lg shadow-accent/20 transition-all hover:scale-105 active:scale-95">
+                            <Button size="lg" className="gap-2 bg-white text-black hover:bg-white/90 font-black rounded-full px-10 shadow-2xl shadow-white/10 transition-all hover:scale-105 active:scale-95 h-14">
                                 <Plus className="w-5 h-5" />
                                 Add New Hotel
                             </Button>
@@ -46,9 +46,9 @@ export default async function PartnerDashboardPage() {
 
                 {(!hotels || hotels.length === 0) ? (
                     <div className="animate-fade-in-up flex justify-center">
-                        <div className="card-section p-12 text-center max-w-2xl w-full bg-white/50 backdrop-blur-sm border-white/20 shadow-xl">
-                            <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-6 shadow-inner">
-                                <Hotel className="w-10 h-10 text-accent" />
+                        <div className="card-section p-12 text-center max-w-2xl w-full bg-white/[0.02] backdrop-blur-xl border-white/10 shadow-3xl rounded-[40px]">
+                            <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mx-auto mb-8 border border-white/10">
+                                <Hotel className="w-10 h-10 text-white/20" />
                             </div>
                             <h2 className="text-2xl font-bold mb-3">No Hotels Yet</h2>
                             <p className="text-muted-foreground mb-8 text-lg">
@@ -82,7 +82,7 @@ export default async function PartnerDashboardPage() {
                                 {hotels.map((hotel: any, index: number) => (
                                     <div
                                         key={hotel.id}
-                                        className={`card-section card-section-hover p-6 animate-fade-in-up stagger-${Math.min(index + 1, 6)} bg-white/60 backdrop-blur-sm border-white/30 flex flex-col`}
+                                        className={`p-8 rounded-[32px] animate-fade-in-up stagger-${Math.min(index + 1, 6)} bg-white/[0.02] backdrop-blur-xl border border-white/10 flex flex-col hover:bg-white/[0.04] transition-all group shadow-2xl border-t-white/20`}
                                     >
                                         <div className="flex items-start gap-4 mb-6">
                                             <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0 shadow-inner">
@@ -134,10 +134,10 @@ export default async function PartnerDashboardPage() {
                             </div>
 
                             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                <Link href="/partner/dashboard/bookings" className="card-section card-section-hover p-6 group bg-white/60 backdrop-blur-sm border-white/30">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                            <Calendar className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
+                                <Link href="/partner/dashboard/bookings" className="p-8 rounded-[32px] group bg-white/[0.02] backdrop-blur-xl border border-white/10 hover:bg-white/[0.04] transition-all shadow-xl">
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500 border border-white/10">
+                                            <Calendar className="w-6 h-6 text-white/40 group-hover:text-black transition-colors" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="font-bold">Total Reservations</p>
@@ -147,10 +147,10 @@ export default async function PartnerDashboardPage() {
                                     </div>
                                 </Link>
 
-                                <Link href="/partner/dashboard/analytics" className="card-section card-section-hover p-6 group bg-white/60 backdrop-blur-sm border-white/30">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300">
-                                            <BarChart3 className="w-6 h-6 text-secondary group-hover:text-white transition-colors" />
+                                <Link href="/partner/dashboard/analytics" className="p-8 rounded-[32px] group bg-white/[0.02] backdrop-blur-xl border border-white/10 hover:bg-white/[0.04] transition-all shadow-xl">
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500 border border-white/10">
+                                            <BarChart3 className="w-6 h-6 text-white/40 group-hover:text-black transition-colors" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="font-bold">Analytics</p>
@@ -160,10 +160,10 @@ export default async function PartnerDashboardPage() {
                                     </div>
                                 </Link>
 
-                                <Link href="/partner/dashboard/settings" className="card-section card-section-hover p-6 group bg-white/60 backdrop-blur-sm border-white/30">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-all duration-300">
-                                            <Settings className="w-6 h-6 text-accent group-hover:text-white transition-colors" />
+                                <Link href="/partner/dashboard/settings" className="p-8 rounded-[32px] group bg-white/[0.02] backdrop-blur-xl border border-white/10 hover:bg-white/[0.04] transition-all shadow-xl">
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500 border border-white/10">
+                                            <Settings className="w-6 h-6 text-white/40 group-hover:text-black transition-colors" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="font-bold">Portal Settings</p>

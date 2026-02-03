@@ -1,11 +1,14 @@
+
 import { Header } from "@/components/layout/header"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import Image from "next/image"
-import { Users, Bed, Maximize, Wifi, Coffee, Tv, Info } from "lucide-react"
+import { Users, Bed, Maximize, Wifi, Coffee, Tv, Info, ArrowLeft, ShieldCheck, CheckCircle2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import { ClientContentWrapper, AnimatedSection, AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
+import { formatCurrency } from "@/lib/utils"
 
 export const dynamic = 'force-dynamic'
 
@@ -45,135 +48,204 @@ export default async function RoomPage({
         }
     })
 
-    if (!room) return <div className="flex min-h-screen items-center justify-center"><p className="text-xl font-semibold">Room not found</p></div>
+    if (!room) return (
+        <div className="flex min-h-screen items-center justify-center bg-neutral-950 text-white">
+            <Header />
+            <div className="text-center">
+                <p className="text-xl font-bold uppercase tracking-widest text-white/40">Room not found</p>
+                <Link href="/" className="mt-4 block text-accent hover:underline">Return to search</Link>
+            </div>
+        </div>
+    )
 
     const isBooked = room.bookings.length > 0
 
     return (
-        <div className="flex min-h-screen flex-col bg-background-alt">
+        <div className="flex min-h-screen flex-col bg-neutral-950 text-white">
             <Header />
-            <main className="flex-1 container mx-auto px-4 pt-32 pb-12">
-                <div className="max-w-5xl mx-auto space-y-8">
-                    <div className="rounded-3xl border bg-card p-2 shadow-sm overflow-hidden">
-                        <div className="relative aspect-video overflow-hidden rounded-2xl group">
-                            <Image
-                                src={(room as any).main_image || (room as any).images?.[0] || "/placeholder.jpg"}
-                                alt={room.name}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                        </div>
-                    </div>
+            <main className="flex-1 container mx-auto px-4 pt-32 pb-24">
+                <ClientContentWrapper className="max-w-6xl mx-auto space-y-12">
 
-                    {(room as any).images && (room as any).images.length > 0 && (
-                        <div className="grid grid-cols-4 gap-4">
-                            {(room as any).images.slice(0, 4).map((img: string, idx: number) => (
-                                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border bg-muted shadow-sm group">
-                                    <Image
-                                        src={img}
-                                        alt={`${room.name} ${idx + 1}`}
-                                        fill
-                                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    {/* Back Navigation */}
+                    <AnimatedSection>
+                        <Link href={`/hotels/${room.hotel.slug}`}>
+                            <AnimatedScaleButton className="flex items-center gap-2 text-white/40 hover:text-white transition-colors font-black uppercase tracking-widest text-[10px]">
+                                <ArrowLeft className="w-4 h-4" />
+                                Back to {room.hotel.name}
+                            </AnimatedScaleButton>
+                        </Link>
+                    </AnimatedSection>
 
-                    <div className="bg-card rounded-3xl border shadow-sm p-8 space-y-8">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                            <div className="space-y-2">
-                                <h1 className="text-4xl font-black tracking-tight text-foreground">{room.name}</h1>
-                                <div className="flex items-center text-muted-foreground font-medium">
-                                    <span>at {room.hotel.name}</span>
-                                </div>
-                            </div>
-                            <div className="flex bg-primary/10 px-6 py-3 rounded-2xl border border-primary/20 items-center gap-2">
-                                <span className="text-3xl font-black text-primary">${room.base_price}</span>
-                                <span className="text-sm text-muted-foreground font-semibold">/ night</span>
-                            </div>
-                        </div>
+                    {/* Layout Grid */}
+                    <div className="grid lg:grid-cols-5 gap-12 items-start">
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-dashed">
-                            <div className="flex items-center space-x-3 bg-muted/50 p-4 rounded-2xl border border-border/50">
-                                <Users className="h-5 w-5 text-accent" />
-                                <div>
-                                    <p className="text-xs text-muted-foreground font-semibold">Max Guests</p>
-                                    <p className="text-sm font-bold text-foreground">{room.max_guests}</p>
-                                </div>
-                            </div>
-                            {room.bed_configuration && (
-                                <div className="flex items-center space-x-3 bg-muted/50 p-4 rounded-2xl border border-border/50">
-                                    <Bed className="h-5 w-5 text-accent" />
-                                    <div>
-                                        <p className="text-xs text-muted-foreground font-semibold">Bed Type</p>
-                                        <p className="text-sm font-bold text-foreground">{room.bed_configuration}</p>
+                        {/* Imagery & Details */}
+                        <div className="lg:col-span-3 space-y-12">
+                            <AnimatedSection>
+                                <div className="rounded-[40px] border border-white/10 bg-white/[0.02] p-3 shadow-2xl overflow-hidden group">
+                                    <div className="relative aspect-[16/10] overflow-hidden rounded-[32px]">
+                                        <Image
+                                            src={(room as any).main_image || (room as any).images?.[0] || "/placeholder.jpg"}
+                                            alt={room.name}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                                        <div className="absolute top-6 left-6">
+                                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-xl border border-white/20">
+                                                <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Premium Collection</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            )}
-                            {room.size_sqm && (
-                                <div className="flex items-center space-x-3 bg-muted/50 p-4 rounded-2xl border border-border/50">
-                                    <Maximize className="h-5 w-5 text-accent" />
-                                    <div>
-                                        <p className="text-xs text-muted-foreground font-semibold">Room Size</p>
-                                        <p className="text-sm font-bold text-foreground">{room.size_sqm} m²</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                            </AnimatedSection>
 
-                        {room.description && (
-                            <div className="pt-6 border-t border-dashed">
-                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">Description</h2>
-                                <p className="text-muted-foreground leading-relaxed text-base font-medium">{room.description}</p>
-                            </div>
-                        )}
-
-                        {room.amenities && room.amenities.length > 0 && (
-                            <div className="pt-6 border-t border-dashed">
-                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">Room Amenities</h2>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {room.amenities.map((amenity: string, idx: number) => (
-                                        <div key={idx} className="flex items-center space-x-2 text-sm font-semibold text-foreground">
-                                            <div className="h-2 w-2 rounded-full bg-accent" />
-                                            <span>{amenity}</span>
+                            {/* Gallery Thumbnails */}
+                            <AnimatedSection>
+                                <div className="grid grid-cols-4 gap-4">
+                                    {(room as any).images?.slice(0, 4).map((img: string, idx: number) => (
+                                        <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 group cursor-pointer">
+                                            <Image
+                                                src={img}
+                                                alt={`${room.name} ${idx + 1}`}
+                                                fill
+                                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-                        )}
+                            </AnimatedSection>
 
-                        <div className="pt-6 border-t border-dashed flex flex-col items-center gap-4">
-                            {(!isBooked && room.available_from && searchCheckIn && new Date(room.available_from) > searchCheckIn) ||
-                                (!isBooked && room.available_until && searchCheckOut && new Date(room.available_until) < searchCheckOut) ? (
-                                <div className="w-full p-6 bg-destructive/10 border-2 border-destructive/30 rounded-2xl text-center">
-                                    <p className="text-xl font-black text-destructive">Unavailable for these dates</p>
-                                    <p className="text-sm text-muted-foreground mt-2 font-medium">
-                                        Room is only available from {new Date(room.available_from!).toLocaleDateString()}
-                                        {room.available_until && ` to ${new Date(room.available_until).toLocaleDateString()}`}
+                            {/* Long Description */}
+                            <AnimatedSection>
+                                <div className="space-y-6">
+                                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-white/40">The Suite Story</h2>
+                                    <p className="text-xl leading-relaxed text-white/70 font-medium">
+                                        {room.description || "Designed with meticulous attention to detail, this space offers an oasis of tranquility. Featuring high-end finishes, ambient lighting, and panoramic views, it represents the pinnacle of modern hospitality."}
                                     </p>
                                 </div>
-                            ) : isBooked ? (
-                                <div className="w-full p-6 bg-destructive/10 border-2 border-destructive/30 rounded-2xl text-center">
-                                    <p className="text-xl font-black text-destructive">This room is already booked for these dates</p>
-                                    <p className="text-sm text-muted-foreground mt-2 font-medium">Please check other dates or rooms</p>
+                            </AnimatedSection>
+
+                            {/* Features Grid */}
+                            <AnimatedSection>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="flex items-center gap-4 p-6 rounded-3xl bg-white/5 border border-white/10">
+                                        <Users className="h-6 w-6 text-accent" />
+                                        <div>
+                                            <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Guests</p>
+                                            <p className="text-lg font-bold">Up to {room.max_guests}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4 p-6 rounded-3xl bg-white/5 border border-white/10">
+                                        <Bed className="h-6 w-6 text-accent" />
+                                        <div>
+                                            <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Bed Type</p>
+                                            <p className="text-lg font-bold">{room.bed_configuration || "King Size"}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4 p-6 rounded-3xl bg-white/5 border border-white/10">
+                                        <Maximize className="h-6 w-6 text-accent" />
+                                        <div>
+                                            <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">Space</p>
+                                            <p className="text-lg font-bold">{room.size_sqm || "45"} m²</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            ) : (
-                                <Link href={`/booking/${room.hotel_id}?roomType=${room.id}${checkIn && checkOut ? `&checkIn=${checkIn}&checkOut=${checkOut}` : ""}`} className="w-full">
-                                    <Button size="lg" className="w-full text-lg font-bold h-14 rounded-xl bg-foreground text-background hover:bg-foreground/90">
-                                        Book This Room
-                                    </Button>
-                                </Link>
-                            )}
-                            <Link href={`/hotels/${room.hotel.slug}`}>
-                                <Button variant="outline" size="lg" className="font-semibold">
-                                    Back to Hotel
-                                </Button>
-                            </Link>
+                            </AnimatedSection>
                         </div>
+
+                        {/* Booking Sidebar */}
+                        <div className="lg:col-span-2 sticky top-32 space-y-8">
+                            <AnimatedSection>
+                                <div className="card-section p-10 bg-white/[0.02] border-white/10 shadow-3xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 blur-[80px] -mr-16 -mt-16 rounded-full" />
+
+                                    <div className="space-y-8 relative z-10">
+                                        <div>
+                                            <h1 className="text-4xl font-black tracking-tight mb-2 leading-none">{room.name}</h1>
+                                            <p className="text-white/40 font-bold uppercase tracking-widest text-[10px]">Managed by {room.hotel.name}</p>
+                                        </div>
+
+                                        <div className="py-8 border-y border-white/5">
+                                            <div className="flex justify-between items-end">
+                                                <div>
+                                                    <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-2">Price per Night</p>
+                                                    <div className="flex items-baseline gap-2">
+                                                        <span className="text-5xl font-black">{formatCurrency(room.base_price)}</span>
+                                                        <span className="text-white/40 font-bold">/ night</span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className="text-xs font-bold text-success flex items-center gap-1">
+                                                        <CheckCircle2 className="w-3 h-3" />
+                                                        Best Choice
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            {room.amenities && room.amenities.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {room.amenities.slice(0, 4).map((a, i) => (
+                                                        <div key={i} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold text-white/60">
+                                                            {a}
+                                                        </div>
+                                                    ))}
+                                                    {room.amenities.length > 4 && <div className="text-[10px] font-bold text-white/20 ml-2">+{room.amenities.length - 4} more</div>}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="pt-4">
+                                            {(!isBooked && room.available_from && searchCheckIn && new Date(room.available_from) > searchCheckIn) ||
+                                                (!isBooked && room.available_until && searchCheckOut && new Date(room.available_until) < searchCheckOut) ? (
+                                                <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-center space-y-2">
+                                                    <p className="font-black text-red-500 uppercase tracking-widest text-xs">Date Conflict</p>
+                                                    <p className="text-xs text-white/40 font-medium">This room has specific availability limits for the selected dates.</p>
+                                                </div>
+                                            ) : isBooked ? (
+                                                <div className="p-6 bg-white/5 border border-white/10 rounded-2xl text-center space-y-2 grayscale opacity-50">
+                                                    <p className="font-black text-white/40 uppercase tracking-widest text-xs">Reserved Suite</p>
+                                                    <p className="text-xs text-white/20 font-medium">This room is currently occupied for your selected dates.</p>
+                                                </div>
+                                            ) : (
+                                                <Link href={`/booking/${room.hotel_id}?roomType=${room.id}${checkIn && checkOut ? `&checkIn=${checkIn}&checkOut=${checkOut}` : ""}`} className="w-full">
+                                                    <AnimatedScaleButton className="w-full h-16 bg-white text-black text-lg font-black rounded-2xl hover:bg-white/90 shadow-xl shadow-white/5 transition-all">
+                                                        Reserve Now
+                                                    </AnimatedScaleButton>
+                                                </Link>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center gap-4 pt-4 text-center justify-center">
+                                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/20">
+                                                <ShieldCheck className="w-3.5 h-3.5" />
+                                                Secure Booking
+                                            </div>
+                                            <div className="h-1 w-1 rounded-full bg-white/10" />
+                                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/20">
+                                                <Sparkles className="w-3.5 h-3.5" />
+                                                Verified Luxury
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </AnimatedSection>
+
+                            <AnimatedSection delay={0.2}>
+                                <div className="card-section p-8 border-white/5 bg-white/[0.01]">
+                                    <h4 className="font-black text-[10px] uppercase tracking-widest text-white/40 mb-6">Cancellation Policy</h4>
+                                    <p className="text-xs leading-relaxed text-white/50 font-medium">
+                                        This establishment offers a 48-hour free cancellation notice. Any changes made within the 48-hour arrival window may incur a service fee. Verified by StayEase protection.
+                                    </p>
+                                </div>
+                            </AnimatedSection>
+                        </div>
+
                     </div>
-                </div>
+                </ClientContentWrapper>
             </main>
         </div>
     )
