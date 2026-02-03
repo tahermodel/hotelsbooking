@@ -109,11 +109,11 @@ export function BookingForm({
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Full Name</label>
-                            <input className="w-full p-2 border rounded-md" defaultValue={session?.user?.name || ""} />
+                            <input className="w-full h-11 px-4 border border-input rounded-xl bg-background text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40" defaultValue={session?.user?.name || ""} />
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Email Address</label>
-                            <input className="w-full p-2 border rounded-md" defaultValue={session?.user?.email || ""} />
+                            <input className="w-full h-11 px-4 border border-input rounded-xl bg-background text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40" defaultValue={session?.user?.email || ""} />
                         </div>
                     </div>
 

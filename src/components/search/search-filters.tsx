@@ -87,7 +87,7 @@ export function SearchFilters() {
                     <input
                         type="text"
                         placeholder="Where are you going?"
-                        className="h-14 w-full rounded-xl bg-transparent pl-12 pr-4 text-base font-medium placeholder:text-muted-foreground/70 focus:outline-none focus:bg-white/50 transition-all hover:bg-white/30"
+                        className="h-14 w-full rounded-xl bg-transparent pl-12 pr-4 text-base font-medium placeholder:text-muted-foreground/70 focus:outline-none focus:bg-white/50 transition-all duration-300 hover:bg-white/30 focus:scale-[1.02]"
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
                     />
@@ -128,6 +128,7 @@ export function SearchFilters() {
                                 selected={date}
                                 onSelect={setDate}
                                 numberOfMonths={2}
+                                disabled={{ before: new Date(new Date().setHours(0, 0, 0, 0)) }}
                             />
                         </PopoverContent>
                     </Popover>

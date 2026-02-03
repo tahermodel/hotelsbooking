@@ -137,7 +137,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                                 name="name"
                                 value={formData.name}
                                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40"
                             />
                         ) : (
                             <div className="h-11 w-full rounded-xl border border-border bg-muted/30 px-4 flex items-center text-sm">
@@ -157,7 +157,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                                 name="email"
                                 value={formData.email}
                                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40"
                             />
                         ) : (
                             <div className="h-11 w-full rounded-xl border border-border bg-muted/30 px-4 flex items-center text-sm">
@@ -183,7 +183,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                                     value={formData.phone_number}
                                     onChange={(e) => setFormData(prev => ({ ...prev, phone_number: e.target.value }))}
                                     placeholder="Enter your phone number"
-                                    className="h-11 flex-1 rounded-xl border border-input bg-background px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#5AA9E6]/20 focus:border-[#5AA9E6]"
+                                    className="h-11 flex-1 rounded-xl border border-input bg-background px-4 text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40"
                                 />
                             </div>
                         ) : (
@@ -205,7 +205,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                                 value={formData.password}
                                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                                 placeholder="Leave blank to keep current password"
-                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                className="h-11 w-full rounded-xl border border-input bg-background px-4 text-sm transition-all duration-300 focus:outline-none focus:scale-[1.02] focus:bg-accent/5 focus:border-accent/40"
                             />
                         </div>
                     )}
