@@ -7,22 +7,7 @@ import { BookOpen, LogOut, LayoutDashboard } from "lucide-react"
 import { SignOutButton } from "@/components/auth/sign-out-button"
 import { AccountSettingsForm } from "@/components/forms/account-settings-form"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
-import { motion, AnimatePresence } from "framer-motion"
-
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1
-        }
-    }
-}
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-}
+import { ClientContentWrapper, AnimatedSection, AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 
 export const dynamic = 'force-dynamic'
 
@@ -59,19 +44,14 @@ export default async function AccountPage() {
 
             <div className="relative z-10 flex flex-col min-h-screen">
                 <Header />
-                <motion.main
-                    className="flex-1 container py-12 max-w-2xl pt-24 px-4 sm:px-6 mx-auto"
-                    initial="hidden"
-                    animate="visible"
-                    variants={containerVariants}
-                >
-                    <motion.div className="mb-8" variants={itemVariants}>
+                <ClientContentWrapper className="flex-1 container py-12 max-w-2xl pt-24 px-4 sm:px-6 mx-auto">
+                    <AnimatedSection className="mb-8">
                         <span className="text-white/60 text-sm font-extrabold tracking-widest uppercase mb-2 block">Account</span>
                         <h1 className="text-4xl font-bold text-white tracking-tight">My Profile</h1>
-                    </motion.div>
+                    </AnimatedSection>
 
                     <div className="space-y-6">
-                        <motion.div variants={itemVariants}>
+                        <AnimatedSection>
                             <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
                                     <div>
@@ -89,20 +69,18 @@ export default async function AccountPage() {
                                         </div>
                                     </div>
                                     <Link href={dashboardLink} className="w-full sm:w-auto">
-                                        <motion.button
-                                            className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all w-full shadow-xl shadow-white/10 active:scale-95"
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
+                                        <AnimatedScaleButton
+                                            className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all w-full shadow-xl shadow-white/10"
                                         >
                                             <DashboardIcon className="w-5 h-5" />
                                             {dashboardLabel}
-                                        </motion.button>
+                                        </AnimatedScaleButton>
                                     </Link>
                                 </div>
                             </LiquidGlass>
-                        </motion.div>
+                        </AnimatedSection>
 
-                        <motion.div variants={itemVariants}>
+                        <AnimatedSection>
                             <AccountSettingsForm
                                 user={{
                                     name: user.name,
@@ -110,9 +88,9 @@ export default async function AccountPage() {
                                     phone: user.phone
                                 }}
                             />
-                        </motion.div>
+                        </AnimatedSection>
 
-                        <motion.section variants={itemVariants}>
+                        <AnimatedSection>
                             <LiquidGlass className="p-6 rounded-3xl border-red-500/20 shadow-lg">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
                                     <div className="flex items-center gap-4">
@@ -133,10 +111,11 @@ export default async function AccountPage() {
                                     </SignOutButton>
                                 </div>
                             </LiquidGlass>
-                        </motion.section>
+                        </AnimatedSection>
                     </div>
-                </motion.main>
+                </ClientContentWrapper>
             </div>
         </div>
     )
 }
+
