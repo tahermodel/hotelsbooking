@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud, ArrowLeft, Calendar as CalendarIcon } from "lucide-react"
+import { Loader2, Save, X, Plus, Image as ImageIcon, Trash2, UploadCloud, ArrowLeft, Calendar as CalendarIcon, Info } from "lucide-react"
 import { createRoom, updateRoom, deleteRoom } from "@/app/actions/room"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
 import { cn } from "@/lib/utils"
@@ -65,6 +65,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
     const [blockedDates, setBlockedDates] = useState<Date[]>(
         formData.blocked_dates.map((d: string) => new Date(d))
     )
+    const [selectionMode, setSelectionMode] = useState<'range' | 'blocks'>('range')
     const [amenityInput, setAmenityInput] = useState("")
     const [imageInput, setImageInput] = useState("")
     const [mainImageInput, setMainImageInput] = useState("")
@@ -211,51 +212,54 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                 </div>
 
                 <div className="card-section p-6 space-y-6">
-                    <h3 className="section-title text-lg border-b border-border pb-2">Availability & Blocks</h3>
-                    <p className="text-sm text-muted-foreground italic">Set the general available range first, then click on specific days within that range to block them.</p>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-border pb-4 gap-4">
+                        <h3 className="section-title text-lg border-b-0 pb-0">Room Availability</h3>
+                        <div className="flex bg-muted/50 p-1 rounded-xl border border-border/50">
+                            <button
+                                type="button"
+                                onClick={() => setSelectionMode('range')}
+                                className={cn(
+                                    "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                                    selectionMode === 'range' ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                )}
+                            >
+                                1. Set Range
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSelectionMode('blocks')}
+                                className={cn(
+                                    "px-4 py-2 text-sm font-bold rounded-lg transition-all",
+                                    selectionMode === 'blocks' ? "bg-white text-destructive shadow-sm" : "text-muted-foreground hover:text-foreground"
+                                )}
+                            >
+                                2. Block Days
+                            </button>
+                        </div>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
-                        <div className="space-y-4">
-                            <label className="text-sm font-semibold flex items-center gap-2">
-                                <CalendarIcon className="w-4 h-4 text-primary" />
-                                Availability Range
-                            </label>
+                    <div className="flex flex-col lg:flex-row gap-8 items-start pt-2">
+                        <div className="flex-1 w-full space-y-6">
+                            <div className="relative group">
+                                <div className={cn(
+                                    "absolute inset-0 bg-primary/5 rounded-3xl -m-2 border-2 border-dashed border-primary/20 transition-opacity duration-300",
+                                    selectionMode === 'range' ? "opacity-100" : "opacity-0 pointer-events-none"
+                                )} />
+                                <div className={cn(
+                                    "absolute inset-0 bg-destructive/5 rounded-3xl -m-2 border-2 border-dashed border-destructive/20 transition-opacity duration-300",
+                                    selectionMode === 'blocks' ? "opacity-100" : "opacity-0 pointer-events-none"
+                                )} />
 
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal h-12 rounded-xl border-border/50",
-                                            !dateRange && "text-muted-foreground"
-                                        )}
-                                    >
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        {dateRange?.from ? (
-                                            dateRange.to ? (
-                                                <>
-                                                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                                                    {format(dateRange.to, "LLL dd, y")}
-                                                </>
-                                            ) : (
-                                                format(dateRange.from, "LLL dd, y")
-                                            )
-                                        ) : (
-                                            <span>Pick a range</span>
-                                        )}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        initialFocus
-                                        mode="range"
-                                        defaultMonth={dateRange?.from}
-                                        selected={dateRange}
-                                        onSelect={(range) => {
+                                <Calendar
+                                    mode={selectionMode === 'range' ? "range" : "multiple"}
+                                    selected={selectionMode === 'range' ? (dateRange as any) : blockedDates}
+                                    onSelect={(val: any) => {
+                                        if (selectionMode === 'range') {
+                                            const range = val as DateRange;
                                             setDateRange(range);
                                             handleChange("available_from", range?.from?.toISOString() || "");
                                             handleChange("available_until", range?.to?.toISOString() || "");
-                                            // Reset blocked dates that fall outside new range
+
                                             if (range?.from) {
                                                 const newBlocked = blockedDates.filter((d: Date) => {
                                                     if (range.to) return d >= range.from! && d <= range.to;
@@ -264,38 +268,80 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                                 setBlockedDates(newBlocked);
                                                 handleChange("blocked_dates", newBlocked.map(d => d.toISOString()));
                                             }
-                                        }}
-                                        numberOfMonths={2}
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">The range your room is generally open</p>
-                        </div>
-
-                        <div className="space-y-4">
-                            <label className="text-sm font-semibold flex items-center gap-2">
-                                <X className="w-4 h-4 text-destructive" />
-                                Highlight Unavailable Days
-                            </label>
-                            <div className="border border-border/50 rounded-2xl p-4 bg-muted/30">
-                                <Calendar
-                                    mode="multiple"
-                                    selected={blockedDates}
-                                    onSelect={(dates) => {
-                                        const newDates = dates || [];
-                                        setBlockedDates(newDates);
-                                        handleChange("blocked_dates", newDates.map(d => d.toISOString()));
+                                        } else {
+                                            const dates = val as Date[];
+                                            setBlockedDates(dates);
+                                            handleChange("blocked_dates", (dates || []).map(d => d.toISOString()));
+                                        }
                                     }}
-                                    disabled={(date) => {
+                                    disabled={selectionMode === 'blocks' ? (date) => {
                                         if (!dateRange?.from) return true;
                                         if (dateRange.to && (date < dateRange.from || date > dateRange.to)) return true;
                                         if (!dateRange.to && date < dateRange.from) return true;
                                         return false;
+                                    } : undefined}
+                                    modifiers={{
+                                        blocked: blockedDates,
+                                        inRange: (date) => {
+                                            if (!dateRange?.from || !dateRange?.to) return false;
+                                            return date >= dateRange.from && date <= dateRange.to;
+                                        }
                                     }}
-                                    className="p-0 border-0 shadow-none bg-transparent"
+                                    modifiersClassNames={{
+                                        blocked: "bg-destructive text-destructive-foreground hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground rounded-md",
+                                        inRange: selectionMode === 'blocks' ? "bg-primary/10 text-primary font-bold" : ""
+                                    }}
+                                    numberOfMonths={2}
+                                    className="p-4 border-0 shadow-none bg-white rounded-2xl w-full"
+                                    classNames={{
+                                        months: "flex flex-col lg:flex-row space-y-4 lg:space-x-8 lg:space-y-0 w-full justify-center",
+                                        month: "space-y-4 w-full flex-1",
+                                        table: "w-full border-collapse space-y-1",
+                                        head_row: "flex w-full justify-between",
+                                        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] flex-1 text-center",
+                                        row: "flex w-full mt-2 justify-between",
+                                        cell: "flex-1 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+                                        day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 mx-auto rounded-md flex items-center justify-center transition-colors hover:bg-muted/50",
+                                    }}
                                 />
                             </div>
-                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Days within the range where the room is blocked</p>
+                        </div>
+
+                        <div className="w-full lg:w-72 space-y-6">
+                            <div className="p-4 bg-muted/30 rounded-2xl border border-border/50">
+                                <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
+                                    <Info className="w-4 h-4 text-primary" />
+                                    How to use
+                                </h4>
+                                <ul className="text-xs space-y-3 text-muted-foreground font-medium">
+                                    <li className={cn("transition-colors", selectionMode === 'range' ? "text-primary font-bold" : "")}>
+                                        <span className="inline-flex h-4 w-4 bg-primary text-white items-center justify-center rounded-full text-[10px] mr-2">1</span>
+                                        First, set the general dates your room is open.
+                                    </li>
+                                    <li className={cn("transition-colors", selectionMode === 'blocks' ? "text-destructive font-bold" : "")}>
+                                        <span className="inline-flex h-4 w-4 bg-destructive text-white items-center justify-center rounded-full text-[10px] mr-2">2</span>
+                                        Then, highlight specific days within that range to mark as unavailable (shown in red).
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div className="space-y-3">
+                                <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Summary</h4>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center text-sm p-3 bg-white border border-border/50 rounded-xl">
+                                        <span className="text-muted-foreground">Range</span>
+                                        <span className="font-bold">
+                                            {dateRange?.from ? (
+                                                dateRange.to ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}` : format(dateRange.from, "MMM d")
+                                            ) : "Not set"}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm p-3 bg-white border border-border/50 rounded-xl text-destructive font-bold">
+                                        <span>Blocked Days</span>
+                                        <span>{blockedDates.length}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

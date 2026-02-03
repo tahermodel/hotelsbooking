@@ -60,6 +60,17 @@ export default async function Home({ searchParams }: PageProps) {
                 ]
               }
             }
+          },
+          {
+            availability: {
+              none: {
+                is_available: false,
+                AND: [
+                  { date: { gte: checkIn } },
+                  { date: { lt: checkOut } }
+                ]
+              }
+            }
           }
         ]
       }

@@ -46,6 +46,19 @@ export default async function HotelPage({
                                 check_out_date: { gte: new Date() }
                             })
                         }
+                    },
+                    availability: {
+                        where: {
+                            is_available: false,
+                            ...(searchCheckIn && searchCheckOut ? {
+                                AND: [
+                                    { date: { gte: searchCheckIn } },
+                                    { date: { lt: searchCheckOut } }
+                                ]
+                            } : {
+                                date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+                            })
+                        }
                     }
                 }
             },
@@ -242,10 +255,11 @@ export default async function HotelPage({
                             <div className="space-y-6">
                                 {hotel.rooms?.map((room: any) => {
                                     const isBooked = room.bookings && room.bookings.length > 0
+                                    const isBlocked = room.availability && room.availability.length > 0
                                     const isOutsideRange = (room.available_from && searchCheckIn && new Date(room.available_from) > searchCheckIn) ||
-                                        (room.available_until && searchCheckOut && new Date(room.available_until) < searchCheckOut);
+                                        (room.available_until && searchCheckOut && new Date(room.available_until).getTime() < (new Date(searchCheckOut).getTime() - 86400000));
 
-                                    const isAvailable = !isBooked && !isOutsideRange;
+                                    const isAvailable = !isBooked && !isBlocked && !isOutsideRange;
 
                                     return (
                                         <div key={room.id} className="p-5 bg-background border border-dashed rounded-2xl group hover:border-accent transition-all">

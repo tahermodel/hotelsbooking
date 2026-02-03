@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover"
 import { getCountries, getCountryCallingCode } from "libphonenumber-js"
 import en from "react-phone-number-input/locale/en.json"
+import Image from "next/image"
 
 interface CountryCodePickerProps {
     value: string
@@ -43,7 +44,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                         className="flex h-10 w-12 sm:w-14 items-center justify-center gap-1 rounded-md border border-slate-200 bg-white px-1 sm:px-2 py-2 text-sm hover:bg-slate-50 focus:outline-none focus:border-[#5AA9E6] focus:ring-1 focus:ring-[#5AA9E6] transition-all"
                     >
                         {selectedCountry ? (
-                            <img
+                            <Image
                                 src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
                                 alt={selectedCountry.name}
                                 className="w-5 h-3.5 object-cover rounded-sm shadow-sm"
@@ -81,7 +82,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                                     setSearch("")
                                 }}
                             >
-                                <img
+                                <Image
                                     src={`https://flagcdn.com/w40/${country.code.toLowerCase()}.png`}
                                     alt={country.name}
                                     className="mr-3 w-5 h-3.5 object-cover rounded-sm border border-slate-100 shadow-sm"
