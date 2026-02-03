@@ -15,7 +15,7 @@ type PageProps = {
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams
-  const query = typeof params.q === 'string' ? params.q : undefined
+  const query = typeof params.q === 'string' ? params.q.trim() : undefined
   const checkIn = typeof params.checkIn === 'string' ? new Date(params.checkIn) : undefined
   const checkOut = typeof params.checkOut === 'string' ? new Date(params.checkOut) : undefined
 

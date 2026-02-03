@@ -60,7 +60,7 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
     }
 
     return (
-        <LiquidGlass className="w-full p-5 sm:p-8 md:p-10 shadow-2xl space-y-6 sm:space-y-8 backdrop-blur-xl border-white/30" animate={false}>
+        <LiquidGlass className="w-full p-8 rounded-3xl border-white/20 shadow-2xl relative z-10 backdrop-blur-xl" animate={false}>
             <div className="flex flex-col space-y-2 text-center">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-sm">Welcome Back</h1>
                 <p className="text-white/70 text-xs sm:text-sm">Sign in to continue your journey with StayEase</p>
@@ -116,7 +116,7 @@ export function LoginForm({ message, error: urlError }: LoginFormProps) {
 
                     <Button
                         disabled={loading}
-                        className="w-full h-12 bg-white text-primary hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
+                        className="w-full h-12 bg-white text-black hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
                     >
                         {loading ? "Signing in..." : (
                             <span className="flex items-center justify-center gap-2">

@@ -30,9 +30,9 @@ export default async function AccountPage() {
     const DashboardIcon = isCustomer ? BookOpen : LayoutDashboard
 
     return (
-        <div className="flex min-h-screen flex-col relative">
+        <div className="flex min-h-screen flex-col relative bg-neutral-950">
             <div
-                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
+                className="fixed top-0 left-0 w-full h-[100lvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
                     transform: 'translateZ(0)',
@@ -52,7 +52,7 @@ export default async function AccountPage() {
 
                     <div className="space-y-6">
                         <AnimatedSection>
-                            <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl">
+                            <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-xl" animate={false}>
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
                                     <div>
                                         <h2 className="text-2xl font-bold text-white mb-1">{user.name || "User"}</h2>
@@ -91,7 +91,7 @@ export default async function AccountPage() {
                         </AnimatedSection>
 
                         <AnimatedSection>
-                            <LiquidGlass className="p-6 rounded-3xl border-red-500/20 shadow-lg">
+                            <LiquidGlass className="p-6 rounded-3xl border-red-500/20 shadow-lg backdrop-blur-xl" animate={false}>
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center">

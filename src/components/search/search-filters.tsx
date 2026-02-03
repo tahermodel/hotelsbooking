@@ -59,7 +59,7 @@ export function SearchFilters() {
         if (!destination.trim()) return
 
         const params = new URLSearchParams()
-        params.set("q", destination)
+        params.set("q", destination.trim())
 
         if (date?.from) params.set("checkIn", date.from.toISOString())
         if (date?.to) params.set("checkOut", date.to.toISOString())
@@ -77,7 +77,7 @@ export function SearchFilters() {
 
     return (
         <div className="w-full max-w-5xl mx-auto">
-            <form onSubmit={handleSearch} className="flex flex-col lg:flex-row gap-2 p-2 bg-white/80 backdrop-blur-xl rounded-2xl border border-white/50 shadow-2xl ring-1 ring-black/5">
+            <form onSubmit={handleSearch} className="flex flex-col lg:flex-row gap-2 p-2 bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-3xl ring-1 ring-white/5">
 
                 {/* Destination */}
                 <div className="flex-1 relative group">
@@ -87,7 +87,7 @@ export function SearchFilters() {
                     <input
                         type="text"
                         placeholder="Where are you going?"
-                        className="h-14 w-full rounded-xl bg-transparent pl-12 pr-4 text-base font-medium placeholder:text-muted-foreground/70 focus:outline-none focus:bg-white/50 transition-all duration-300 hover:bg-white/30 focus:scale-[1.02]"
+                        className="h-14 w-full rounded-2xl bg-transparent pl-12 pr-4 text-base font-medium placeholder:text-white/40 focus:outline-none focus:bg-white/10 transition-all duration-300 hover:bg-white/5 focus:scale-[1.02] text-white"
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
                     />
@@ -102,8 +102,8 @@ export function SearchFilters() {
                                 id="date"
                                 variant={"ghost"}
                                 className={cn(
-                                    "w-full h-14 justify-start text-left font-normal bg-transparent hover:bg-white/30 rounded-xl px-4",
-                                    !date && "text-muted-foreground"
+                                    "w-full h-14 justify-start text-left font-normal bg-transparent hover:bg-white/10 rounded-2xl px-4",
+                                    !date && "text-white/40"
                                 )}
                             >
                                 <CalendarIcon className="mr-2 h-5 w-5 text-muted-foreground" />
@@ -120,7 +120,7 @@ export function SearchFilters() {
                                 )}
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="center">
+                        <PopoverContent className="w-auto p-0 bg-zinc-950/95 backdrop-blur-2xl shadow-3xl border-white/10 rounded-3xl" align="center">
                             <Calendar
                                 initialFocus
                                 mode="range"
@@ -141,7 +141,7 @@ export function SearchFilters() {
                         <PopoverTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="w-full h-14 justify-start text-left font-normal bg-transparent hover:bg-white/30 rounded-xl px-4"
+                                className="w-full h-14 justify-start text-left font-normal bg-transparent hover:bg-white/10 rounded-2xl px-4 text-white"
                             >
                                 <Users className="mr-2 h-5 w-5 text-muted-foreground" />
                                 <span className="font-medium text-foreground text-base">
@@ -149,7 +149,7 @@ export function SearchFilters() {
                                 </span>
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-80 p-4" align="center">
+                        <PopoverContent className="w-80 p-6 bg-zinc-950/95 backdrop-blur-2xl shadow-3xl border-white/10 rounded-3xl" align="center">
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="text-sm font-medium">Adults</div>

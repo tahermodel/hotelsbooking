@@ -111,7 +111,7 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => router.push('/partner/dashboard')}
-                        className="rounded-full h-12 w-12 hover:bg-black/10 border border-black/5 transition-all active:scale-90 bg-white/50 backdrop-blur-sm shadow-sm text-black"
+                        className="rounded-full h-12 w-12 hover:bg-white/10 border border-white/10 transition-all active:scale-90 bg-white/5 backdrop-blur-md shadow-lg text-white"
                     >
                         <ArrowLeft className="w-6 h-6" />
                     </Button>
@@ -403,13 +403,13 @@ export function HotelEditor({ hotel }: HotelEditorProps) {
                         animate={!loading && canSubmit}
                         className={cn(
                             "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
-                            "border-white/60 bg-white/20 backdrop-blur-md",
-                            canSubmit ? "hover:bg-white/30 cursor-pointer" : "opacity-50 cursor-not-allowed grayscale-[0.5]"
+                            "border-white/20 bg-white shadow-white/10",
+                            canSubmit ? "hover:bg-white/90 cursor-pointer" : "opacity-50 cursor-not-allowed grayscale-[0.5]"
                         )}
                     >
-                        <div className="flex items-center justify-center gap-3 text-primary font-bold tracking-wide">
+                        <div className="flex items-center justify-center gap-3 text-black font-bold tracking-wide">
                             {loading ? (
-                                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                                <Loader2 className="w-6 h-6 animate-spin text-black" />
                             ) : (
                                 <>
                                     {hotel.is_active ? <Save className="w-5 h-5" /> : <Globe className="w-5 h-5" />}

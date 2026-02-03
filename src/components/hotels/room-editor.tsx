@@ -160,7 +160,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => router.push('/partner/dashboard/rooms')}
-                        className="rounded-full h-12 w-12 hover:bg-black/10 border border-black/5 transition-all active:scale-90 bg-white/50 backdrop-blur-sm shadow-sm text-black shrink-0"
+                        className="rounded-full h-12 w-12 hover:bg-white/10 border border-white/10 transition-all active:scale-90 bg-white/5 backdrop-blur-md shadow-lg text-white shrink-0"
                     >
                         <ArrowLeft className="w-6 h-6" />
                     </Button>
@@ -309,7 +309,7 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                                         inRange: selectionMode === 'blocks' ? "bg-primary/10 text-primary font-bold" : ""
                                     }}
                                     numberOfMonths={2}
-                                    className="p-4 border-0 shadow-none bg-white rounded-2xl w-full"
+                                    className="p-4 border-0 shadow-none bg-transparent rounded-2xl w-full"
                                     classNames={{
                                         months: "flex flex-col lg:flex-row space-y-4 lg:space-x-8 lg:space-y-0 w-full justify-center",
                                         month: "space-y-4 w-full flex-1",
@@ -364,15 +364,15 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                             <div className="space-y-3">
                                 <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Summary</h4>
                                 <div className="space-y-2">
-                                    <div className="flex justify-between items-center text-sm p-3 bg-white border border-border/50 rounded-xl">
-                                        <span className="text-muted-foreground">Range</span>
-                                        <span className="font-bold">
+                                    <div className="flex justify-between items-center text-sm p-3 bg-white/5 border border-white/10 rounded-xl">
+                                        <span className="text-white/60">Range</span>
+                                        <span className="font-bold text-white">
                                             {dateRange?.from ? (
                                                 dateRange.to ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}` : format(dateRange.from, "MMM d")
                                             ) : "Not set"}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between items-center text-sm p-3 bg-white border border-border/50 rounded-xl text-destructive font-bold">
+                                    <div className="flex justify-between items-center text-sm p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 font-bold">
                                         <span>Blocked Days</span>
                                         <span>{blockedDates.length}</span>
                                     </div>
@@ -549,13 +549,13 @@ export function RoomEditor({ room, hotelId }: RoomEditorProps) {
                         animate={!loading && canSubmit}
                         className={cn(
                             "flex h-16 items-center gap-4 px-12 rounded-full shadow-2xl transition-all duration-300",
-                            "border-white/60 bg-white/20 backdrop-blur-md",
-                            canSubmit ? "hover:bg-white/30 cursor-pointer" : "opacity-50 cursor-not-allowed grayscale-[0.5]"
+                            "border-white/20 bg-white shadow-white/10",
+                            canSubmit ? "hover:bg-white/90 cursor-pointer" : "opacity-50 cursor-not-allowed grayscale-[0.5]"
                         )}
                     >
-                        <div className="flex items-center justify-center gap-3 text-primary font-bold tracking-wide min-w-[160px]">
+                        <div className="flex items-center justify-center gap-3 text-black font-bold tracking-wide min-w-[160px]">
                             {loading ? (
-                                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                                <Loader2 className="w-6 h-6 animate-spin text-black" />
                             ) : (
                                 <>
                                     {isEditing ? <Save className="w-5 h-5" /> : <Plus className="w-5 h-5" />}

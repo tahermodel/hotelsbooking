@@ -129,8 +129,9 @@ export function BookingForm({
                     </div>
 
                     <Button
-                        className="w-full lg:w-max"
+                        className="w-full lg:w-max h-12 px-10 rounded-xl shadow-xl shadow-success/10"
                         size="lg"
+                        variant="success"
                         onClick={handleBooking}
                         disabled={loading || !locked}
                     >

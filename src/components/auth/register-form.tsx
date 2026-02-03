@@ -89,7 +89,7 @@ export function RegisterForm() {
 
                 <Button
                     disabled={loading}
-                    className="w-full h-12 bg-white text-primary hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
+                    className="w-full h-12 bg-white text-black hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
                 >
                     {loading ? "Creating account..." : (
                         <span className="flex items-center justify-center gap-2">

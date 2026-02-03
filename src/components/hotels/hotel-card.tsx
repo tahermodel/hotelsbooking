@@ -39,7 +39,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
                             {lowestPrice !== null && <span className="text-xs text-muted-foreground ml-1">/ night</span>}
                         </div>
                         <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center group-hover:bg-primary transition-colors">
-                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-white transition-colors" />
+                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary-foreground transition-colors" />
                         </div>
                     </div>
                 </div>

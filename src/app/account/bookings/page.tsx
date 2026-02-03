@@ -23,9 +23,9 @@ export default async function MyBookingsPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col relative text-white">
+        <div className="flex min-h-screen flex-col relative bg-neutral-950 text-white">
             <div
-                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
+                className="fixed top-0 left-0 w-full h-[100lvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
                     transform: 'translateZ(0)',
@@ -53,7 +53,7 @@ export default async function MyBookingsPage() {
                     <div className="space-y-6">
                         {bookings?.map((booking: any, index: number) => (
                             <AnimatedSection key={booking.id}>
-                                <LiquidGlass className="p-6 border-white/20 shadow-xl">
+                                <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-xl" animate={false}>
                                     <div className="flex flex-col md:flex-row justify-between gap-6 relative z-10">
                                         <div className="flex items-start gap-4">
                                             <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0 border border-white/10">
@@ -113,7 +113,7 @@ export default async function MyBookingsPage() {
 
                         {(!bookings || bookings.length === 0) && (
                             <AnimatedSection>
-                                <LiquidGlass className="py-20 text-center border-white/10">
+                                <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-xl" animate={false}>
                                     <div className="relative z-10">
                                         <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mx-auto mb-6 border border-white/10">
                                             <Hotel className="w-10 h-10 text-white/40" />

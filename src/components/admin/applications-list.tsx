@@ -31,7 +31,7 @@ export function ApplicationsList({ applications: initialApplications }: Applicat
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case 'approved': return <CheckCircle2 className="w-4 h-4 text-secondary" />
+            case 'approved': return <CheckCircle2 className="w-4 h-4 text-success" />
             case 'pending': return <Clock className="w-4 h-4 text-accent" />
             case 'rejected': return <XCircle className="w-4 h-4 text-destructive" />
             default: return null
@@ -41,7 +41,7 @@ export function ApplicationsList({ applications: initialApplications }: Applicat
     return (
         <div className="space-y-6">
             <div className="flex justify-end mb-6">
-                <div className="flex items-center gap-2 bg-white/50 p-1 rounded-lg border border-border shadow-sm">
+                <div className="flex items-center gap-2 bg-white/5 p-1 rounded-lg border border-white/10 shadow-sm">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-2 mr-1">Sort By:</span>
                     <select
                         value={sortBy}
@@ -67,13 +67,13 @@ export function ApplicationsList({ applications: initialApplications }: Applicat
                         >
                             <div className="p-5 flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-4 flex-1">
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${app.status === 'approved' ? 'bg-secondary/10' :
-                                            app.status === 'pending' ? 'bg-accent/10' :
-                                                'bg-destructive/10'
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${app.status === 'approved' ? 'bg-success/10' :
+                                        app.status === 'pending' ? 'bg-accent/10' :
+                                            'bg-destructive/10'
                                         }`}>
-                                        <Building2 className={`w-6 h-6 ${app.status === 'approved' ? 'text-secondary' :
-                                                app.status === 'pending' ? 'text-accent' :
-                                                    'text-destructive'
+                                        <Building2 className={`w-6 h-6 ${app.status === 'approved' ? 'text-success' :
+                                            app.status === 'pending' ? 'text-accent' :
+                                                'text-destructive'
                                             }`} />
                                     </div>
                                     <div className="min-w-0">
@@ -132,12 +132,12 @@ export function ApplicationsList({ applications: initialApplications }: Applicat
                                     {app.status === 'pending' && (
                                         <div className="flex items-center gap-3 pt-4 border-t border-border">
                                             <form action={async (formData) => { await updateApplicationStatus(app.id, "approved") }}>
-                                                <Button size="sm" className="bg-secondary hover:bg-secondary/90 text-white min-w-[100px]">
+                                                <Button size="sm" variant="success" className="min-w-[100px]">
                                                     Approve
                                                 </Button>
                                             </form>
                                             <form action={async (formData) => { await updateApplicationStatus(app.id, "rejected") }}>
-                                                <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive hover:text-white min-w-[100px]">
+                                                <Button size="sm" variant="destructive" className="min-w-[100px]">
                                                     Reject
                                                 </Button>
                                             </form>
