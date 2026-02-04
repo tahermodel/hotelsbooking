@@ -47,7 +47,13 @@ export default async function RoomPage({
             },
             availability: {
                 where: {
-                    is_available: false,
+                    OR: [
+                        { is_available: false },
+                        {
+                            id: { not: undefined },
+                            locked_until: { gt: new Date() }
+                        }
+                    ],
                     ...(searchCheckIn && searchCheckOut ? {
                         AND: [
                             { date: { gte: searchCheckIn } },
@@ -227,7 +233,7 @@ export default async function RoomPage({
                                                 <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl text-center space-y-2 grayscale opacity-50">
                                                     <p className="font-black text-white/40 uppercase tracking-widest text-[10px] md:text-xs">Reserved Suite</p>
                                                     <p className="text-[10px] md:text-xs text-white/20 font-medium leading-relaxed">
-                                                        {isBooked ? "This room is currently occupied for your selected dates." : "This room is currently unavailable for your selected dates."}
+                                                        {isBooked ? "This room is currently occupied for your selected dates." : "This room is currently locked by another guest. Please try again in 10 minutes."}
                                                     </p>
                                                 </div>
                                             ) : (

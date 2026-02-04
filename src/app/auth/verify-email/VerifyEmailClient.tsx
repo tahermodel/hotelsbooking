@@ -149,7 +149,7 @@ export default function VerifyEmailClient() {
                                             document.getElementById(`code-${nextIdx}`)?.focus();
                                         }
                                     }}
-                                    className="w-full h-full rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-3xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-105 focus:outline-none touch-manipulation p-0 flex items-center justify-center"
+                                    className="w-full h-full rounded-xl border border-white/20 bg-white/90 backdrop-blur-xl text-center text-3xl font-black text-black shadow-lg transition-all duration-300 focus:border-white focus:bg-white focus:scale-105 focus:outline-none touch-manipulation p-0 flex items-center justify-center placeholder:text-black/20"
                                 />
                             </div>
                         ))}
@@ -171,7 +171,7 @@ export default function VerifyEmailClient() {
                     <div className="space-y-4">
                         <Button
                             disabled={loading || code.length !== 6}
-                            className="w-full h-12 bg-white text-primary hover:bg-white/90 font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]"
+                            className="w-full h-12 bg-black text-white hover:bg-black/90 font-bold rounded-xl shadow-xl border border-white/10 transition-transform active:scale-[0.98]"
                         >
                             {loading ? (
                                 <span className="flex items-center gap-2">

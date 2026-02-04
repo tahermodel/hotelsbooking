@@ -46,6 +46,18 @@ export async function POST(req: Request) {
                 data: { status: "confirmed" }
             })
 
+            // Clean up any locks for this room/dates
+            await tx.roomAvailability.deleteMany({
+                where: {
+                    room_id: booking.room_id,
+                    date: {
+                        gte: booking.check_in_date,
+                        lt: booking.check_out_date
+                    },
+                    is_available: true
+                }
+            })
+
             return { booking, payment }
         })
 

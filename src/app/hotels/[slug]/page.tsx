@@ -64,7 +64,13 @@ export default async function HotelPage({
                     },
                     availability: {
                         where: {
-                            is_available: false,
+                            OR: [
+                                { is_available: false },
+                                {
+                                    id: { not: undefined }, // Hack to ensure we select something if query matches
+                                    locked_until: { gt: new Date() }
+                                }
+                            ],
                             ...(searchCheckIn && searchCheckOut ? {
                                 AND: [
                                     { date: { gte: searchCheckIn } },
