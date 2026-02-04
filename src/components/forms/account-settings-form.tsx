@@ -46,7 +46,12 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
         const data = new FormData()
         data.append("name", formData.name)
         data.append("email", formData.email)
-        data.append("phone", `${formData.country_code} ${formData.phone_number}`)
+
+        const fullPhone = formData.phone_number.trim()
+            ? `${formData.country_code} ${formData.phone_number.trim()}`
+            : ""
+        data.append("phone", fullPhone)
+
         if (formData.password) data.append("password", formData.password)
 
         const result = await updateUserAccount(data)
@@ -84,10 +89,14 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
         }
     }
 
+    const currentPhone = formData.phone_number.trim()
+        ? `${formData.country_code} ${formData.phone_number.trim()}`
+        : ""
+
     const hasChanges =
         formData.name !== (user.name || "") ||
         formData.email !== (user.email || "") ||
-        `${formData.country_code} ${formData.phone_number}` !== (user.phone || "") ||
+        currentPhone !== (user.phone || "") ||
         formData.password !== ""
 
     return (
