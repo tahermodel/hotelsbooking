@@ -120,9 +120,9 @@ export default function VerifyEmailClient() {
                 </div>
 
                 <form onSubmit={handleVerify} className="space-y-6 sm:space-y-8">
-                    <div className="flex justify-center gap-1.5 sm:gap-3">
+                    <div className="flex justify-center gap-2 sm:gap-3">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="relative w-9 h-12 sm:w-12 sm:h-16">
+                            <div key={i} className="relative w-10 h-14 sm:w-12 sm:h-16">
                                 <input
                                     id={`code-${i}`}
                                     type="text"
@@ -131,22 +131,43 @@ export default function VerifyEmailClient() {
                                     autoComplete="one-time-code"
                                     maxLength={1}
                                     value={code[i] || ""}
-                                    onChange={(e) => {
-                                        const val = e.target.value.replace(/\D/g, "");
-                                        if (val) {
-                                            const newCode = code.split("");
-                                            newCode[i] = val;
-                                            const finalCode = newCode.join("").slice(0, 6);
-                                            setCode(finalCode);
-                                            if (i < 5) document.getElementById(`code-${i + 1}`)?.focus();
+                                    onInput={(e) => {
+                                        const target = e.target as HTMLInputElement;
+                                        const val = target.value.replace(/\D/g, "");
+
+                                        const newCode = Array.from({ length: 6 }, (_, index) => code[index] || "");
+                                        newCode[i] = val.slice(-1);
+                                        const finalCode = newCode.join("");
+                                        setCode(finalCode);
+
+                                        if (val && i < 5) {
+                                            document.getElementById(`code-${i + 1}`)?.focus();
                                         }
                                     }}
                                     onKeyDown={(e) => {
-                                        if (e.key === "Backspace" && !code[i] && i > 0) {
-                                            document.getElementById(`code-${i - 1}`)?.focus();
+                                        if (e.key === "Backspace") {
+                                            if (!code[i] && i > 0) {
+                                                const prevInput = document.getElementById(`code-${i - 1}`) as HTMLInputElement;
+                                                prevInput?.focus();
+
+                                                const newCode = Array.from({ length: 6 }, (_, index) => code[index] || "");
+                                                newCode[i - 1] = "";
+                                                setCode(newCode.join(""));
+                                            }
                                         }
                                     }}
-                                    className="w-full h-full rounded-lg sm:rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-xl sm:text-2xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-110 focus:outline-none touch-manipulation"
+                                    onFocus={(e) => (e.target as HTMLInputElement).select()}
+                                    onPaste={(e) => {
+                                        e.preventDefault();
+                                        const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                                        if (pastedData) {
+                                            setCode(pastedData);
+                                            // Focus the last input or the next empty one
+                                            const nextIdx = Math.min(pastedData.length, 5);
+                                            document.getElementById(`code-${nextIdx}`)?.focus();
+                                        }
+                                    }}
+                                    className="w-full h-full rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-2xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-105 focus:outline-none touch-manipulation p-0 flex items-center justify-center leading-normal"
                                 />
                             </div>
                         ))}
