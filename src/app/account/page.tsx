@@ -25,7 +25,7 @@ export default async function AccountPage() {
     const isHotelAdmin = user.role === "hotel_admin"
     const isCustomer = user.role === "customer"
 
-    const dashboardLink = isAdmin ? "/admin/dashboard" : isHotelAdmin ? "/partner" : "/account/bookings"
+    const dashboardLink = isAdmin ? "/admin/dashboard" : isHotelAdmin ? "/partner/dashboard" : "/account/bookings"
     const dashboardLabel = isCustomer ? "My Bookings" : isHotelAdmin ? "Hotel Dashboard" : "Admin Dashboard"
     const DashboardIcon = isCustomer ? BookOpen : LayoutDashboard
 

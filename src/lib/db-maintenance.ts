@@ -1,9 +1,5 @@
 import { prisma } from "@/lib/prisma"
 
-/**
- * Periodically cleanup unverified users who haven't verified within a certain timeframe (e.g., 24 hours)
- * and expired verification tokens.
- */
 export async function cleanupUnverifiedAccounts() {
     try {
         // Remove users unverified after 24 hours
@@ -15,9 +11,7 @@ export async function cleanupUnverifiedAccounts() {
                 created_at: {
                     lt: twentyFourHoursAgo
                 },
-                // Only delete if they don't have an OAuth account (they shouldn't if they have no password and are unverified, 
-                // but usually Google users are verified immediately in our new setup).
-                // If they registered via email/password, they will have a password.
+
                 password: {
                     not: null
                 }
@@ -34,7 +28,7 @@ export async function cleanupUnverifiedAccounts() {
 
 export async function cleanupExpiredTokens() {
     try {
-        // Remove tokens that expired more than 5 minutes ago
+
         const fiveMinutesAfterExpiry = new Date(Date.now() - 5 * 60 * 1000)
 
         const deletedTokens = await prisma.verificationToken.deleteMany({

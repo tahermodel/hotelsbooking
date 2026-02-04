@@ -128,19 +128,21 @@ export function PartnerApplyForm() {
                     </div>
                     <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Contact Phone</label>
-                        <div className="flex gap-3">
-                            <CountryCodePicker
-                                value={formData.country_code}
-                                onChange={(val) => setFormData(prev => ({ ...prev, country_code: val }))}
-                            />
+                        <div className="flex flex-col sm:flex-row gap-4 sm:gap-3">
+                            <div className="flex gap-2 w-full sm:w-auto">
+                                <CountryCodePicker
+                                    value={formData.country_code}
+                                    onChange={(val) => setFormData(prev => ({ ...prev, country_code: val }))}
+                                />
+                            </div>
                             <input
                                 type="tel"
                                 name="contact_phone"
                                 value={formData.contact_phone}
                                 onChange={handleChange}
-                                placeholder="000-000-0000"
+                                placeholder="Phone number"
                                 required
-                                className="flex-1 h-14 px-5 border border-white/10 rounded-2xl bg-white/5 text-white font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/10 focus:bg-white/[0.08]"
+                                className="flex-1 min-w-0 h-14 px-5 border border-white/10 rounded-2xl bg-white/5 text-white font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/10 focus:bg-white/[0.08]"
                             />
                         </div>
                     </div>
