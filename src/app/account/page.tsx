@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { BookOpen, LogOut, LayoutDashboard } from "lucide-react"
+import { BookOpen, LogOut, LayoutDashboard, Heart, MessageSquare } from "lucide-react"
 import { SignOutButton } from "@/components/auth/sign-out-button"
 import { AccountSettingsForm } from "@/components/forms/account-settings-form"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
@@ -81,6 +81,37 @@ export default async function AccountPage() {
                         </AnimatedSection>
 
                         <AnimatedSection>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <Link href="/account/favorites">
+                                    <LiquidGlass className="p-6 rounded-3xl border-white/10 hover:border-white/20 transition-all group" animate={false}>
+                                        <div className="flex flex-col gap-4 text-center items-center relative z-10">
+                                            <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
+                                                <Heart className="w-6 h-6 fill-red-500" />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-black uppercase italic tracking-tight">Loved Hotels</p>
+                                                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-1">Your Personal Collection</p>
+                                            </div>
+                                        </div>
+                                    </LiquidGlass>
+                                </Link>
+                                <Link href="/account/reviews">
+                                    <LiquidGlass className="p-6 rounded-3xl border-white/10 hover:border-white/20 transition-all group" animate={false}>
+                                        <div className="flex flex-col gap-4 text-center items-center relative z-10">
+                                            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
+                                                <MessageSquare className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-black uppercase italic tracking-tight">Your Reviews</p>
+                                                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-1">Guest Chronicles</p>
+                                            </div>
+                                        </div>
+                                    </LiquidGlass>
+                                </Link>
+                            </div>
+                        </AnimatedSection>
+
+                        <AnimatedSection>
                             <AccountSettingsForm
                                 user={{
                                     name: user.name,
@@ -118,4 +149,3 @@ export default async function AccountPage() {
         </div>
     )
 }
-

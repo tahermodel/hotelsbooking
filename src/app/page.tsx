@@ -83,6 +83,9 @@ export default async function Home({ searchParams }: PageProps) {
     include: {
       rooms: {
         select: { base_price: true }
+      },
+      _count: {
+        select: { favorites: true }
       }
     }
   })

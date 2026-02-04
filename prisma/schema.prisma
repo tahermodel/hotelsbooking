@@ -47,6 +47,7 @@ model User {
   bookings      Booking[]
   hotels        Hotel[]   @relation("HotelOwner")
   reviews       Review[]
+  favorites     Favorite[]
   cancellations Cancellation[]
   hotel_applications HotelApplication[]
 
@@ -123,6 +124,7 @@ model Hotel {
   rooms         RoomType[]
   bookings      Booking[]
   reviews       Review[]
+  favorites     Favorite[]
 
   created_at    DateTime @default(now()) @map("created_at")
   updated_at    DateTime @updatedAt @map("updated_at")
@@ -288,4 +290,16 @@ model HotelApplication {
   updated_at      DateTime               @updatedAt @map("updated_at")
 
   @@map("hotel_applications")
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  user_id   String   @map("user_id")
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  hotel_id  String   @map("hotel_id")
+  hotel     Hotel    @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now()) @map("created_at")
+
+  @@unique([user_id, hotel_id])
+  @@map("favorites")
 }

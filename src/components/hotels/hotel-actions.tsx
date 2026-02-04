@@ -3,9 +3,20 @@
 import { Share2, Heart, ChevronRight } from "lucide-react"
 import { AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 import { useState } from "react"
+import { toggleFavorite } from "@/app/actions/hotel"
+import { useRouter } from "next/navigation"
 
-export function HotelActions({ hotelName, hotelSlug }: { hotelName: string, hotelSlug: string }) {
-    const [isLiked, setIsLiked] = useState(false)
+interface HotelActionsProps {
+    hotelName: string
+    hotelSlug: string
+    hotelId: string
+    initialIsLiked?: boolean
+}
+
+export function HotelActions({ hotelName, hotelSlug, hotelId, initialIsLiked = false }: HotelActionsProps) {
+    const [isLiked, setIsLiked] = useState(initialIsLiked)
+    const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
 
     const handleShare = async () => {
         const url = window.location.href
@@ -21,6 +32,22 @@ export function HotelActions({ hotelName, hotelSlug }: { hotelName: string, hote
             }
         } else {
             await navigator.clipboard.writeText(url)
+        }
+    }
+
+    const toggleLike = async () => {
+        if (isLoading) return
+        setIsLoading(true)
+        try {
+            const result = await toggleFavorite(hotelId)
+            if (result.success) {
+                setIsLiked(!isLiked)
+                router.refresh()
+            }
+        } catch (error) {
+            console.error("Failed to toggle favorite", error)
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -40,10 +67,11 @@ export function HotelActions({ hotelName, hotelSlug }: { hotelName: string, hote
                 <Share2 className="w-5 h-5 text-white/60" />
             </AnimatedScaleButton>
             <AnimatedScaleButton
-                onClick={() => setIsLiked(!isLiked)}
+                onClick={toggleLike}
+                disabled={isLoading}
                 className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors shadow-lg"
             >
-                <Heart className={`w-5 h-5 transition-colors ${isLiked ? "text-red-500 fill-red-500" : "text-white/60"}`} />
+                <Heart className={`w-5 h-5 transition-all duration-300 ${isLiked ? "text-red-500 fill-red-500 scale-110" : "text-white/60"}`} />
             </AnimatedScaleButton>
             <AnimatedScaleButton
                 onClick={handleExperience}

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Star, MapPin, ArrowRight, ShieldCheck } from "lucide-react"
+import { Star, MapPin, ArrowRight, ShieldCheck, Heart } from "lucide-react"
 import { formatCurrency, cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 
@@ -68,15 +68,11 @@ export function HotelCard({ hotel }: { hotel: any }) {
                         </div>
 
                         <div className="flex items-center justify-between pt-5 border-t border-white/5">
-                            <div className="flex -space-x-2">
-                                {[1, 2, 3].map((i) => (
-                                    <div key={i} className="w-8 h-8 rounded-full border-2 border-[#121212] bg-white/5 backdrop-blur-md overflow-hidden flex items-center justify-center text-[10px] font-bold text-white/40">
-                                        {String.fromCharCode(64 + i)}
-                                    </div>
-                                ))}
-                                <div className="w-8 h-8 rounded-full border-2 border-[#121212] bg-white/10 backdrop-blur-md flex items-center justify-center">
-                                    <span className="text-[8px] font-black text-white">+12</span>
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <Heart className="w-4 h-4 fill-red-500" />
                                 </div>
+                                <span className="text-xs font-black text-white/60">{(hotel as any)._count?.favorites || 0}</span>
                             </div>
 
                             <div className="flex items-center gap-2 group/btn cursor-pointer">

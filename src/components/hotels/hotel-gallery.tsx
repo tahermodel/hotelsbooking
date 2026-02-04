@@ -34,7 +34,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
     return (
         <div className="relative pt-24 pb-12">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[600px]">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[600px]">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -50,9 +50,10 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                             priority
                         />
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
-                        <div className="absolute bottom-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl">
+                        <div className="absolute bottom-6 left-6 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl flex items-center gap-3">
                                 <Maximize2 className="w-5 h-5" />
+                                <span className="text-[10px] font-black uppercase tracking-widest md:hidden">View Gallery</span>
                             </div>
                         </div>
                     </motion.div>

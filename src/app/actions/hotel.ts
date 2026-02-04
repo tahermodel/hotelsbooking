@@ -61,3 +61,34 @@ export async function toggleHotelStatus(hotelId: string, isActive: boolean) {
     revalidatePath(`/hotels/${hotel.slug}`)
     return { success: true }
 }
+
+export async function toggleFavorite(hotelId: string) {
+    const session = await auth()
+    if (!session?.user?.id) throw new Error("Unauthorized")
+
+    const existingFavorite = await prisma.favorite.findUnique({
+        where: {
+            user_id_hotel_id: {
+                user_id: session.user.id,
+                hotel_id: hotelId
+            }
+        }
+    })
+
+    if (existingFavorite) {
+        await prisma.favorite.delete({
+            where: { id: existingFavorite.id }
+        })
+    } else {
+        await prisma.favorite.create({
+            data: {
+                user_id: session.user.id,
+                hotel_id: hotelId
+            }
+        })
+    }
+
+    revalidatePath(`/`)
+    revalidatePath(`/account`)
+    return { success: true }
+}
