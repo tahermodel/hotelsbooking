@@ -157,7 +157,11 @@ export default async function Home({ searchParams }: PageProps) {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {hotels.map((hotel, index) => (
                   <div key={hotel.id} className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}>
-                    <HotelCard hotel={hotel} />
+                    <HotelCard
+                      hotel={hotel}
+                      checkIn={typeof params.checkIn === 'string' ? params.checkIn : undefined}
+                      checkOut={typeof params.checkOut === 'string' ? params.checkOut : undefined}
+                    />
                   </div>
                 ))}
               </div>

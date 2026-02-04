@@ -5,7 +5,9 @@ import { Star, MapPin } from "lucide-react"
 import { motion } from "framer-motion"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
 
-export function SimpleHotelCard({ hotel }: { hotel: any }) {
+export function SimpleHotelCard({ hotel, checkIn, checkOut }: { hotel: any, checkIn?: string, checkOut?: string }) {
+    const dateParams = checkIn && checkOut ? `?checkIn=${checkIn}&checkOut=${checkOut}` : ""
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -13,7 +15,7 @@ export function SimpleHotelCard({ hotel }: { hotel: any }) {
             whileHover={{ scale: 1.02 }}
             className="group"
         >
-            <Link href={`/hotels/${hotel.slug}`}>
+            <Link href={`/hotels/${hotel.slug}${dateParams}`}>
                 <LiquidGlass className="p-4 border-white/10 group-hover:border-white/20 transition-all duration-300" animate={false}>
                     <div className="relative z-10 flex items-center justify-between gap-4">
                         <div className="min-w-0">

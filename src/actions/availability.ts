@@ -18,6 +18,26 @@ export async function lockRoom(roomId: string, dates: string[]) {
         })
         if (!room) throw new Error("Room not found")
 
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000)
+
+        // 0. CLEANUP: Remove stale pending bookings and locks for this room
+        // This effectively "frees" the room if a previous user abandoned it >10 mins ago
+        await tx.booking.deleteMany({
+            where: {
+                room_id: roomId,
+                status: 'pending',
+                created_at: { lt: tenMinutesAgo }
+            }
+        })
+
+        await tx.roomAvailability.deleteMany({
+            where: {
+                room_id: roomId,
+                is_available: true,
+                locked_until: { lt: new Date() }
+            }
+        })
+
         for (const date of dateObjects) {
             if (room.available_from && date < room.available_from) throw new Error("Some dates are outside room range")
             if (room.available_until && date > room.available_until) throw new Error("Some dates are outside room range")
@@ -30,10 +50,18 @@ export async function lockRoom(roomId: string, dates: string[]) {
         const overlappingBooking = await tx.booking.findFirst({
             where: {
                 room_id: roomId,
-                status: { in: ['pending', 'confirmed'] },
                 AND: [
                     { check_in_date: { lt: checkOut } },
-                    { check_out_date: { gt: checkIn } }
+                    { check_out_date: { gt: checkIn } },
+                    {
+                        OR: [
+                            { status: 'confirmed' },
+                            {
+                                status: 'pending',
+                                created_at: { gt: tenMinutesAgo }
+                            }
+                        ]
+                    }
                 ]
             }
         })

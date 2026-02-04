@@ -6,9 +6,11 @@ import { Star, MapPin, ArrowRight, ShieldCheck, Heart } from "lucide-react"
 import { formatCurrency, cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 
-export function HotelCard({ hotel }: { hotel: any }) {
+export function HotelCard({ hotel, checkIn, checkOut }: { hotel: any, checkIn?: string, checkOut?: string }) {
     const prices = hotel.rooms?.map((r: any) => r.base_price) || []
     const lowestPrice = prices.length > 0 ? Math.min(...prices) : null
+
+    const dateParams = checkIn && checkOut ? `?checkIn=${checkIn}&checkOut=${checkOut}` : ""
 
     return (
         <motion.div
@@ -18,7 +20,7 @@ export function HotelCard({ hotel }: { hotel: any }) {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="group relative"
         >
-            <Link href={`/hotels/${hotel.slug}`} className="block">
+            <Link href={`/hotels/${hotel.slug}${dateParams}`} className="block">
                 <div className="card-section overflow-hidden h-full flex flex-col border-white/10 group-hover:border-white/20 transition-colors duration-500">
                     <div className="relative aspect-[4/3] overflow-hidden">
                         <Image

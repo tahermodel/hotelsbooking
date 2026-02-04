@@ -48,14 +48,24 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
             throw new Error(`Room is only available until ${room.available_until.toLocaleDateString()}`)
         }
 
-        // 2. Check for overlapping confirmed bookings
+        // 2. Check for overlapping confirmed bookings or recent pending bookings
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000)
+
         const overlappingBooking = await tx.booking.findFirst({
             where: {
                 room_id: validated.roomId,
-                status: { in: ['confirmed', 'pending'] },
                 AND: [
                     { check_in_date: { lt: checkOut } },
-                    { check_out_date: { gt: checkIn } }
+                    { check_out_date: { gt: checkIn } },
+                    {
+                        OR: [
+                            { status: 'confirmed' },
+                            {
+                                status: 'pending',
+                                created_at: { gt: tenMinutesAgo }
+                            }
+                        ]
+                    }
                 ]
             }
         })

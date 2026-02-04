@@ -50,16 +50,24 @@ export default async function HotelPage({
                 include: {
                     bookings: {
                         where: {
-                            status: { in: ['pending', 'confirmed'] },
-                            ...(searchCheckIn && searchCheckOut ? {
-                                AND: [
-                                    { check_in_date: { lt: searchCheckOut } },
-                                    { check_out_date: { gt: searchCheckIn } }
-                                ]
-                            } : {
-                                check_in_date: { lte: new Date() },
-                                check_out_date: { gte: new Date() }
-                            })
+                            AND: [
+                                {
+                                    OR: [
+                                        { status: 'confirmed' },
+                                        {
+                                            status: 'pending',
+                                            created_at: { gt: new Date(Date.now() - 10 * 60 * 1000) }
+                                        }
+                                    ]
+                                },
+                                ...(searchCheckIn && searchCheckOut ? [{
+                                    check_in_date: { lt: searchCheckOut },
+                                    check_out_date: { gt: searchCheckIn }
+                                }] : [{
+                                    check_in_date: { lte: new Date() },
+                                    check_out_date: { gte: new Date() }
+                                }])
+                            ]
                         }
                     },
                     availability: {
