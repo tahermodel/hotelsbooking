@@ -46,7 +46,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                             src={images[0] || "/placeholder.jpg"}
                             alt={hotelName}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                            className="object-cover transition-transform duration-1000"
                             priority
                         />
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
@@ -72,7 +72,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                                     src={img}
                                     alt={`${hotelName} ${i + 1}`}
                                     fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                                    className="object-cover transition-transform duration-1000"
                                 />
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
                             </motion.div>
@@ -91,7 +91,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                                 src={images[3] || images[0]}
                                 alt="Gallery Preview"
                                 fill
-                                className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                                className="object-cover transition-transform duration-1000"
                             />
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
                         </motion.div>
@@ -139,18 +139,18 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                                 className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-16 w-16"
                                 onClick={prevImage}
                             >
-                                <ChevronLeft className="w-8 h-8" />
+                                <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
                             </Button>
                         </div>
 
-                        <div className="absolute top-1/2 right-8 -translate-y-1/2 z-[110]">
+                        <div className="absolute top-1/2 right-4 md:right-8 -translate-y-1/2 z-[110]">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-16 w-16"
+                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-12 w-12 md:h-16 md:w-16"
                                 onClick={nextImage}
                             >
-                                <ChevronRight className="w-8 h-8" />
+                                <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
                             </Button>
                         </div>
 
@@ -173,7 +173,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                                         priority
                                     />
 
-                                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 px-6 py-3 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 text-white/60 font-medium tracking-tight">
+                                    <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 sm:gap-6 px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 text-white/60 text-xs sm:text-sm font-medium tracking-tight whitespace-nowrap">
                                         <span className="text-white font-bold">{selectedImage + 1}</span>
                                         <div className="w-1 h-1 rounded-full bg-white/20" />
                                         <span>{images.length} Images</span>

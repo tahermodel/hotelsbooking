@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 import { sendEmail } from "@/lib/mail"
+import { EmailTemplates } from "@/lib/email-templates"
 
 const bookingSchema = z.object({
     hotelId: z.string(),
@@ -120,12 +121,13 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
         return booking
     })
 
+
     // Send confirmation email
     await sendEmail({
         to: validated.guestEmail,
-        subject: "Booking Confirmed - StayEase",
+        subject: "Your StayEase Booking is Confirmed",
         text: `Your booking at StayEase is confirmed. Reference: ${result.booking_reference}. Check-in: ${validated.checkInDate}.`,
-        html: `<h1>Booking Confirmation</h1><p>Your booking is confirmed.</p><p>Ref: <b>${result.booking_reference}</b></p><p>Check-in: ${validated.checkInDate}</p>`
+        html: EmailTemplates.bookingConfirmed(result.booking_reference, validated.checkInDate)
     })
 
     return { success: true, bookingId: result.id }
@@ -176,9 +178,9 @@ export async function cancelBooking(bookingId: string, reason: string) {
     // Send cancellation email
     await sendEmail({
         to: booking.guest_email,
-        subject: "Booking Cancelled - StayEase",
+        subject: "Your StayEase Booking has been Cancelled",
         text: `Your booking (Ref: ${booking.booking_reference}) has been cancelled. Refund amount: $${refundAmount}.`,
-        html: `<h1>Booking Cancelled</h1><p>Ref: <b>${booking.booking_reference}</b> has been cancelled.</p><p>Refund Amount: $${refundAmount}</p>`
+        html: EmailTemplates.bookingCancelled(booking.booking_reference, refundAmount)
     })
 
     return { success: true, refundAmount }

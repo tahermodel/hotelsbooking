@@ -15,34 +15,14 @@ export async function generateVerificationCode(): Promise<string> {
 }
 
 
+import { EmailTemplates } from "@/lib/email-templates"
+
 export async function sendVerificationEmail(email: string, name: string, code: string) {
     return await sendEmail({
         to: email,
         subject: "Verify your StayEase Account",
         text: `Welcome to StayEase! Your verification code is: ${code}`,
-        html: `
-            <div style="background-color: #fdfaf5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
-                <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #f1e5d1;">
-                    <div style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 40px 20px; text-align: center;">
-                        <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">StayEase</h1>
-                    </div>
-                    <div style="padding: 40px; text-align: center;">
-                        <h2 style="color: #0d9488; margin-bottom: 8px; font-size: 24px; font-weight: 700;">Verify your email</h2>
-                        <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">Hi ${name}, welcome to StayEase. Use the code below to complete your registration.</p>
-                        
-                        <div style="background: #fdfaf5; border: 2px dashed #f1e5d1; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
-                            <div style="color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">Your Verification Code</div>
-                            <div style="font-size: 42px; font-weight: 800; color: #1e293b; letter-spacing: 8px; font-family: 'Courier New', Courier, monospace;">${code}</div>
-                        </div>
-                        
-                        <p style="color: #94a3b8; font-size: 13px;">This code will expire in <span style="color: #0d9488; font-weight: 600;">10 minutes</span>. If you didn't request this, you can safely ignore this email.</p>
-                    </div>
-                    <div style="background-color: #fefce8; padding: 20px; text-align: center; border-top: 1px solid #fef3c7;">
-                        <p style="color: #b45309; font-size: 12px; margin: 0;">&copy; 2026 StayEase Luxury Hotels. All rights reserved.</p>
-                    </div>
-                </div>
-            </div>
-        `,
+        html: EmailTemplates.verification(name, code)
     })
 }
 
@@ -319,21 +299,7 @@ async function sendSecurityAlertInternal(email: string, emailChanged: boolean, p
         to: email,
         subject: "Security Alert: Account Updated",
         text: `${message} If this wasn't you, please contact support immediately.`,
-        html: `
-            <div style="background-color: #fff9f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
-                <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #fceec7;">
-                    <div style="background: #ff9f1c; padding: 40px 20px; text-align: center;">
-                        <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">Security Alert</h1>
-                    </div>
-                    <div style="padding: 40px; text-align: center;">
-                        <h2 style="color: #1e293b; margin-bottom: 16px; font-size: 20px; font-weight: 700;">Important Account Update</h2>
-                        <p style="color: #64748b; font-size: 16px; margin-bottom: 24px;">Hi,</p>
-                        <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">${message}</p>
-                        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 0;">If you did not make this change, please contact our security team immediately to secure your account.</p>
-                    </div>
-                </div>
-            </div>
-        `
+        html: EmailTemplates.securityAlert(message)
     })
 }
 
