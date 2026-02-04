@@ -72,7 +72,7 @@ export default async function AccountPage() {
                                     <div className="flex flex-col gap-3 w-full sm:w-auto min-w-[240px]">
                                         <Link href={dashboardLink}>
                                             <AnimatedScaleButton
-                                                className="flex items-center justify-center gap-2 px-8 py-4 bg-white text-black rounded-2xl font-black hover:bg-white/90 transition-all w-full shadow-xl shadow-white/10 italic uppercase text-xs tracking-widest"
+                                                className="flex items-center justify-center gap-2 px-8 py-4 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all w-full shadow-xl shadow-white/10"
                                             >
                                                 <DashboardIcon className="w-5 h-5" />
                                                 {dashboardLabel}

@@ -81,7 +81,7 @@ export function SearchFilters() {
 
                 {/* Destination */}
                 <div className="flex-1 relative group">
-                    <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none z-10">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
                         <Search className="h-5 w-5 text-white/40 group-focus-within:text-white transition-colors" />
                     </div>
                     <input

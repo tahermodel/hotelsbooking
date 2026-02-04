@@ -164,7 +164,7 @@ export default async function HotelPage({
                 <div className="flex flex-col gap-12">
                     {/* Header Info Section */}
                     <AnimatedSection>
-                        <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                             <div className="space-y-6 max-w-4xl">
                                 <div className="flex flex-wrap items-center gap-3">
                                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest">
@@ -176,20 +176,20 @@ export default async function HotelPage({
                                         Verified Property
                                     </div>
                                 </div>
-                                <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.85] uppercase italic">
+                                <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] sm:leading-[0.85] uppercase break-words">
                                     {hotel.name}
                                 </h1>
-                                <div className="flex items-center gap-6 pt-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-4">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500">
-                                            <Heart className="w-6 h-6 fill-red-500" />
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500">
+                                            <Heart className="w-5 h-5 sm:w-6 sm:h-6 fill-red-500" />
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Admiration</p>
-                                            <p className="text-xl font-black italic">{hotel._count?.favorites || 0} Loves</p>
+                                            <p className="text-lg sm:text-xl font-black">{hotel._count?.favorites || 0} Loves</p>
                                         </div>
                                     </div>
-                                    <div className="h-10 w-px bg-white/5" />
+                                    <div className="hidden sm:block h-10 w-px bg-white/5" />
                                     <HotelActions hotelName={hotel.name} hotelSlug={hotel.slug} initialIsLiked={isLiked} hotelId={hotel.id} />
                                 </div>
                                 <div className="flex flex-wrap items-center gap-6 text-white/40 font-medium">
@@ -216,8 +216,8 @@ export default async function HotelPage({
                                         <div className="h-px w-full bg-white/5" />
                                     </div>
                                     <div className="relative">
-                                        <span className="absolute -top-12 -left-8 text-[120px] font-black text-white/[0.03] select-none italic tracking-tighter">&quot;</span>
-                                        <p className="text-2xl md:text-3xl leading-tight text-white/90 font-medium italic">
+                                        <span className="absolute -top-12 -left-8 text-[120px] font-black text-white/[0.03] select-none tracking-tighter">&quot;</span>
+                                        <p className="text-2xl md:text-3xl leading-tight text-white/90 font-medium">
                                             &quot;{hotel.description || "In the heart of luxury, where every detail is a masterpiece of design and comfort. StayEase presents an unmatched hospitality experience tailored for those who seek the extraordinary."}&quot;
                                         </p>
                                     </div>
@@ -277,7 +277,7 @@ export default async function HotelPage({
                                                             <div>
                                                                 <div className="flex justify-between items-start mb-6">
                                                                     <div className="space-y-1">
-                                                                        <h3 className="text-3xl font-black uppercase italic tracking-tight">{room.name}</h3>
+                                                                        <h3 className="text-3xl font-black uppercase tracking-tight">{room.name}</h3>
                                                                         <div className="flex gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">
                                                                             <span>{room.max_guests} Guests</span>
                                                                             <span>•</span>
@@ -322,7 +322,7 @@ export default async function HotelPage({
                                         <div className="relative z-10 space-y-8">
                                             <div className="space-y-2">
                                                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Connect</h3>
-                                                <p className="text-2xl font-black italic uppercase tracking-tighter">Reservation Inquiries</p>
+                                                <p className="text-2xl font-black uppercase tracking-tighter">Reservation Inquiries</p>
                                             </div>
 
                                             <div className="space-y-4">
@@ -352,14 +352,14 @@ export default async function HotelPage({
                                             <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Guest Rating</h3>
                                             <div className="flex items-center gap-2">
                                                 <Star className="w-4 h-4 text-accent fill-accent" />
-                                                <span className="text-2xl font-black italic">{averageRating}</span>
+                                                <span className="text-2xl font-black">{averageRating}</span>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-6 mt-10">
                                             {hotel.reviews.slice(0, 2).map((review: any) => (
                                                 <div key={review.id} className="space-y-3">
-                                                    <p className="text-xs font-medium text-white/60 italic line-clamp-2">&quot;{review.content}&quot;</p>
+                                                    <p className="text-xs font-medium text-white/60 line-clamp-2">&quot;{review.content}&quot;</p>
                                                     <div className="flex items-center gap-2">
                                                         <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[8px] font-black text-white/40">
                                                             {review.user?.name?.[0] || 'G'}
@@ -380,7 +380,7 @@ export default async function HotelPage({
                         <div className="flex flex-col md:flex-row justify-between items-end gap-8">
                             <div className="space-y-4">
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Guest Chronicles</h2>
-                                <h3 className="text-5xl font-black tracking-tighter uppercase italic">The Guest Experience</h3>
+                                <h3 className="text-5xl font-black tracking-tighter uppercase">The Guest Experience</h3>
                             </div>
                             {session?.user?.id && bookingToReview && !existingReview && (
                                 <ReviewForm bookingId={bookingToReview.id} hotelId={hotel.id} />
@@ -399,7 +399,7 @@ export default async function HotelPage({
                                 <div key={review.id} className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-500">
                                     <div className="flex justify-between items-start mb-8">
                                         <div className="flex gap-4 items-center">
-                                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 font-black border border-white/10 uppercase italic">
+                                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 font-black border border-white/10 uppercase">
                                                 {review.user?.name?.[0] || 'G'}
                                             </div>
                                             <div>
@@ -411,7 +411,7 @@ export default async function HotelPage({
                                             {Array.from({ length: review.rating }).map((_, i) => <Star key={i} className="w-2.5 h-2.5 text-accent fill-accent" />)}
                                         </div>
                                     </div>
-                                    <h4 className="text-lg font-black italic mb-4 tracking-tight uppercase">{review.title}</h4>
+                                    <h4 className="text-lg font-black mb-4 tracking-tight uppercase">{review.title}</h4>
                                     <p className="text-white/60 leading-relaxed text-sm font-medium">{review.content}</p>
                                 </div>
                             ))}

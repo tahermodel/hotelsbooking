@@ -16,7 +16,7 @@ export default async function TermsPage() {
                                 <div className="h-px w-12 bg-accent" />
                                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Legal Protocol</span>
                             </div>
-                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase italic leading-[0.85]">
+                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85]">
                                 Terms of <br />Service
                             </h1>
                             <p className="text-xl text-white/40 font-medium max-w-2xl leading-relaxed">
@@ -48,8 +48,8 @@ export default async function TermsPage() {
                                     <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-black transition-all mb-8">
                                         {item.icon}
                                     </div>
-                                    <h3 className="text-xl font-black uppercase italic mb-4">{item.title}</h3>
-                                    <p className="text-white/40 font-medium leading-relaxed italic text-sm">
+                                    <h3 className="text-xl font-black uppercase mb-4">{item.title}</h3>
+                                    <p className="text-white/40 font-medium leading-relaxed text-sm">
                                         &quot;{item.content}&quot;
                                     </p>
                                 </div>
@@ -65,16 +65,16 @@ export default async function TermsPage() {
                                     <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
                                         <FileText className="w-6 h-6" />
                                     </div>
-                                    <h2 className="text-2xl font-black uppercase italic tracking-tight">Standard Operating Procedures</h2>
+                                    <h2 className="text-2xl font-black uppercase tracking-tight">Standard Operating Procedures</h2>
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-12">
                                     <div className="space-y-4">
                                         <h4 className="text-[10px] font-black uppercase tracking-widest text-accent">Last Updated</h4>
-                                        <p className="text-white/40 font-bold uppercase tracking-tighter italic">February 2026</p>
+                                        <p className="text-white/40 font-bold uppercase tracking-tighter">February 2026</p>
                                     </div>
                                     <div className="space-y-4">
                                         <h4 className="text-[10px] font-black uppercase tracking-widest text-accent">Contact Legal</h4>
-                                        <p className="text-white/40 font-bold uppercase tracking-tighter italic">legal@stayease.com</p>
+                                        <p className="text-white/40 font-bold uppercase tracking-tighter">legal@stayease.com</p>
                                     </div>
                                 </div>
                             </div>

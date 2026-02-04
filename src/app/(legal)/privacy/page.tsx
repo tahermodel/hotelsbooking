@@ -16,7 +16,7 @@ export default async function PrivacyPage() {
                                 <div className="h-px w-12 bg-accent" />
                                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Data Integrity</span>
                             </div>
-                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase italic leading-[0.85]">
+                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85]">
                                 Privacy <br />Policy
                             </h1>
                             <p className="text-xl text-white/40 font-medium max-w-2xl leading-relaxed">
@@ -53,8 +53,8 @@ export default async function PrivacyPage() {
                                     <div className="w-16 h-16 rounded-3xl bg-white/5 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-black transition-all mb-10">
                                         {item.icon}
                                     </div>
-                                    <h3 className="text-2xl font-black uppercase italic mb-6 tracking-tight">{item.title}</h3>
-                                    <p className="text-white/40 font-medium leading-relaxed italic">
+                                    <h3 className="text-2xl font-black uppercase mb-6 tracking-tight">{item.title}</h3>
+                                    <p className="text-white/40 font-medium leading-relaxed">
                                         &quot;{item.content}&quot;
                                     </p>
                                 </div>
@@ -67,12 +67,12 @@ export default async function PrivacyPage() {
                             <div className="absolute top-0 right-0 w-80 h-80 bg-accent/20 blur-[140px] -mr-40 -mt-40 rounded-full group-hover:bg-accent/30 transition-colors" />
                             <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
                                 <div className="space-y-4">
-                                    <h2 className="text-3xl font-black uppercase italic tracking-tighter">Your Trust is our Currency</h2>
-                                    <p className="text-white/60 font-medium max-w-xl italic">Our privacy framework is designed to exceed global standards, providing you with peace of mind during every stay.</p>
+                                    <h2 className="text-3xl font-black uppercase tracking-tighter">Your Trust is our Currency</h2>
+                                    <p className="text-white/60 font-medium max-w-xl">Our privacy framework is designed to exceed global standards, providing you with peace of mind during every stay.</p>
                                 </div>
                                 <div className="text-left md:text-right space-y-4">
                                     <h4 className="text-[10px] font-black uppercase tracking-widest text-accent">Encryption Standard</h4>
-                                    <p className="text-white font-bold uppercase tracking-tighter italic text-2xl">AES-256 BIT</p>
+                                    <p className="text-white font-bold uppercase tracking-tighter text-2xl">AES-256 BIT</p>
                                 </div>
                             </div>
                         </div>
