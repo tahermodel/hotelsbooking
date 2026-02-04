@@ -53,8 +53,8 @@ export default async function AccountPage() {
                     <div className="space-y-6">
                         <AnimatedSection>
                             <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-xl" animate={false}>
-                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
-                                    <div>
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 relative z-10">
+                                    <div className="flex-1">
                                         <h2 className="text-2xl font-bold text-white mb-1">{user.name || "User"}</h2>
                                         <p className="text-white/70 font-medium">{user.email}</p>
                                         <div className="flex gap-2 mt-4">
@@ -68,47 +68,38 @@ export default async function AccountPage() {
                                             )}
                                         </div>
                                     </div>
-                                    <Link href={dashboardLink} className="w-full sm:w-auto">
-                                        <AnimatedScaleButton
-                                            className="flex items-center justify-center gap-2 px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all w-full shadow-xl shadow-white/10"
-                                        >
-                                            <DashboardIcon className="w-5 h-5" />
-                                            {dashboardLabel}
-                                        </AnimatedScaleButton>
-                                    </Link>
+
+                                    <div className="flex flex-col gap-3 w-full sm:w-auto min-w-[240px]">
+                                        <Link href={dashboardLink}>
+                                            <AnimatedScaleButton
+                                                className="flex items-center justify-center gap-2 px-8 py-4 bg-white text-black rounded-2xl font-black hover:bg-white/90 transition-all w-full shadow-xl shadow-white/10 italic uppercase text-xs tracking-widest"
+                                            >
+                                                <DashboardIcon className="w-5 h-5" />
+                                                {dashboardLabel}
+                                            </AnimatedScaleButton>
+                                        </Link>
+
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Link href="/account/favorites">
+                                                <AnimatedScaleButton
+                                                    className="flex items-center justify-center gap-2 py-3 bg-white/10 border border-white/10 text-white rounded-xl font-bold hover:bg-white/[0.15] transition-all w-full text-[10px] uppercase tracking-widest group"
+                                                >
+                                                    <Heart className="w-3.5 h-3.5 fill-red-500 text-red-500 scale-110 group-hover:scale-125 transition-transform" />
+                                                    Loves
+                                                </AnimatedScaleButton>
+                                            </Link>
+                                            <Link href="/account/reviews">
+                                                <AnimatedScaleButton
+                                                    className="flex items-center justify-center gap-2 py-3 bg-white/10 border border-white/10 text-white rounded-xl font-bold hover:bg-white/[0.15] transition-all w-full text-[10px] uppercase tracking-widest group"
+                                                >
+                                                    <MessageSquare className="w-3.5 h-3.5 text-accent group-hover:scale-110 transition-transform" />
+                                                    Reviews
+                                                </AnimatedScaleButton>
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
                             </LiquidGlass>
-                        </AnimatedSection>
-
-                        <AnimatedSection>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <Link href="/account/favorites">
-                                    <LiquidGlass className="p-6 rounded-3xl border-white/10 hover:border-white/20 transition-all group" animate={false}>
-                                        <div className="flex flex-col gap-4 text-center items-center relative z-10">
-                                            <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
-                                                <Heart className="w-6 h-6 fill-red-500" />
-                                            </div>
-                                            <div>
-                                                <p className="text-white font-black uppercase italic tracking-tight">Loved Hotels</p>
-                                                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-1">Your Personal Collection</p>
-                                            </div>
-                                        </div>
-                                    </LiquidGlass>
-                                </Link>
-                                <Link href="/account/reviews">
-                                    <LiquidGlass className="p-6 rounded-3xl border-white/10 hover:border-white/20 transition-all group" animate={false}>
-                                        <div className="flex flex-col gap-4 text-center items-center relative z-10">
-                                            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
-                                                <MessageSquare className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <p className="text-white font-black uppercase italic tracking-tight">Your Reviews</p>
-                                                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-1">Guest Chronicles</p>
-                                            </div>
-                                        </div>
-                                    </LiquidGlass>
-                                </Link>
-                            </div>
                         </AnimatedSection>
 
                         <AnimatedSection>
