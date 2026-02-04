@@ -58,7 +58,6 @@ export const authConfig = {
                     id: profile.sub,
                     name: profile.name,
                     email: profile.email,
-                    image: profile.picture,
                     role: "customer",
                     is_verified: true,
                     emailVerified: new Date(),
