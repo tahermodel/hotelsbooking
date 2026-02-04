@@ -132,11 +132,11 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                             </Button>
                         </div>
 
-                        <div className="absolute top-1/2 left-8 -translate-y-1/2 z-[110]">
+                        <div className="absolute top-1/2 left-4 md:left-8 -translate-y-1/2 z-[110]">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-16 w-16"
+                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-12 w-12 md:h-16 md:w-16 transition-all"
                                 onClick={prevImage}
                             >
                                 <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
@@ -147,7 +147,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-12 w-12 md:h-16 md:w-16"
+                                className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 h-12 w-12 md:h-16 md:w-16 transition-all"
                                 onClick={nextImage}
                             >
                                 <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />

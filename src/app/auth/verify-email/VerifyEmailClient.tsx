@@ -65,23 +65,6 @@ export default function VerifyEmailClient() {
         setResendLoading(false)
     }
 
-    const Layout = ({ children }: { children: React.ReactNode }) => (
-        <div className="relative min-h-[100dvh] w-full flex items-center justify-center p-4">
-            <div className="fixed inset-0 z-0">
-                <Image
-                    src="https://images.unsplash.com/photo-1612278675615-7b093b07772d?q=80&w=2560&auto=format&fit=crop"
-                    alt="Background"
-                    fill
-                    className="object-cover"
-                    priority
-                />
-                <div className="absolute inset-0 bg-black/35" />
-            </div>
-            <div className="relative z-10 w-full max-w-[min(420px,100%)] flex items-center justify-center">
-                {children}
-            </div>
-        </div>
-    )
 
     if (success) {
         return (
@@ -120,9 +103,9 @@ export default function VerifyEmailClient() {
                 </div>
 
                 <form onSubmit={handleVerify} className="space-y-6 sm:space-y-8">
-                    <div className="flex justify-center gap-2 sm:gap-3">
+                    <div className="flex justify-center gap-2 sm:gap-4">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="relative w-10 h-14 sm:w-12 sm:h-16">
+                            <div key={i} className="relative w-11 h-16 sm:w-14 sm:h-20">
                                 <input
                                     id={`code-${i}`}
                                     type="text"
@@ -162,12 +145,11 @@ export default function VerifyEmailClient() {
                                         const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
                                         if (pastedData) {
                                             setCode(pastedData);
-                                            // Focus the last input or the next empty one
                                             const nextIdx = Math.min(pastedData.length, 5);
                                             document.getElementById(`code-${nextIdx}`)?.focus();
                                         }
                                     }}
-                                    className="w-full h-full rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-2xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-105 focus:outline-none touch-manipulation p-0 flex items-center justify-center leading-normal"
+                                    className="w-full h-full rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-3xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-105 focus:outline-none touch-manipulation p-0 flex items-center justify-center"
                                 />
                             </div>
                         ))}
@@ -219,5 +201,25 @@ export default function VerifyEmailClient() {
                 </form>
             </LiquidGlass>
         </Layout>
+    )
+}
+
+function Layout({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="relative min-h-[100dvh] w-full flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-0">
+                <Image
+                    src="https://images.unsplash.com/photo-1612278675615-7b093b07772d?q=80&w=2560&auto=format&fit=crop"
+                    alt="Background"
+                    fill
+                    className="object-cover"
+                    priority
+                />
+                <div className="absolute inset-0 bg-black/35" />
+            </div>
+            <div className="relative z-10 w-full max-w-[min(420px,100%)] flex items-center justify-center">
+                {children}
+            </div>
+        </div>
     )
 }

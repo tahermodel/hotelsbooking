@@ -44,6 +44,19 @@ export default async function RoomPage({
                         check_out_date: { gte: new Date() }
                     })
                 }
+            },
+            availability: {
+                where: {
+                    is_available: false,
+                    ...(searchCheckIn && searchCheckOut ? {
+                        AND: [
+                            { date: { gte: searchCheckIn } },
+                            { date: { lt: searchCheckOut } }
+                        ]
+                    } : {
+                        date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+                    })
+                }
             }
         }
     })
@@ -59,6 +72,8 @@ export default async function RoomPage({
     )
 
     const isBooked = room.bookings.length > 0
+    const isBlocked = (room as any).availability?.length > 0
+    const isLocked = isBooked || isBlocked
 
     return (
         <div className="flex min-h-screen flex-col bg-neutral-950 text-white">
@@ -205,10 +220,12 @@ export default async function RoomPage({
                                                     <p className="font-black text-red-500 uppercase tracking-widest text-[10px] md:text-xs">Date Conflict</p>
                                                     <p className="text-[10px] md:text-xs text-white/40 font-medium leading-relaxed">This room has specific availability limits for the selected dates.</p>
                                                 </div>
-                                            ) : isBooked ? (
+                                            ) : isLocked ? (
                                                 <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl text-center space-y-2 grayscale opacity-50">
                                                     <p className="font-black text-white/40 uppercase tracking-widest text-[10px] md:text-xs">Reserved Suite</p>
-                                                    <p className="text-[10px] md:text-xs text-white/20 font-medium leading-relaxed">This room is currently occupied for your selected dates.</p>
+                                                    <p className="text-[10px] md:text-xs text-white/20 font-medium leading-relaxed">
+                                                        {isBooked ? "This room is currently occupied for your selected dates." : "This room is currently unavailable for your selected dates."}
+                                                    </p>
                                                 </div>
                                             ) : (
                                                 <Link href={`/booking/${room.hotel_id}?roomType=${room.id}${checkIn && checkOut ? `&checkIn=${checkIn}&checkOut=${checkOut}` : ""}`} className="w-full">

@@ -30,12 +30,34 @@ export async function POST(req: Request) {
 
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as any
-        await prisma.payment.update({
-            where: { booking_id: session.metadata.bookingId },
-            data: {
-                stripe_payment_intent_id: session.payment_intent,
-                status: "authorized"
-            }
+        const bookingId = session.metadata.bookingId
+
+        const result = await prisma.$transaction(async (tx) => {
+            const payment = await tx.payment.update({
+                where: { booking_id: bookingId },
+                data: {
+                    stripe_payment_intent_id: session.payment_intent,
+                    status: "authorized"
+                }
+            })
+
+            const booking = await tx.booking.update({
+                where: { id: bookingId },
+                data: { status: "confirmed" }
+            })
+
+            return { booking, payment }
+        })
+
+        // Import mail utilities dynamically to avoid edge runtime issues if applicable
+        const { sendEmail } = await import("@/lib/mail")
+        const { EmailTemplates } = await import("@/lib/email-templates")
+
+        await sendEmail({
+            to: result.booking.guest_email,
+            subject: "Your StayEase Booking is Confirmed",
+            text: `Your booking at StayEase is confirmed. Reference: ${result.booking.booking_reference}.`,
+            html: EmailTemplates.bookingConfirmed(result.booking.booking_reference, result.booking.check_in_date.toISOString())
         })
     }
 

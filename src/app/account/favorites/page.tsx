@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Heart, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { HotelCard } from "@/components/hotels/hotel-card"
+import { SimpleHotelCard } from "@/components/hotels/simple-hotel-card"
 import { ClientContentWrapper, AnimatedSection, AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
 
@@ -34,14 +34,12 @@ export default async function FavoritesPage() {
     return (
         <div className="flex min-h-screen flex-col relative bg-neutral-950">
             <div
-                className="fixed top-0 left-0 w-full h-[100lvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
+                className="fixed top-0 left-0 w-full h-[100lvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
-                    transform: 'translateZ(0)',
-                    backfaceVisibility: 'hidden'
                 }}
             >
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
             </div>
 
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -68,7 +66,7 @@ export default async function FavoritesPage() {
                     {favorites.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {favorites.map((fav) => (
-                                <HotelCard key={fav.id} hotel={fav.hotel} />
+                                <SimpleHotelCard key={fav.id} hotel={fav.hotel} />
                             ))}
                         </div>
                     ) : (

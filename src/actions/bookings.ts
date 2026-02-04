@@ -92,7 +92,7 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
                 total_amount: validated.totalAmount,
                 guest_name: validated.guestName,
                 guest_email: validated.guestEmail,
-                status: 'confirmed',
+                status: 'pending',
             }
         })
 
@@ -119,15 +119,6 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
         })
 
         return booking
-    })
-
-
-    // Send confirmation email
-    await sendEmail({
-        to: validated.guestEmail,
-        subject: "Your StayEase Booking is Confirmed",
-        text: `Your booking at StayEase is confirmed. Reference: ${result.booking_reference}. Check-in: ${validated.checkInDate}.`,
-        html: EmailTemplates.bookingConfirmed(result.booking_reference, validated.checkInDate)
     })
 
     return { success: true, bookingId: result.id }
