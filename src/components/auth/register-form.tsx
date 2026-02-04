@@ -42,30 +42,30 @@ export function RegisterForm() {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-4">
                     <div className="relative group">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40 group-focus-within:text-white transition-colors" />
                         <Input
                             name="fullName"
-                            className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.02] shadow-none ring-0 focus-visible:ring-0"
+                            className="!pl-14 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.01] shadow-none ring-0 focus-visible:ring-0"
                             placeholder="Full Name"
                             required
                         />
                     </div>
                     <div className="relative group">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40 group-focus-within:text-white transition-colors" />
                         <Input
                             name="email"
                             type="email"
-                            className="pl-12 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.02] shadow-none ring-0 focus-visible:ring-0"
+                            className="!pl-14 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.01] shadow-none ring-0 focus-visible:ring-0"
                             placeholder="name@example.com"
                             required
                         />
                     </div>
                     <div className="relative group">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50 group-focus-within:text-white transition-colors" />
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40 group-focus-within:text-white transition-colors" />
                         <Input
                             name="password"
                             type={showPassword ? "text" : "password"}
-                            className="pl-12 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.02] shadow-none ring-0 focus-visible:ring-0"
+                            className="!pl-14 pr-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/30 focus:bg-white/15 focus:border-white/30 rounded-xl transition-all duration-300 focus:scale-[1.01] shadow-none ring-0 focus-visible:ring-0"
                             placeholder="Password (min 6 chars)"
                             required
                         />

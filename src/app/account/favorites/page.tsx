@@ -34,12 +34,14 @@ export default async function FavoritesPage() {
     return (
         <div className="flex min-h-screen flex-col relative bg-neutral-950">
             <div
-                className="fixed top-0 left-0 w-full h-[100lvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+                className="fixed top-0 left-0 w-full h-[100lvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none will-change-transform"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden'
                 }}
             >
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
             </div>
 
             <div className="relative z-10 flex flex-col min-h-screen">

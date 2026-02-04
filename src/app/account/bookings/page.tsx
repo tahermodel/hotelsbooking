@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CancelBookingButton } from "@/components/account/cancel-booking-button"
+import { cancelBooking } from "@/actions/bookings"
 import Link from "next/link"
 import { ArrowLeft, Calendar, MapPin, Hotel } from "lucide-react"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
@@ -18,7 +18,7 @@ export default async function MyBookingsPage() {
 
     const bookings = await prisma.booking.findMany({
         where: { user_id: session.user.id },
-        include: { hotel: { select: { name: true, city: true, country: true, slug: true } } },
+        include: { hotel: { select: { name: true, city: true, country: true } } },
         orderBy: { created_at: 'desc' }
     })
 
@@ -32,7 +32,7 @@ export default async function MyBookingsPage() {
                     backfaceVisibility: 'hidden'
                 }}
             >
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
             </div>
 
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -53,7 +53,7 @@ export default async function MyBookingsPage() {
                     <div className="space-y-6">
                         {bookings?.map((booking: any, index: number) => (
                             <AnimatedSection key={booking.id}>
-                                <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-md" animate={false}>
+                                <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-xl" animate={false}>
                                     <div className="flex flex-col md:flex-row justify-between gap-6 relative z-10">
                                         <div className="flex items-start gap-4">
                                             <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0 border border-white/10">
@@ -61,9 +61,7 @@ export default async function MyBookingsPage() {
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-1 flex-wrap">
-                                                    <Link href={`/hotels/${booking.hotel.slug}`} className="hover:text-accent transition-colors">
-                                                        <h3 className="font-bold text-xl text-white">{booking.hotel.name}</h3>
-                                                    </Link>
+                                                    <h3 className="font-bold text-xl text-white">{booking.hotel.name}</h3>
                                                     <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider border ${booking.status === 'confirmed' ? 'bg-green-500/20 text-green-400 border-green-500/20' :
                                                         booking.status === 'cancelled' ? 'bg-red-500/20 text-red-400 border-red-500/20' :
                                                             'bg-white/10 text-white/60 border-white/10'
@@ -98,7 +96,14 @@ export default async function MyBookingsPage() {
                                                 <p className="text-3xl font-black text-white">{formatCurrency(booking.total_amount)}</p>
                                             </div>
                                             {booking.status === 'confirmed' && (
-                                                <CancelBookingButton bookingId={booking.id} />
+                                                <form action={async () => {
+                                                    "use server"
+                                                    await cancelBooking(booking.id, "Customer request")
+                                                }} className="w-full md:w-auto">
+                                                    <Button variant="outline" size="sm" className="bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500 hover:text-white hover:border-red-500 w-full rounded-xl font-bold h-11 transition-all">
+                                                        Cancel Booking
+                                                    </Button>
+                                                </form>
                                             )}
                                         </div>
                                     </div>
@@ -108,7 +113,7 @@ export default async function MyBookingsPage() {
 
                         {(!bookings || bookings.length === 0) && (
                             <AnimatedSection>
-                                <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-md" animate={false}>
+                                <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-xl" animate={false}>
                                     <div className="relative z-10">
                                         <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mx-auto mb-6 border border-white/10">
                                             <Hotel className="w-10 h-10 text-white/40" />

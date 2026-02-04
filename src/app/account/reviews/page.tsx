@@ -32,7 +32,7 @@ export default async function UserReviewsPage() {
                     backfaceVisibility: 'hidden'
                 }}
             >
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
             </div>
 
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -60,34 +60,18 @@ export default async function UserReviewsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {reviews.map((review) => (
                                 <Link href={`/hotels/${review.hotel.slug}`} key={review.id} className="group flex">
-                                    <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-md" animate={false}>
-                                        <div className="relative z-10 h-full flex flex-col">
-                                            <div className="flex justify-between items-start mb-6">
-                                                <div className="space-y-1">
-                                                    <h3 className="font-black uppercase tracking-tight text-white group-hover:text-accent transition-colors line-clamp-1">{review.hotel.name}</h3>
-                                                    <div className="flex items-center gap-1.5 text-white/40">
-                                                        <MapPin className="w-3 h-3 text-accent" />
-                                                        <span className="text-[10px] font-bold uppercase tracking-widest">{review.hotel.city}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/5 border border-white/10 shrink-0">
-                                                    <Star className="h-3 w-3 fill-accent text-accent" />
-                                                    <span className="text-[10px] font-black text-white">{review.rating}.0</span>
+                                    <LiquidGlass className="p-4 border-white/20 shadow-xl backdrop-blur-md w-full" animate={false}>
+                                        <div className="relative z-10 flex items-center justify-between gap-4">
+                                            <div className="min-w-0">
+                                                <h3 className="font-bold text-base text-white group-hover:text-accent transition-colors truncate mb-1">{review.hotel.name}</h3>
+                                                <div className="flex items-center gap-1.5 text-white/40">
+                                                    <MapPin className="w-3 h-3 text-accent" />
+                                                    <span className="text-[10px] font-bold uppercase tracking-widest truncate">{review.hotel.city}</span>
                                                 </div>
                                             </div>
-
-                                            <div className="mb-6">
-                                                <h4 className="text-lg font-black mb-2 tracking-tight uppercase text-white leading-tight">
-                                                    {review.title}
-                                                </h4>
-                                                <p className="text-white/50 text-sm leading-relaxed font-medium line-clamp-4 italic flex-1">
-                                                    &quot;{review.content}&quot;
-                                                </p>
-                                            </div>
-
-                                            <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/20">
-                                                <span>Experience Shared</span>
-                                                <span>{new Date(review.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5 border border-white/10 shrink-0">
+                                                <Star className="h-3 w-3 fill-accent text-accent" />
+                                                <span className="text-[10px] font-black text-white">{review.rating}.0</span>
                                             </div>
                                         </div>
                                     </LiquidGlass>

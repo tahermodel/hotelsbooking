@@ -92,7 +92,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
 
     return (
         <form onSubmit={handleSave} className="space-y-8">
-            <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-md" animate={false}>
+            <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-xl">
                 <motion.div layout className="relative z-10">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
@@ -291,7 +291,7 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
             </LiquidGlass>
 
             <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-                <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-md" animate={false}>
+                <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-xl">
                     <div className="flex items-start gap-5 relative z-10">
                         <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
                             <AlertTriangle className="w-6 h-6 text-red-500" />

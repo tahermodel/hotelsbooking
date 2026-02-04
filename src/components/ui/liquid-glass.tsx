@@ -171,8 +171,6 @@ export function LiquidGlass({
     }, [])
 
     useEffect(() => {
-        if (!animate) return
-
         initScene()
 
         const container = containerRef.current
@@ -219,12 +217,10 @@ export function LiquidGlass({
             whileTap={animate ? { scale: 0.99 } : {}}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
         >
-            {animate && (
-                <canvas
-                    ref={canvasRef}
-                    className="absolute inset-0 z-0 pointer-events-none"
-                />
-            )}
+            <canvas
+                ref={canvasRef}
+                className="absolute inset-0 z-0 pointer-events-none"
+            />
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden rounded-[inherit]">
                 <div
                     className="absolute bottom-0 left-[15%] right-[15%] h-[1px]"
