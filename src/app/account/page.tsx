@@ -52,7 +52,7 @@ export default async function AccountPage() {
 
                     <div className="space-y-6">
                         <AnimatedSection>
-                            <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-xl" animate={false}>
+                            <LiquidGlass className="p-8 rounded-3xl border-white/20 shadow-2xl backdrop-blur-xl">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 relative z-10">
                                     <div className="flex-1">
                                         <h2 className="text-2xl font-bold text-white mb-1">{user.name || "User"}</h2>
@@ -113,7 +113,7 @@ export default async function AccountPage() {
                         </AnimatedSection>
 
                         <AnimatedSection>
-                            <LiquidGlass className="p-6 rounded-3xl border-red-500/20 shadow-lg backdrop-blur-xl" animate={false}>
+                            <LiquidGlass className="p-6 rounded-3xl border-red-500/20 shadow-lg backdrop-blur-xl">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center">

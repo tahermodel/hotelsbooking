@@ -31,7 +31,6 @@ model User {
   name          String?   @map("full_name")
   email         String    @unique
   emailVerified DateTime? @map("email_verified")
-  image         String?   @map("avatar_url")
   password      String?   
   role          UserRole  @default(customer)
   
@@ -95,6 +94,7 @@ model VerificationToken {
   identifier String
   token      String
   expires    DateTime
+  data       String?
  
   @@id([identifier, token])
   @@map("verification_tokens")

@@ -81,16 +81,16 @@ export function SearchFilters() {
 
                 {/* Destination */}
                 <div className="flex-1 relative group">
-                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
-                        <Search className="h-5 w-5 text-white/40 group-focus-within:text-white transition-colors" />
-                    </div>
                     <input
                         type="text"
                         placeholder="Where are you going?"
-                        className="h-14 w-full rounded-2xl bg-transparent pl-14 pr-4 text-base font-medium placeholder:text-white/40 focus:outline-none focus:bg-white/10 transition-all duration-300 hover:bg-white/5 focus:scale-[1.02] text-white relative z-0"
+                        className="h-14 w-full rounded-2xl bg-transparent pl-6 pr-14 text-base font-medium placeholder:text-white/40 focus:outline-none focus:bg-white/10 transition-all duration-300 hover:bg-white/5 focus:scale-[1.02] text-white relative z-0"
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
                     />
+                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none z-10">
+                        <Search className="h-5 w-5 text-white/40 group-focus-within:text-white transition-colors" />
+                    </div>
                     <div className="hidden lg:block absolute right-0 inset-y-2 w-px bg-border/50" />
                 </div>
 

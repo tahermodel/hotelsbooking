@@ -15,6 +15,8 @@ import Image from "next/image"
 interface CountryCodePickerProps {
     value: string
     onChange: (value: string) => void
+    className?: string
+    variant?: "default" | "compact"
 }
 
 const countries = getCountries().map((country) => ({
@@ -23,9 +25,10 @@ const countries = getCountries().map((country) => ({
     prefix: `+${getCountryCallingCode(country)}`,
 }))
 
-export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
+export function CountryCodePicker({ value, onChange, className, variant = "default" }: CountryCodePickerProps) {
     const [open, setOpen] = React.useState(false)
     const [search, setSearch] = React.useState("")
+    const isCompact = variant === "compact"
 
     const selectedCountry = countries.find((c) => c.prefix === (value.startsWith('+') ? value : '+' + value))
 
@@ -36,12 +39,15 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
     )
 
     return (
-        <div className="flex gap-2 items-center">
+        <div className={cn("flex gap-1.5 items-center", className)}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         type="button"
-                        className="flex h-14 w-20 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2 text-sm text-white hover:bg-white/10 transition-all outline-none active:scale-95 shadow-xl shadow-black/20"
+                        className={cn(
+                            "flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2 text-white hover:bg-white/10 transition-all outline-none active:scale-95 shadow-xl shadow-black/20",
+                            isCompact ? "h-12 w-14 rounded-xl text-xs" : "h-14 w-20 text-sm"
+                        )}
                     >
                         {selectedCountry ? (
                             <div className="relative w-6 h-4 shrink-0 overflow-hidden rounded-sm ring-1 ring-white/10">
@@ -56,7 +62,7 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                         ) : (
                             <Search className="h-4 w-4 text-white/40" />
                         )}
-                        <ChevronsUpDown className="h-3 w-3 text-white/20" />
+                        <ChevronsUpDown className={cn("text-white/20", isCompact ? "h-3 w-3" : "h-4 w-4")} />
                     </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[300px] p-0 bg-neutral-900/95 backdrop-blur-2xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] border border-white/10 rounded-2xl z-[100] animate-in fade-in zoom-in-95 duration-200" align="start">
@@ -116,7 +122,10 @@ export function CountryCodePicker({ value, onChange }: CountryCodePickerProps) {
                         onChange(val)
                     }}
                     placeholder="+1"
-                    className="flex h-14 w-24 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-center text-white font-black tracking-widest placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-white/10 focus:bg-white/[0.08] transition-all shadow-xl shadow-black/20"
+                    className={cn(
+                        "flex rounded-2xl border border-white/10 bg-white/5 text-center text-white font-black tracking-widest placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-white/10 focus:bg-white/[0.08] transition-all shadow-xl shadow-black/20",
+                        isCompact ? "h-12 w-16 rounded-xl text-xs px-2 py-1" : "h-14 w-24 px-4 py-2 text-sm"
+                    )}
                 />
             </div>
         </div>

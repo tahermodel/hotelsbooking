@@ -162,7 +162,7 @@ export default async function HotelPage({
 
             <main className="container mx-auto px-4 pt-32 pb-24">
                 <div className="flex flex-col gap-12">
-                    {/* Header Info Section */}
+
                     <AnimatedSection>
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                             <div className="space-y-6 max-w-4xl">
@@ -202,13 +202,16 @@ export default async function HotelPage({
                         </div>
                     </AnimatedSection>
 
-                    {/* Image Gallery */}
-                    <HotelGallery images={hotel.images} hotelName={hotel.name} />
+
+                    <HotelGallery
+                        images={hotel.main_image ? [hotel.main_image, ...hotel.images.filter((img: string) => img !== hotel.main_image)] : hotel.images}
+                        hotelName={hotel.name}
+                    />
 
                     <div className="grid lg:grid-cols-3 gap-16 pt-12">
-                        {/* Left Column: Content */}
+
                         <div className="lg:col-span-2 space-y-24">
-                            {/* Description */}
+
                             <AnimatedSection>
                                 <div className="space-y-8">
                                     <div className="flex items-center gap-4">
@@ -224,7 +227,7 @@ export default async function HotelPage({
                                 </div>
                             </AnimatedSection>
 
-                            {/* Amenities */}
+
                             <AnimatedSection>
                                 <div className="space-y-10">
                                     <div className="flex items-center gap-4">
@@ -244,7 +247,7 @@ export default async function HotelPage({
                                 </div>
                             </AnimatedSection>
 
-                            {/* Accommodations */}
+
                             <AnimatedSection>
                                 <div id="accommodations" className="space-y-12 scroll-mt-32">
                                     <div className="flex justify-between items-center gap-4">
@@ -312,10 +315,10 @@ export default async function HotelPage({
                             </AnimatedSection>
                         </div>
 
-                        {/* Right Column: Contact & Reviews */}
+
                         <div className="space-y-12">
                             <div className="sticky top-32 space-y-12">
-                                {/* Contact Card */}
+
                                 <AnimatedSection>
                                     <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 shadow-2xl overflow-hidden relative">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[60px] rounded-full -mr-16 -mt-16" />
@@ -345,7 +348,6 @@ export default async function HotelPage({
                                     </div>
                                 </AnimatedSection>
 
-                                {/* Mini Insights */}
                                 <AnimatedSection delay={0.2}>
                                     <div className="p-10 rounded-[2.5rem] bg-accent/5 border border-accent/20">
                                         <div className="space-y-6">
@@ -375,7 +377,7 @@ export default async function HotelPage({
                         </div>
                     </div>
 
-                    {/* Full Reviews Section (Bottom) */}
+
                     <div className="pt-32 border-t border-white/5 space-y-16">
                         <div className="flex flex-col md:flex-row justify-between items-end gap-8">
                             <div className="space-y-4">

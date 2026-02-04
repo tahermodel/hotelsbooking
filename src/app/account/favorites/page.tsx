@@ -73,7 +73,7 @@ export default async function FavoritesPage() {
                         </div>
                     ) : (
                         <AnimatedSection>
-                            <LiquidGlass className="p-20 rounded-[3rem] border-white/10 text-center" animate={false}>
+                            <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-xl" animate={false}>
                                 <div className="max-w-md mx-auto space-y-6 relative z-10">
                                     <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8 border border-white/10">
                                         <Heart className="w-10 h-10 text-white/10" />

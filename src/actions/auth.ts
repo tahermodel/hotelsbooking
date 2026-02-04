@@ -168,40 +168,58 @@ export async function resendVerificationEmail(email: string) {
     }
 
     try {
+        const normalizedEmail = email.toLowerCase().trim()
+
+        // 1. Try to find user
         const user = await prisma.user.findUnique({
-            where: { email: email.toLowerCase() }
+            where: { email: normalizedEmail }
         })
 
-        if (!user) {
-            return { error: "Account not found. Please register." }
+        // 2. Try to find existing token (to preserve data for pending updates)
+        const existingToken = await prisma.verificationToken.findFirst({
+            where: { identifier: normalizedEmail }
+        })
+
+        // Logic:
+        // - If user exists and verified: Error (already verified) UNLESS there is a pending token (e.g. password change)
+        // - If user exists and unverified: OK (Resend registration code)
+        // - If user does NOT exist but token exists: OK (Pending email change)
+        // - If neither: Error
+
+        if (user?.is_verified && !existingToken) {
+            return { error: "Email is already verified. Please sign in." }
         }
 
-        if (user.is_verified) {
-            return { error: "Email is already verified. Please sign in." }
+        if (!user && !existingToken) {
+            return { error: "Account not found. Please register." }
         }
 
         // Generate new code
         const code = await generateVerificationCode()
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
+        // Capture data from existing token to preserve pending updates
+        const preservedData = existingToken?.data
+
         // Delete existing tokens
         await prisma.verificationToken.deleteMany({
-            where: { identifier: email }
+            where: { identifier: normalizedEmail }
         })
 
         // Create new token
         await prisma.verificationToken.create({
             data: {
-                identifier: email,
+                identifier: normalizedEmail,
                 token: code,
-                expires: expiresAt
+                expires: expiresAt,
+                data: preservedData
             }
         })
 
-        const fullName = user.name || "User"
+        const name = user?.name || "User"
 
         // Send Email
-        const emailResult = await sendVerificationEmail(email, fullName, code)
+        const emailResult = await sendVerificationEmail(normalizedEmail, name, code)
 
         if (!emailResult.success) {
             return { error: "Failed to send verification email. Please try again." }
@@ -219,10 +237,6 @@ export async function verifyCode(email: string, code: string) {
     const normalizedEmail = email.toLowerCase().trim()
 
     try {
-        // Find verification token
-        // Use findFirst because composite key in where might be tricky if we don't have both parts exactly as expected by Prisma Client unique constraints (but we do).
-        // Actually, composite unique is findUnique({ where: { identifier_token: { identifier: email, token: code } } })
-
         const tokenRecord = await prisma.verificationToken.findFirst({
             where: {
                 identifier: normalizedEmail,
@@ -237,14 +251,47 @@ export async function verifyCode(email: string, code: string) {
             return { error: "Invalid or expired verification code" }
         }
 
-        // Mark user as verified
-        const user = await prisma.user.update({
-            where: { email: normalizedEmail },
-            data: {
-                is_verified: true,
-                emailVerified: new Date(),
+        // Check for pending updates (email/password change)
+        if (tokenRecord.data) {
+            try {
+                const pendingUpdates = JSON.parse(tokenRecord.data)
+
+                if (pendingUpdates.userId) {
+                    const updateData: any = {
+                        is_verified: true,
+                        emailVerified: new Date(),
+                    }
+
+                    if (pendingUpdates.email) updateData.email = pendingUpdates.email
+                    if (pendingUpdates.password) updateData.password = pendingUpdates.password
+
+                    // Update the user
+                    await prisma.user.update({
+                        where: { id: pendingUpdates.userId },
+                        data: updateData
+                    })
+
+                    // Send Security Alert
+                    await sendSecurityAlertInternal(
+                        normalizedEmail, // The new email (or current if only password changed)
+                        !!pendingUpdates.email,
+                        !!pendingUpdates.password
+                    )
+                }
+            } catch (e) {
+                console.error("Error applying pending updates:", e)
+                return { error: "Failed to apply account updates." }
             }
-        })
+        } else {
+            // Standard verification (Registration)
+            await prisma.user.update({
+                where: { email: normalizedEmail },
+                data: {
+                    is_verified: true,
+                    emailVerified: new Date(),
+                }
+            })
+        }
 
         // Delete the used token(s)
         await prisma.verificationToken.deleteMany({
@@ -256,6 +303,38 @@ export async function verifyCode(email: string, code: string) {
         console.error("Verification error:", error)
         return { error: "Failed to verify email. Please try again." }
     }
+}
+
+async function sendSecurityAlertInternal(email: string, emailChanged: boolean, passwordChanged: boolean) {
+    let message = "Your account information was recently updated."
+    if (emailChanged && passwordChanged) {
+        message = "Your email and password were recently changed."
+    } else if (emailChanged) {
+        message = "Your email address was recently changed."
+    } else if (passwordChanged) {
+        message = "Your account password was recently changed."
+    }
+
+    await sendEmail({
+        to: email,
+        subject: "Security Alert: Account Updated",
+        text: `${message} If this wasn't you, please contact support immediately.`,
+        html: `
+            <div style="background-color: #fff9f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; color: #1e293b; line-height: 1.6;">
+                <div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #fceec7;">
+                    <div style="background: #ff9f1c; padding: 40px 20px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">Security Alert</h1>
+                    </div>
+                    <div style="padding: 40px; text-align: center;">
+                        <h2 style="color: #1e293b; margin-bottom: 16px; font-size: 20px; font-weight: 700;">Important Account Update</h2>
+                        <p style="color: #64748b; font-size: 16px; margin-bottom: 24px;">Hi,</p>
+                        <p style="color: #64748b; font-size: 16px; margin-bottom: 32px;">${message}</p>
+                        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 0;">If you did not make this change, please contact our security team immediately to secure your account.</p>
+                    </div>
+                </div>
+            </div>
+        `
+    })
 }
 
 

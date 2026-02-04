@@ -25,57 +25,59 @@ export async function updateUserAccount(formData: FormData) {
     const isEmailChanged = !!(email && email !== user.email)
     const isPasswordChanged = !!newPassword
 
-    let verificationNeeded = isEmailChanged || isPasswordChanged
-    let redirectUrl = ""
-
-    const updateData: any = {
-        name,
-        phone
+    // 1. Update simple fields immediately
+    if (name !== user.name || phone !== user.phone) {
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { name, phone }
+        })
     }
 
-    if (isEmailChanged) {
-        const existing = await prisma.user.findUnique({ where: { email } })
-        if (existing) return { error: "Email already in use" }
-        updateData.email = email
-        updateData.is_verified = false
-    }
+    // 2. Handle critical updates (defer until verification)
+    if (isEmailChanged || isPasswordChanged) {
+        if (isEmailChanged) {
+            const existing = await prisma.user.findUnique({ where: { email } })
+            if (existing) return { error: "Email already in use" }
+        }
 
-    if (isPasswordChanged) {
-        updateData.password = await bcrypt.hash(newPassword, 10)
-        updateData.is_verified = false
-    }
+        const pendingUpdates: any = { userId: user.id }
+        if (isEmailChanged) pendingUpdates.email = email
+        if (isPasswordChanged) pendingUpdates.password = await bcrypt.hash(newPassword, 10)
 
-    await prisma.user.update({
-        where: { id: user.id },
-        data: updateData
-    })
-
-    if (verificationNeeded) {
+        // Generate verification flow
         const code = await generateVerificationCode()
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
+        // If email changed, we verify the NEW email. If only password changed, we verify current email.
         const targetEmail = isEmailChanged ? email : user.email
 
         await prisma.verificationToken.deleteMany({ where: { identifier: targetEmail } })
+
+        // Store pending updates in the 'data' field
         await prisma.verificationToken.create({
             data: {
                 identifier: targetEmail,
                 token: code,
-                expires: expiresAt
+                expires: expiresAt,
+                data: JSON.stringify(pendingUpdates)
             }
         })
 
         await sendVerificationEmail(targetEmail, name || user.name || "User", code)
-        await sendSecurityAlert(user.email, isEmailChanged, isPasswordChanged)
 
-        redirectUrl = `/auth/verify-email?email=${encodeURIComponent(targetEmail)}`
+        // Return redirect to verify page
+        const redirectUrl = `/auth/verify-email?email=${encodeURIComponent(targetEmail)}`
+        return { success: true, redirectUrl }
     }
 
     revalidatePath("/account")
-    return { success: true, redirectUrl }
+    return { success: true }
 }
 
-async function sendSecurityAlert(email: string, emailChanged: boolean, passwordChanged: boolean) {
+export async function sendSecurityAlert(email: string, changes: { email?: string, password?: string }) {
     let message = "Your account information was recently updated."
+    const emailChanged = !!changes.email
+    const passwordChanged = !!changes.password
+
     if (emailChanged && passwordChanged) {
         message = "Your email and password were recently changed."
     } else if (emailChanged) {

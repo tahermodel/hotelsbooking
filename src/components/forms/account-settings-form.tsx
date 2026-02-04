@@ -212,12 +212,15 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: 10 }}
-                                        className="flex gap-2 max-w-full overflow-hidden"
+                                        className="flex flex-col sm:flex-row gap-3 max-w-full overflow-hidden"
                                     >
-                                        <CountryCodePicker
-                                            value={formData.country_code}
-                                            onChange={(val) => setFormData(prev => ({ ...prev, country_code: val }))}
-                                        />
+                                        <div className="flex-shrink-0">
+                                            <CountryCodePicker
+                                                value={formData.country_code}
+                                                onChange={(val) => setFormData(prev => ({ ...prev, country_code: val }))}
+                                                variant="compact"
+                                            />
+                                        </div>
                                         <input
                                             type="tel"
                                             name="phone_number"

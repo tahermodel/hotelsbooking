@@ -83,7 +83,7 @@ export default function VerifyEmailClient() {
     }
 
     const Layout = ({ children }: { children: React.ReactNode }) => (
-        <div className="relative h-[100dvh] w-full flex items-center justify-center p-4 overflow-hidden">
+        <div className="relative min-h-[100dvh] w-full flex items-center justify-center p-4">
             <div className="fixed inset-0 z-0">
                 <Image
                     src="https://images.unsplash.com/photo-1612278675615-7b093b07772d?q=80&w=2560&auto=format&fit=crop"
@@ -144,6 +144,8 @@ export default function VerifyEmailClient() {
                                     id={`code-${i}`}
                                     type="text"
                                     inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    autoComplete="one-time-code"
                                     maxLength={1}
                                     value={code[i] || ""}
                                     onChange={(e) => {
@@ -161,7 +163,7 @@ export default function VerifyEmailClient() {
                                             document.getElementById(`code-${i - 1}`)?.focus();
                                         }
                                     }}
-                                    className="w-full h-full rounded-lg sm:rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-xl sm:text-2xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-110 focus:outline-none"
+                                    className="w-full h-full rounded-lg sm:rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl text-center text-xl sm:text-2xl font-bold text-white shadow-lg transition-all duration-300 focus:border-white/40 focus:bg-white/15 focus:scale-110 focus:outline-none touch-manipulation"
                                 />
                             </div>
                         ))}
