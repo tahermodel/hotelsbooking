@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { formatCurrency } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { cancelBooking } from "@/actions/bookings"
+import { CancelBookingButton } from "@/components/account/cancel-booking-button"
 import Link from "next/link"
 import { ArrowLeft, Calendar, MapPin, Hotel } from "lucide-react"
 import { LiquidGlass } from "@/components/ui/liquid-glass"
@@ -96,14 +96,7 @@ export default async function MyBookingsPage() {
                                                 <p className="text-3xl font-black text-white">{formatCurrency(booking.total_amount)}</p>
                                             </div>
                                             {booking.status === 'confirmed' && (
-                                                <form action={async () => {
-                                                    "use server"
-                                                    await cancelBooking(booking.id, "Customer request")
-                                                }} className="w-full md:w-auto">
-                                                    <Button variant="outline" size="sm" className="bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500 hover:text-white hover:border-red-500 w-full rounded-xl font-bold h-11 transition-all">
-                                                        Cancel Booking
-                                                    </Button>
-                                                </form>
+                                                <CancelBookingButton bookingId={booking.id} />
                                             )}
                                         </div>
                                     </div>

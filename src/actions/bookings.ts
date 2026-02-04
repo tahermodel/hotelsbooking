@@ -148,23 +148,56 @@ export async function cancelBooking(bookingId: string, reason: string) {
     else if (diffDays > 3) refundAmount = booking.total_amount * 0.75
     else if (diffDays > 1) refundAmount = booking.total_amount * 0.5
 
-    // Refund Logic
-    const { refundPayment } = await import("./payments")
+    const penaltyAmount = booking.total_amount - refundAmount
 
-    if (booking.payment?.stripe_payment_intent_id) {
+    // Payment Handling Logic
+    const { refundPayment, cancelPayment, capturePayment } = await import("./payments")
+
+    if (booking.payment?.stripe_payment_intent_id && booking.payment.stripe_payment_intent_id !== "pending") {
         try {
-            await refundPayment(booking.payment.stripe_payment_intent_id, refundAmount)
+            if (booking.payment.status === "authorized") {
+                if (penaltyAmount > 0) {
+                    await capturePayment(booking.payment.stripe_payment_intent_id, penaltyAmount)
+                    await prisma.payment.update({
+                        where: { id: booking.payment.id },
+                        data: { status: "captured_penalty", amount: penaltyAmount }
+                    })
+                } else {
+                    await cancelPayment(booking.payment.stripe_payment_intent_id)
+                    await prisma.payment.update({
+                        where: { id: booking.payment.id },
+                        data: { status: "cancelled" }
+                    })
+                }
+            } else if (booking.payment.status === "captured" || booking.payment.status === "succeeded") {
+                if (refundAmount > 0) {
+                    await refundPayment(booking.payment.stripe_payment_intent_id, refundAmount)
+                    await prisma.payment.update({
+                        where: { id: booking.payment.id },
+                        data: { status: "refunded", amount: penaltyAmount }
+                    })
+                }
+            }
         } catch (e) {
-            console.error("Refund failed in Stripe:", e)
-            // Continue to cancel booking locally but warn?
-            // Ideally we shouldn't fail the cancellation just because refund failed, but admin should know.
-            // For now, we proceed.
+            console.error("Payment action failed in Stripe:", e)
         }
     }
 
-    await prisma.booking.update({
-        where: { id: bookingId },
-        data: { status: 'cancelled' }
+    await prisma.$transaction(async (tx) => {
+        await tx.booking.update({
+            where: { id: bookingId },
+            data: { status: 'cancelled' }
+        })
+
+        await tx.cancellation.create({
+            data: {
+                booking_id: bookingId,
+                cancelled_by: session.user.id,
+                reason: reason,
+                refund_amount: refundAmount,
+                penalty_amount: penaltyAmount
+            }
+        })
     })
 
     // Revalidate paths to update UI

@@ -61,13 +61,15 @@ export function BookingForm({
 
         setLoading(true)
         try {
+            const totalAmount = roomType.base_price * dates.length
+
             const result = await createBooking({
                 hotelId: hotel.id,
                 roomId: roomType.id,
                 checkInDate: checkIn,
                 checkOutDate: checkOut,
                 guestsCount: 2,
-                totalAmount: roomType.base_price,
+                totalAmount: totalAmount,
                 guestName: session?.user?.name || "Guest",
                 guestEmail: session?.user?.email || "",
                 paymentIntentId: "pending"
@@ -78,7 +80,7 @@ export function BookingForm({
                 const checkoutSession = await createCheckoutSession({
                     hotelName: hotel.name,
                     roomName: roomType.name,
-                    amount: roomType.base_price,
+                    amount: totalAmount,
                     bookingId: result.bookingId,
                     successUrl: `${baseUrl}/booking/confirmation?id=${result.bookingId}`,
                     cancelUrl: `${baseUrl}/booking/${hotel.id}?roomType=${roomType.id}`

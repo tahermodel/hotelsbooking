@@ -54,9 +54,10 @@ export async function createCheckoutSession(params: {
     return { url: session.url, sessionId: session.id }
 }
 
-export async function capturePayment(paymentIntentId: string) {
-    const intent = await stripe.paymentIntents.capture(paymentIntentId)
-    // database update logic should be in booking flow or webhook
+export async function capturePayment(paymentIntentId: string, amount?: number) {
+    const intent = await stripe.paymentIntents.capture(paymentIntentId, {
+        amount_to_capture: amount ? Math.round(amount * 100) : undefined
+    })
     return intent
 }
 
