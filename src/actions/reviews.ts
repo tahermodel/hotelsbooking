@@ -39,8 +39,7 @@ export async function getHotelReviews(hotelId: string) {
         include: {
             user: {
                 select: {
-                    name: true,
-                    image: true
+                    name: true
                 }
             }
         },
