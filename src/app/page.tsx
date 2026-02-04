@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: PageProps) {
           {
             bookings: {
               none: {
-                status: 'confirmed',
+                status: { in: ['pending', 'confirmed'] },
                 AND: [
                   { check_in_date: { lt: checkOut } },
                   { check_out_date: { gt: checkIn } }

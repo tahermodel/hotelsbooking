@@ -60,7 +60,7 @@ export default async function UserReviewsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {reviews.map((review) => (
                                 <Link href={`/hotels/${review.hotel.slug}`} key={review.id} className="group flex">
-                                    <LiquidGlass className="p-4 border-white/20 shadow-xl backdrop-blur-md w-full" animate={false}>
+                                    <LiquidGlass className="p-6 border-white/20 shadow-xl backdrop-blur-xl" animate={false}>
                                         <div className="relative z-10 flex items-center justify-between gap-4">
                                             <div className="min-w-0">
                                                 <h3 className="font-bold text-base text-white group-hover:text-accent transition-colors truncate mb-1">{review.hotel.name}</h3>

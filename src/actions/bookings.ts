@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { z } from "zod"
+import { revalidatePath } from "next/cache"
 import { sendEmail } from "@/lib/mail"
 import { EmailTemplates } from "@/lib/email-templates"
 
@@ -51,7 +52,7 @@ export async function createBooking(data: z.infer<typeof bookingSchema>) {
         const overlappingBooking = await tx.booking.findFirst({
             where: {
                 room_id: validated.roomId,
-                status: 'confirmed',
+                status: { in: ['confirmed', 'pending'] },
                 AND: [
                     { check_in_date: { lt: checkOut } },
                     { check_out_date: { gt: checkIn } }
@@ -165,6 +166,19 @@ export async function cancelBooking(bookingId: string, reason: string) {
         where: { id: bookingId },
         data: { status: 'cancelled' }
     })
+
+    // Revalidate paths to update UI
+    const bookingWithHotel = await prisma.booking.findUnique({
+        where: { id: bookingId },
+        include: { hotel: true }
+    })
+
+    if (bookingWithHotel) {
+        revalidatePath(`/hotels/${bookingWithHotel.hotel.slug}`)
+        revalidatePath(`/rooms/${bookingWithHotel.room_id}`)
+        revalidatePath('/')
+        revalidatePath('/account/bookings')
+    }
 
     // Send cancellation email
     await sendEmail({
