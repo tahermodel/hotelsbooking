@@ -71,7 +71,10 @@ export default async function HotelPage({
                                     { date: { lt: searchCheckOut } }
                                 ]
                             } : {
-                                date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+                                date: {
+                                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                                    lt: new Date(new Date().setHours(23, 59, 59, 999))
+                                }
                             })
                         }
                     }
@@ -263,10 +266,11 @@ export default async function HotelPage({
 
                                     <div className="grid gap-8">
                                         {hotel.rooms.map((room: any) => {
-                                            const isBooked = room.bookings && room.bookings.length > 0
-                                            const isBlocked = room.availability && room.availability.length > 0
+                                            const isBooked = room.bookings && room.bookings.length > 0;
+                                            const isBlocked = room.availability && room.availability.length > 0;
                                             const isOutsideRange = (room.available_from && searchCheckIn && new Date(room.available_from) > searchCheckIn) ||
                                                 (room.available_until && searchCheckOut && new Date(room.available_until).getTime() < (new Date(searchCheckOut).getTime() - 86400000));
+
                                             const isAvailable = !isBooked && !isBlocked && !isOutsideRange;
 
                                             return (
