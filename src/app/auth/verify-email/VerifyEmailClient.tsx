@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ArrowRight, Mail, CheckCircle2, Loader2, RefreshCw } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { ExpiryTimer } from "@/components/auth/expiry-timer"
 
 export default function VerifyEmailClient() {
     const searchParams = useSearchParams()
@@ -21,26 +22,8 @@ export default function VerifyEmailClient() {
     const [loading, setLoading] = useState(false)
     const [resendLoading, setResendLoading] = useState(false)
     const [resendMessage, setResendMessage] = useState("")
-    const [timeLeft, setTimeLeft] = useState(600)
+    const [resetToken, setResetToken] = useState(0)
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTimeLeft(prev => {
-                if (prev <= 1) {
-                    clearInterval(interval)
-                    return 0
-                }
-                return prev - 1
-            })
-        }, 1000)
-        return () => clearInterval(interval)
-    }, [])
-
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60)
-        const secs = seconds % 60
-        return `${minutes}:${secs.toString().padStart(2, '0')}`
-    }
 
     async function handleVerify(e: React.FormEvent) {
         e.preventDefault()
@@ -77,7 +60,7 @@ export default function VerifyEmailClient() {
             setError(result.error)
         } else {
             setResendMessage("Code resent! Check your email.")
-            setTimeLeft(600)
+            setResetToken(prev => prev + 1)
         }
         setResendLoading(false)
     }
@@ -200,9 +183,7 @@ export default function VerifyEmailClient() {
                         </Button>
 
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-white/50 font-medium">
-                                Expires in {formatTime(timeLeft)}
-                            </span>
+                            <ExpiryTimer key={resetToken} initialTime={600} />
                             <button
                                 type="button"
                                 onClick={handleResend}
