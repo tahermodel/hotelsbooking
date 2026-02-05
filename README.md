@@ -55,8 +55,8 @@ StayEase is a high-performance, aesthetically driven hotel booking platform buil
 
 ### 1. Installation
 ```bash
-git clone https://github.com/yourusername/stayease.git
-cd stayease
+git clone https://github.com/tahermodel/hotelsbooking.git
+cd hotelsbooking
 npm install
 ```
 
