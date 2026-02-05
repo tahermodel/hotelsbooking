@@ -23,6 +23,7 @@ import { HotelGallery } from "@/components/hotels/hotel-gallery"
 import { HotelActions } from "@/components/hotels/hotel-actions"
 import { AnimatedSection, ClientContentWrapper, AnimatedScaleButton } from "@/components/layout/client-animation-wrapper"
 import { ReviewForm } from "@/components/hotels/review-form"
+import { UserReviewCard } from "@/components/hotels/user-review-card"
 
 export const dynamic = 'force-dynamic'
 
@@ -367,27 +368,29 @@ export default async function HotelPage({
                                 </AnimatedSection>
 
                                 <AnimatedSection delay={0.2}>
-                                    <div className="p-10 rounded-[2.5rem] bg-accent/5 border border-accent/20">
-                                        <div className="space-y-6">
-                                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Guest Rating</h3>
-                                            <div className="flex items-center gap-2">
-                                                <Star className="w-4 h-4 text-accent fill-accent" />
-                                                <span className="text-2xl font-black">{averageRating}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 gap-6 mt-10">
-                                            {hotel.reviews.slice(0, 2).map((review: any) => (
-                                                <div key={review.id} className="space-y-3">
-                                                    <p className="text-xs font-medium text-white/60 line-clamp-2">&quot;{review.content}&quot;</p>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[8px] font-black text-white/40">
-                                                            {review.user?.name?.[0] || 'G'}
+                                    <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 relative overflow-hidden group hover:border-accent/20 transition-all duration-500">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[60px] rounded-full -mr-16 -mt-16 group-hover:bg-accent/10 transition-all" />
+                                        <div className="relative z-10">
+                                            <div className="space-y-6">
+                                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Guest Sentiment</h3>
+                                                <div className="flex items-baseline gap-3">
+                                                    <span className="text-6xl font-black tracking-tighter text-white">{averageRating}</span>
+                                                    <div className="flex flex-col">
+                                                        <div className="flex gap-0.5 mb-1">
+                                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                                <Star key={i} className={`w-3 h-3 ${i < Math.round(Number(averageRating)) ? "text-accent fill-accent" : "text-white/10"}`} />
+                                                            ))}
                                                         </div>
-                                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/20">{review.user?.name || 'Anonymous'}</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Average Rating</span>
                                                     </div>
                                                 </div>
-                                            ))}
+                                            </div>
+
+                                            <div className="mt-8 pt-8 border-t border-white/5">
+                                                <p className="text-xs font-medium text-white/40 leading-relaxed uppercase tracking-widest">
+                                                    Based on {hotel.reviews.length} authenticated guest experiences
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </AnimatedSection>
@@ -408,33 +411,36 @@ export default async function HotelPage({
                         </div>
 
                         {session?.user?.id && bookingToReview && existingReview && (
-                            <div className="p-10 rounded-[2.5rem] bg-accent/[0.03] border border-accent/20">
-                                <p className="text-accent font-black uppercase tracking-widest text-[10px] mb-4">Your Experience</p>
-                                <ReviewForm bookingId={bookingToReview.id} hotelId={hotel.id} existingReview={existingReview} />
-                            </div>
+                            <UserReviewCard
+                                review={{ ...existingReview, user: session.user }}
+                                bookingId={bookingToReview.id}
+                                hotelId={hotel.id}
+                            />
                         )}
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {hotel.reviews.map((review: any) => (
-                                <div key={review.id} className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-500">
-                                    <div className="flex justify-between items-start mb-8">
-                                        <div className="flex gap-4 items-center">
-                                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 font-black border border-white/10 uppercase">
-                                                {review.user?.name?.[0] || 'G'}
+                            {hotel.reviews
+                                .filter((r: any) => r.id !== existingReview?.id)
+                                .map((review: any) => (
+                                    <div key={review.id} className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-500">
+                                        <div className="flex justify-between items-start mb-8">
+                                            <div className="flex gap-4 items-center">
+                                                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 font-black border border-white/10 uppercase">
+                                                    {review.user?.name?.[0] || 'G'}
+                                                </div>
+                                                <div>
+                                                    <p className="font-black uppercase text-xs tracking-widest">{review.user?.name || 'Anonymous'}</p>
+                                                    <p className="text-[10px] uppercase font-bold tracking-widest text-white/20">{new Date(review.created_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-black uppercase text-xs tracking-widest">{review.user?.name || 'Anonymous'}</p>
-                                                <p className="text-[10px] uppercase font-bold tracking-widest text-white/20">{new Date(review.created_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+                                            <div className="flex gap-0.5">
+                                                {Array.from({ length: review.rating }).map((_, i) => <Star key={i} className="w-2.5 h-2.5 text-accent fill-accent" />)}
                                             </div>
                                         </div>
-                                        <div className="flex gap-0.5">
-                                            {Array.from({ length: review.rating }).map((_, i) => <Star key={i} className="w-2.5 h-2.5 text-accent fill-accent" />)}
-                                        </div>
+                                        <h4 className="text-lg font-black mb-4 tracking-tight uppercase">{review.title}</h4>
+                                        <p className="text-white/60 leading-relaxed text-sm font-medium">{review.content}</p>
                                     </div>
-                                    <h4 className="text-lg font-black mb-4 tracking-tight uppercase">{review.title}</h4>
-                                    <p className="text-white/60 leading-relaxed text-sm font-medium">{review.content}</p>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </div>
                 </div>

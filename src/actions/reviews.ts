@@ -46,3 +46,16 @@ export async function getHotelReviews(hotelId: string) {
         orderBy: { created_at: 'desc' }
     })
 }
+export async function deleteReview(reviewId: string) {
+    const session = await auth()
+    if (!session?.user?.id) throw new Error("Unauthorized")
+
+    await prisma.review.delete({
+        where: {
+            id: reviewId,
+            user_id: session.user.id // Ensure user owns the review
+        }
+    })
+
+    return { success: true }
+}
