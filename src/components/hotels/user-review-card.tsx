@@ -35,7 +35,7 @@ export function UserReviewCard({
 
     if (isEditing) {
         return (
-            <div className="relative p-10 rounded-[2.5rem] bg-accent/[0.03] border border-accent/20">
+            <div className="relative p-6 md:p-10 rounded-[2.5rem] bg-accent/[0.03] border border-accent/20">
                 <button
                     onClick={() => setIsEditing(false)}
                     className="absolute top-8 right-8 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
@@ -57,7 +57,7 @@ export function UserReviewCard({
     }
 
     return (
-        <div className="relative p-10 rounded-[2.5rem] bg-accent/[0.05] border border-accent/20 hover:bg-accent/[0.08] transition-all duration-500 shadow-xl shadow-accent/5">
+        <div className="relative p-6 md:p-10 rounded-[2.5rem] bg-accent/[0.05] border border-accent/20 hover:bg-accent/[0.08] transition-all duration-500 shadow-xl shadow-accent/5">
             <div className="flex justify-between items-start mb-8">
                 <div className="flex gap-4 items-center">
                     <div className="w-12 h-12 rounded-2xl bg-accent/20 flex items-center justify-center text-accent font-black border border-accent/30 uppercase">

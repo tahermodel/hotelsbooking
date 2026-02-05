@@ -32,7 +32,7 @@ export function HotelGallery({ images, hotelName }: HotelGalleryProps) {
     }
 
     return (
-        <div className="relative pt-24 pb-12">
+        <div className="relative pt-10 md:pt-24 pb-12">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[600px]">
                     <motion.div

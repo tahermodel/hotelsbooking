@@ -295,7 +295,7 @@ export default async function HotelPage({
                                                             <Image src={room.main_image || hotel.main_image} alt={room.name} fill className="object-cover group-hover/room:scale-110 transition-transform duration-1000" />
                                                             <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
                                                         </div>
-                                                        <div className="p-10 flex-1 flex flex-col justify-between">
+                                                        <div className="p-6 md:p-10 flex-1 flex flex-col justify-between">
                                                             <div>
                                                                 <div className="flex justify-between items-start mb-6">
                                                                     <div className="space-y-1">
@@ -339,7 +339,7 @@ export default async function HotelPage({
                             <div className="sticky top-32 space-y-12">
 
                                 <AnimatedSection>
-                                    <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 shadow-2xl overflow-hidden relative">
+                                    <div className="p-6 md:p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 shadow-2xl overflow-hidden relative">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[60px] rounded-full -mr-16 -mt-16" />
                                         <div className="relative z-10 space-y-8">
                                             <div className="space-y-2">
@@ -368,7 +368,7 @@ export default async function HotelPage({
                                 </AnimatedSection>
 
                                 <AnimatedSection delay={0.2}>
-                                    <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 relative overflow-hidden group hover:border-accent/20 transition-all duration-500">
+                                    <div className="p-6 md:p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 relative overflow-hidden group hover:border-accent/20 transition-all duration-500">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-[60px] rounded-full -mr-16 -mt-16 group-hover:bg-accent/10 transition-all" />
                                         <div className="relative z-10">
                                             <div className="space-y-6">
@@ -422,7 +422,7 @@ export default async function HotelPage({
                             {hotel.reviews
                                 .filter((r: any) => r.id !== existingReview?.id)
                                 .map((review: any) => (
-                                    <div key={review.id} className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-500">
+                                    <div key={review.id} className="p-6 md:p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all duration-500">
                                         <div className="flex justify-between items-start mb-8">
                                             <div className="flex gap-4 items-center">
                                                 <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 font-black border border-white/10 uppercase">
